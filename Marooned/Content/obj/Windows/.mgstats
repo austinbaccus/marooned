@@ -1,0 +1,3 @@
+Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Size,Build Seconds
+"C:/Users/gunra/source/repos/marooned/Marooned/Content/Controls/button.png","C:/Users/gunra/source/repos/marooned/Marooned/Content/bin/Windows/Controls/button.xnb","TextureProcessor","Texture2DContent",194,1621,0.25442
+"C:/Users/gunra/source/repos/marooned/Marooned/Content/Fonts/Font.spritefont","C:/Users/gunra/source/repos/marooned/Marooned/Content/bin/Windows/Fonts/Font.xnb","FontDescriptionProcessor","SpriteFontContent",2008,21538,0.1383583

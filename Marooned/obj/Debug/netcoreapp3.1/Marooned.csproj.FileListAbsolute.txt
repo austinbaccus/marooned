@@ -35,3 +35,5 @@ C:\Users\gunra\source\repos\marooned\Marooned\obj\Debug\netcoreapp3.1\Marooned.c
 C:\Users\gunra\source\repos\marooned\Marooned\obj\Debug\netcoreapp3.1\Marooned.dll
 C:\Users\gunra\source\repos\marooned\Marooned\obj\Debug\netcoreapp3.1\Marooned.pdb
 C:\Users\gunra\source\repos\marooned\Marooned\obj\Debug\netcoreapp3.1\Marooned.genruntimeconfig.cache
+C:\Users\gunra\source\repos\marooned\Marooned\bin\Debug\netcoreapp3.1\Content\Controls\button.xnb
+C:\Users\gunra\source\repos\marooned\Marooned\bin\Debug\netcoreapp3.1\Content\Fonts\Font.xnb
