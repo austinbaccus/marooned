@@ -6,9 +6,11 @@
   <SourceFiles>
     <File>C:/Users/gunra/source/repos/marooned/Marooned/Content/Controls/button.png</File>
     <File>C:/Users/gunra/source/repos/marooned/Marooned/Content/Fonts/Font.spritefont</File>
+    <File>C:/Users/gunra/source/repos/marooned/Marooned/Content/Sounds/Music/ConcernedApe - Stardew Valley 1.5 Original Soundtrack - 03 Volcano Mines (Molten Jelly).mp3</File>
   </SourceFiles>
   <DestFiles>
     <File xsi:nil="true" />
     <File xsi:nil="true" />
+    <File>Sounds/Music/track_01.mp3</File>
   </DestFiles>
 </SourceFileCollection>

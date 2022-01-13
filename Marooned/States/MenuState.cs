@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Marooned.Controls;
+using Microsoft.Xna.Framework.Media;
 
 namespace Marooned.States
 {
@@ -11,8 +12,7 @@ namespace Marooned.States
     {
         private List<Component> _components;
 
-        public MenuState(Game1 game, GraphicsDevice graphicsDevice, ContentManager content)
-          : base(game, graphicsDevice, content)
+        public MenuState(Game1 game, GraphicsDevice graphicsDevice, ContentManager content) : base(game, graphicsDevice, content)
         {
             var buttonTexture = _content.Load<Texture2D>("Controls/Button");
             var buttonFont = _content.Load<SpriteFont>("Fonts/Font");
@@ -42,11 +42,13 @@ namespace Marooned.States
             quitGameButton.Click += QuitGameButton_Click;
 
             _components = new List<Component>()
-      {
-        newGameButton,
-        loadGameButton,
-        quitGameButton,
-      };
+            {
+                newGameButton,
+                loadGameButton,
+                quitGameButton,
+            };
+
+            LoadMusic();
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
@@ -83,6 +85,17 @@ namespace Marooned.States
         private void QuitGameButton_Click(object sender, EventArgs e)
         {
             _game.Exit();
+        }
+
+        private void LoadMusic()
+        {
+            Uri uri = new Uri("Content/Sounds/Music/ConcernedApe - Stardew Valley 1.5 Original Soundtrack - 03 Volcano Mines (Molten Jelly).mp3", UriKind.Relative);
+            Song song = Song.FromUri("mySong", uri);
+            MediaPlayer.Play(song);
+            MediaPlayer.ActiveSongChanged += (s, e) => {
+                song.Dispose();
+                System.Diagnostics.Debug.WriteLine("Song ended and disposed");
+            };
         }
     }
 }
