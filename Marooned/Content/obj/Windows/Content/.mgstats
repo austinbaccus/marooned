@@ -1,2 +1,4 @@
 Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Size,Build Seconds
+"C:/Users/gunra/source/repos/marooned/Marooned/Content/Controls/button.png","C:/Users/gunra/source/repos/marooned/Marooned/Content/bin/Windows/Content/Controls/button.xnb","TextureProcessor","Texture2DContent",391,13909,0.0853213
 "C:/Users/gunra/source/repos/marooned/Marooned/Content/Fonts/Font.spritefont","C:/Users/gunra/source/repos/marooned/Marooned/Content/bin/Windows/Content/Fonts/Font.xnb","FontDescriptionProcessor","SpriteFontContent",2008,21538,0.0579421
+"C:/Users/gunra/source/repos/marooned/Marooned/Content/Sprites/IslandParrot.png","C:/Users/gunra/source/repos/marooned/Marooned/Content/bin/Windows/Content/Sprites/IslandParrot.xnb","TextureProcessor","Texture2DContent",10935,82005,0.0959304

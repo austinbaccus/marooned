@@ -40,3 +40,4 @@ C:\Users\gunra\source\repos\marooned\Marooned\bin\Debug\netcoreapp3.1\Content\Fo
 C:\Users\gunra\source\repos\marooned\Marooned\bin\Debug\netcoreapp3.1\Content\Sounds\Music\track_01.wma
 C:\Users\gunra\source\repos\marooned\Marooned\bin\Debug\netcoreapp3.1\Content\Sounds\Music\track_01.xnb
 C:\Users\gunra\source\repos\marooned\Marooned\bin\Debug\netcoreapp3.1\Content\Sounds\Music\ConcernedApe - Stardew Valley 1.5 Original Soundtrack - 03 Volcano Mines (Molten Jelly).mp3
+C:\Users\gunra\source\repos\marooned\Marooned\bin\Debug\netcoreapp3.1\Content\Sprites\IslandParrot.xnb

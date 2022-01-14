@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>C:/Users/gunra/source/repos/marooned/Marooned/Content/Controls/button.png</SourceFile>
-  <SourceTime>2022-01-13T20:23:35.0962398-08:00</SourceTime>
-  <DestFile>C:/Users/gunra/source/repos/marooned/Marooned/Content/bin/Windows/Content/Controls/button.xnb</DestFile>
-  <DestTime>2022-01-13T20:23:39.3749022-08:00</DestTime>
+  <SourceFile>C:/Users/gunra/source/repos/marooned/Marooned/Content/Sprites/IslandParrot.png</SourceFile>
+  <SourceTime>2022-01-13T15:33:25.4807226-08:00</SourceTime>
+  <DestFile>C:/Users/gunra/source/repos/marooned/Marooned/Content/bin/Windows/Sprites/IslandParrot.xnb</DestFile>
+  <DestTime>2022-01-13T16:53:57.028631-08:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2020-08-10T09:17:54-07:00</ImporterTime>
   <Processor>TextureProcessor</Processor>

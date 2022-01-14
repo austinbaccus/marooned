@@ -19,7 +19,7 @@ namespace Marooned.States
 
             var newGameButton = new Button(buttonTexture, buttonFont)
             {
-                Position = new Vector2(300, 200),
+                Position = new Vector2(350, 200),
                 Text = "New Game",
             };
 
@@ -27,7 +27,7 @@ namespace Marooned.States
 
             var loadGameButton = new Button(buttonTexture, buttonFont)
             {
-                Position = new Vector2(300, 250),
+                Position = new Vector2(350, 250),
                 Text = "Load Game",
             };
 
@@ -35,7 +35,7 @@ namespace Marooned.States
 
             var quitGameButton = new Button(buttonTexture, buttonFont)
             {
-                Position = new Vector2(300, 300),
+                Position = new Vector2(350, 300),
                 Text = "Quit Game",
             };
 

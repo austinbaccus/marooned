@@ -56,12 +56,9 @@ namespace Marooned.Controls
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            var colour = Color.White;
+            var color = _isHovering ? Color.Gray : Color.White;
 
-            if (_isHovering)
-                colour = Color.Gray;
-
-            spriteBatch.Draw(_texture, Rectangle, colour);
+            spriteBatch.Draw(_texture, Rectangle, color);
 
             if (!string.IsNullOrEmpty(Text))
             {
