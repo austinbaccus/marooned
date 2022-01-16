@@ -11,6 +11,9 @@ namespace Marooned.States
     public class GameState : State
     {
         private List<Component> _components;
+        private Camera _camera;
+        private Player _player;
+        private Map _map;
 
         public GameState(Game1 game, GraphicsDevice graphicsDevice, ContentManager content) : base(game, graphicsDevice, content)
         {
@@ -24,7 +27,9 @@ namespace Marooned.States
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             //GraphicsDevice.Clear(Color.CornflowerBlue);
-            spriteBatch.Begin();
+            spriteBatch.Begin(transformMatrix: _camera.Transform);
+
+            _map.Draw(spriteBatch);
 
             foreach (var component in _components)
                 component.Draw(gameTime, spriteBatch);
@@ -39,6 +44,7 @@ namespace Marooned.States
 
         public override void Update(GameTime gameTime)
         {
+            _camera.Follow(_player);
             foreach (var component in _components)
             {
                 component.Update(gameTime);
@@ -47,6 +53,8 @@ namespace Marooned.States
 
         private void LoadContent()
         {
+            _camera = new Camera();
+            LoadMap();
             LoadMusic();
             LoadSprites();
         }
@@ -55,15 +63,14 @@ namespace Marooned.States
         {
             var texture = _content.Load<Texture2D>("Sprites/IslandParrot");
 
-            Player _player1 = new Player(texture)
+            _player = new Player(texture)
             {
-                Position = new Vector2(100, 100),
+                Position = new Vector2(50, 50),
                 Speed = 3f,
             };
 
-            _components.Add(_player1);
+            _components.Add(_player);
         }
-
         private void LoadMusic()
         {
             Uri uri = new Uri("Content/Sounds/Music/ConcernedApe - Stardew Valley 1.5 Original Soundtrack - 03 Volcano Mines (Molten Jelly).mp3", UriKind.Relative);
@@ -73,6 +80,11 @@ namespace Marooned.States
                 song.Dispose();
                 System.Diagnostics.Debug.WriteLine("Song ended and disposed");
             };
+        }
+        private void LoadMap()
+        {
+            _map = new Maps.Level_02();
+            _map.Generate();
         }
     }
 }

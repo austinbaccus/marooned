@@ -14,6 +14,8 @@ namespace Marooned.States
 
         protected Game1 _game;
 
+        internal Map map;
+
         #endregion
 
         #region Methods

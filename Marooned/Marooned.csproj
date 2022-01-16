@@ -11,10 +11,22 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="Content\Sounds\Music\ConcernedApe - Stardew Valley 1.5 Original Soundtrack - 01 Ginger Island.mp3" />
     <None Remove="Content\Sounds\Music\ConcernedApe - Stardew Valley 1.5 Original Soundtrack - 03 Volcano Mines %28Molten Jelly%29.mp3" />
+    <None Remove="Content\Terrain\sand.png" />
+    <None Remove="Content\Terrain\spring_island_tilesheet_1.png" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\Sounds\Music\ConcernedApe - Stardew Valley 1.5 Original Soundtrack - 01 Ginger Island.mp3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\Sounds\Music\ConcernedApe - Stardew Valley 1.5 Original Soundtrack - 03 Volcano Mines (Molten Jelly).mp3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Terrain\sand.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Terrain\spring_island_tilesheet_1.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

@@ -39,7 +39,6 @@ namespace Marooned.Sprites
             SourceRectangle[17] = new Rectangle(32, 128, 32, 32); // 18 - idle monch
 
             currentAnimationIndex = 0;
-
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)

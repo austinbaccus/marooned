@@ -1,4 +1,5 @@
-﻿using Marooned.States;
+﻿using Marooned.Maps;
+using Marooned.States;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -12,6 +13,11 @@ namespace Marooned
 
         private State _currentState;
         private State _nextState;
+
+        public static int ScreenWidth = 800;
+        public static int ScreenHeight = 480;
+
+        Level_01 menuMap;
 
         public Game1()
         {
@@ -27,8 +33,11 @@ namespace Marooned
 
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
-
+            Window.IsBorderless = false;
+            Window.AllowUserResizing = true;
+            _graphics.PreferredBackBufferWidth = ScreenWidth;
+            _graphics.PreferredBackBufferHeight = ScreenHeight;
+            _graphics.ApplyChanges();
             base.Initialize();
         }
 
@@ -36,7 +45,9 @@ namespace Marooned
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            // TODO: use this.Content to load your game content here
+            // Load map
+            Tiles.Content = Content;
+
             _currentState = new MenuState(this, _graphics.GraphicsDevice, Content);
         }
 
@@ -45,7 +56,7 @@ namespace Marooned
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            // TODO: Add your update logic here
+            // State
             if (_nextState != null)
             {
                 _currentState = _nextState;
@@ -60,8 +71,10 @@ namespace Marooned
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
+            
 
-            // TODO: Add your drawing code here
+
+
             _currentState.Draw(gameTime, _spriteBatch);
 
             base.Draw(gameTime);

@@ -19,6 +19,11 @@ namespace Marooned.Sprites
             _texture = texture;
         }
 
+        public Rectangle Rectangle
+        {
+            get { return new Rectangle((int)Position.X, (int)Position.Y, _texture.Width, _texture.Height); }
+        }
+
         public override void Update(GameTime gameTime)
         {
             
