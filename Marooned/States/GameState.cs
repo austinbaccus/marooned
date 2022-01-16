@@ -27,7 +27,7 @@ namespace Marooned.States
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             //GraphicsDevice.Clear(Color.CornflowerBlue);
-            spriteBatch.Begin(transformMatrix: _camera.Transform);
+            spriteBatch.Begin(transformMatrix: _camera.Transform, samplerState: SamplerState.PointClamp);
 
             _map.Draw(spriteBatch);
 
@@ -65,7 +65,7 @@ namespace Marooned.States
 
             _player = new Player(texture)
             {
-                Position = new Vector2(50, 50),
+                Position = new Vector2(0, 0),
                 Speed = 3f,
             };
 
