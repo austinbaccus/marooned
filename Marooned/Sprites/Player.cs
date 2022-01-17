@@ -10,6 +10,7 @@ namespace Marooned.Sprites
     public class Player : Sprite
     {
         public float Speed = 2f;
+        public float SlowSpeed = 1f;
         public Rectangle[] SourceRectangle = new Rectangle[18];
         public float Timer = 0;
         public int Threshold = 250;
@@ -48,24 +49,25 @@ namespace Marooned.Sprites
 
         public override void Update(GameTime gameTime)
         {
+            bool isShiftKeyPressed = Keyboard.GetState().IsKeyDown(Keys.LeftShift);
             if (Keyboard.GetState().IsKeyDown(Keys.W))
             {
-                Position.Y -= Speed;
+                Position.Y -= isShiftKeyPressed ? SlowSpeed : Speed;
                 direction = 9;
             }
             if (Keyboard.GetState().IsKeyDown(Keys.S))
             {
-                Position.Y += Speed;
+                Position.Y += isShiftKeyPressed ? SlowSpeed : Speed;
                 direction = 1;
             }
             if (Keyboard.GetState().IsKeyDown(Keys.A))
             {
-                Position.X -= Speed;
+                Position.X -= isShiftKeyPressed ? SlowSpeed : Speed;
                 direction = 13;
             }
             if (Keyboard.GetState().IsKeyDown(Keys.D))
             {
-                Position.X += Speed;
+                Position.X += isShiftKeyPressed ? SlowSpeed : Speed;
                 direction = 5;
             }
 
