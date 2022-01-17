@@ -9,7 +9,7 @@ namespace Marooned
         public Matrix Transform { get; private set; }
         public void Follow(Sprite target)
         {
-            float zoom = 0.10f; // 0.45f is good
+            float zoom = 0.45f; // 0.45f is good
 
             var position = Matrix.CreateTranslation(
               -target.Position.X - (target.Rectangle.Width / 2),
