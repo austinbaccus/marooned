@@ -68,7 +68,18 @@ namespace Marooned.States
 
         private void NewGameButton_Click(object sender, EventArgs e)
         {
-            _game.ChangeState(new GameState(_game, _graphicsDevice, _content));
+            _game.ChangeState(new InteractiveState(
+                _game, 
+                _graphicsDevice, 
+                _content, 
+                "Maps/tutorial", 
+                new List<string>()
+                {
+                    "Content/Sounds/Music/ConcernedApe - Stardew Valley 1.5 Original Soundtrack - 03 Volcano Mines (Molten Jelly).mp3",
+                    "Content/Sounds/Music/ConcernedApe - Stardew Valley 1.5 Original Soundtrack - 01 Ginger Island.mp3"
+                },
+                "Sprites/IslandParrot"
+            ));
         }
 
         public override void PostUpdate(GameTime gameTime)

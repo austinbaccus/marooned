@@ -72,9 +72,6 @@ namespace Marooned
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
             
-
-
-
             _currentState.Draw(gameTime, _spriteBatch);
 
             base.Draw(gameTime);

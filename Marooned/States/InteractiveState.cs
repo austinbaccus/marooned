@@ -12,10 +12,15 @@ namespace Marooned.States
 {
     public class InteractiveState : State
     {
-        private Map _map;
+        //private Map _map;
         private Player _player;
         protected Camera _camera;
         private List<Component> _components;
+
+        private SpriteBatch _spriteBatch;
+
+        private TiledMap _tiledMap;
+        private TiledMapRenderer _tiledMapRenderer;
 
         public InteractiveState(Game1 game, GraphicsDevice graphicsDevice, ContentManager content, string mapPath, List<string> songPaths, string playerSpritePath) : base(game, graphicsDevice, content)
         {
@@ -31,10 +36,12 @@ namespace Marooned.States
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            //GraphicsDevice.Clear(Color.CornflowerBlue);
+            _graphicsDevice.Clear(Color.CornflowerBlue);
+
             spriteBatch.Begin(transformMatrix: _camera.Transform, samplerState: SamplerState.PointClamp);
 
-            _map.Draw(spriteBatch);
+            //_map.Draw(spriteBatch);
+            _tiledMapRenderer.Draw();
 
             foreach (var component in _components)
                 component.Draw(gameTime, spriteBatch);
@@ -49,6 +56,7 @@ namespace Marooned.States
 
         public override void Update(GameTime gameTime)
         {
+            _tiledMapRenderer.Update(gameTime);
             _camera.Follow(_player);
             foreach (var component in _components)
             {
@@ -100,7 +108,10 @@ namespace Marooned.States
         {
             //_map = new Maps.Level_02();
             //_map.Generate();
+            _tiledMap = _content.Load<TiledMap>(mapPath);
+            _tiledMapRenderer = new TiledMapRenderer(_graphicsDevice, _tiledMap);
 
+            _spriteBatch = new SpriteBatch(_graphicsDevice);
         }
     }
 }

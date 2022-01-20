@@ -11,11 +11,6 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Remove="Content\Maps\**" />
-    <EmbeddedResource Remove="Content\Maps\**" />
-    <None Remove="Content\Maps\**" />
-  </ItemGroup>
-  <ItemGroup>
     <None Remove="Content\blank-tile.png" />
     <None Remove="Content\Sounds\Music\ConcernedApe - Stardew Valley 1.5 Original Soundtrack - 01 Ginger Island.mp3" />
     <None Remove="Content\Sounds\Music\ConcernedApe - Stardew Valley 1.5 Original Soundtrack - 03 Volcano Mines %28Molten Jelly%29.mp3" />
@@ -66,5 +61,16 @@
     <MonoGameContentReference Include="Content\Content.mgcb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </MonoGameContentReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="MonoGame.Extended">
+      <HintPath>MonoGame.Extended.dll</HintPath>
+    </Reference>
+    <Reference Include="MonoGame.Extended.Graphics">
+      <HintPath>MonoGame.Extended.Graphics.dll</HintPath>
+    </Reference>
+    <Reference Include="MonoGame.Extended.Tiled">
+      <HintPath>MonoGame.Extended.Tiled.dll</HintPath>
+    </Reference>
   </ItemGroup>
 </Project>
