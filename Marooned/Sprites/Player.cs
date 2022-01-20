@@ -74,13 +74,7 @@ namespace Marooned.Sprites
             // Update animation
             if (Timer > Threshold)
             { 
-                //  0 | 3
-                // -1 | 2
-                // -1.5 | 1.5
                 currentAnimationIndex = (byte)((currentAnimationIndex + 1) % 4);
-                byte cur = animationLoop[currentAnimationIndex];
-                float adjusted = cur - 1f;
-                Position.Y += 3 * adjusted;
                 Timer = 0;
             }
             else

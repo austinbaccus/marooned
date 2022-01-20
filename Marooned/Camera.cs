@@ -26,8 +26,8 @@ namespace Marooned
 
             // https://roguesharp.wordpress.com/2014/07/13/tutorial-5-creating-a-2d-camera-with-pan-and-zoom-in-monogame/
             var pos = Matrix.CreateTranslation(
-                target.Position.X, // - (target.Rectangle.Width / 2), 
-                target.Position.Y, // - (target.Rectangle.Height / 2), 
+                target.Position.X - 150, // - (target.Rectangle.Width / 2), 
+                target.Position.Y - 100, // - (target.Rectangle.Height / 2), 
                 0);
 
             var transform = scale * pos;

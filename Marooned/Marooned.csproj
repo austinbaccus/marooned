@@ -11,10 +11,23 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Content\Maps\**" />
+    <EmbeddedResource Remove="Content\Maps\**" />
+    <None Remove="Content\Maps\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Content\blank-tile.png" />
     <None Remove="Content\Sounds\Music\ConcernedApe - Stardew Valley 1.5 Original Soundtrack - 01 Ginger Island.mp3" />
     <None Remove="Content\Sounds\Music\ConcernedApe - Stardew Valley 1.5 Original Soundtrack - 03 Volcano Mines %28Molten Jelly%29.mp3" />
+    <None Remove="Content\spring_island_tilesheet_1.png" />
+    <None Remove="Content\spring_outdoorsTileSheet.png" />
+    <None Remove="Content\Sprites\IslandParrot.png" />
+    <None Remove="Content\Terrain\blank-tile.png" />
     <None Remove="Content\Terrain\sand.png" />
     <None Remove="Content\Terrain\spring_island_tilesheet_1.png" />
+    <None Remove="Content\Terrain\spring_outdoorsTileSheet.png" />
+    <None Remove="Content\Terrain\water-animation.png" />
+    <None Remove="Content\water-animation.png" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\Sounds\Music\ConcernedApe - Stardew Valley 1.5 Original Soundtrack - 01 Ginger Island.mp3">
@@ -23,11 +36,23 @@
     <Content Include="Content\Sounds\Music\ConcernedApe - Stardew Valley 1.5 Original Soundtrack - 03 Volcano Mines (Molten Jelly).mp3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Terrain\sand.png">
+    <Content Include="Content\Sprites\IslandParrot.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\Terrain\blank-tile.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Terrain\sand.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\Terrain\spring_island_tilesheet_1.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Terrain\spring_outdoorsTileSheet.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Terrain\water-animation.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
@@ -38,6 +63,8 @@
     <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.0.1641" />
   </ItemGroup>
   <ItemGroup>
-    <MonoGameContentReference Include="Content\Content.mgcb" />
+    <MonoGameContentReference Include="Content\Content.mgcb">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </MonoGameContentReference>
   </ItemGroup>
 </Project>
