@@ -68,6 +68,7 @@ namespace Marooned.States
 
         private void NewGameButton_Click(object sender, EventArgs e)
         {
+            // TODO: Right now we are manually passing in map parameters when changing state. Later on this will be delegated to the Level Interpreter.
             _game.ChangeState(new InteractiveState(
                 _game, 
                 _graphicsDevice, 

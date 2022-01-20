@@ -16,9 +16,6 @@ namespace Marooned.States
         private Player _player;
         protected Camera _camera;
         private List<Component> _components;
-
-        private SpriteBatch _spriteBatch;
-
         private TiledMap _tiledMap;
         private TiledMapRenderer _tiledMapRenderer;
 
@@ -106,12 +103,8 @@ namespace Marooned.States
 
         private void LoadMap(string mapPath)
         {
-            //_map = new Maps.Level_02();
-            //_map.Generate();
             _tiledMap = _content.Load<TiledMap>(mapPath);
             _tiledMapRenderer = new TiledMapRenderer(_graphicsDevice, _tiledMap);
-
-            _spriteBatch = new SpriteBatch(_graphicsDevice);
         }
     }
 }

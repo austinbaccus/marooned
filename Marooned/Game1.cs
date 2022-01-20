@@ -1,5 +1,4 @@
-﻿using Marooned.Maps;
-using Marooned.States;
+﻿using Marooned.States;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -17,7 +16,7 @@ namespace Marooned
         public static int ScreenWidth = 800;
         public static int ScreenHeight = 480;
 
-        Level_01 menuMap;
+        //Level_01 menuMap;
 
         public Game1()
         {
