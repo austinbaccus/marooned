@@ -1,5 +1,4 @@
-﻿using Marooned.Maps;
-using Marooned.States;
+﻿using Marooned.States;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -14,10 +13,10 @@ namespace Marooned
         private State _currentState;
         private State _nextState;
 
-        public static int ScreenWidth = 800;
-        public static int ScreenHeight = 480;
+        public static int ScreenWidth = 1800;
+        public static int ScreenHeight = 1000;
 
-        Level_01 menuMap;
+        //Level_01 menuMap;
 
         public Game1()
         {
@@ -72,9 +71,6 @@ namespace Marooned
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
             
-
-
-
             _currentState.Draw(gameTime, _spriteBatch);
 
             base.Draw(gameTime);
