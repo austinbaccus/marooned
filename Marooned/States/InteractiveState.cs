@@ -7,6 +7,8 @@ using Microsoft.Xna.Framework.Media;
 using Marooned.Sprites;
 using MonoGame.Extended.Tiled;
 using MonoGame.Extended.Tiled.Renderers;
+using MonoGame.Extended;
+using MonoGame.Extended.ViewportAdapters;
 
 namespace Marooned.States
 {
@@ -16,6 +18,9 @@ namespace Marooned.States
         private Player _player;
         protected Camera _camera;
         private List<Component> _components;
+
+        // Tiled
+        private OrthographicCamera _cameraOrtho;
         private TiledMap _tiledMap;
         private TiledMapRenderer _tiledMapRenderer;
 
@@ -35,14 +40,16 @@ namespace Marooned.States
         {
             _graphicsDevice.Clear(Color.CornflowerBlue);
 
-            spriteBatch.Begin(transformMatrix: _camera.Transform, samplerState: SamplerState.PointClamp);
+            spriteBatch.Begin(sortMode: SpriteSortMode.Deferred, transformMatrix: _camera.Transform, samplerState: SamplerState.PointClamp);
+            _tiledMapRenderer.Draw(_cameraOrtho.GetViewMatrix());
+            spriteBatch.End();
 
-            //_map.Draw(spriteBatch);
-            _tiledMapRenderer.Draw();
-
+            // A second spriteBatch.Begin()/End() section is needed to render the player after the map has been rendered.
+            spriteBatch.Begin(sortMode: SpriteSortMode.Deferred, transformMatrix: _camera.Transform, samplerState: SamplerState.PointClamp);
             foreach (var component in _components)
+            {
                 component.Draw(gameTime, spriteBatch);
-
+            }
             spriteBatch.End();
         }
 
@@ -55,6 +62,9 @@ namespace Marooned.States
         {
             _tiledMapRenderer.Update(gameTime);
             _camera.Follow(_player);
+            Vector2 adj = new Vector2(_player.Position.X+100, _player.Position.Y+100);
+            _cameraOrtho.LookAt(adj);
+
             foreach (var component in _components)
             {
                 component.Update(gameTime);
@@ -64,6 +74,9 @@ namespace Marooned.States
         private void LoadContent()
         {
             _camera = new Camera();
+            var viewportadapter = new BoxingViewportAdapter(_game.Window, _graphicsDevice, 1800, 1000);
+            _cameraOrtho = new OrthographicCamera(viewportadapter);
+            _cameraOrtho.Zoom = 4.5f;
         }
 
         private void LoadSprites(string playerSpritePath)
@@ -72,8 +85,8 @@ namespace Marooned.States
 
             _player = new Player(texture)
             {
-                Position = new Vector2(0, 0),
-                Speed = 3f,
+                Position = new Vector2(100, 100),
+                Speed = 2.2f,
             };
 
             _components.Add(_player);

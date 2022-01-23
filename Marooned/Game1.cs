@@ -13,8 +13,8 @@ namespace Marooned
         private State _currentState;
         private State _nextState;
 
-        public static int ScreenWidth = 800;
-        public static int ScreenHeight = 480;
+        public static int ScreenWidth = 1800;
+        public static int ScreenHeight = 1000;
 
         //Level_01 menuMap;
 
