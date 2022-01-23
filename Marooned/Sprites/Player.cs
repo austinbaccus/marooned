@@ -47,6 +47,16 @@ namespace Marooned.Sprites
             spriteBatch.Draw(_texture, Position, SourceRectangle[animationLoop[currentAnimationIndex] + direction], Color.White);
         }
 
+        public void Shoot()
+        {
+            //var texture = _content.Load<Texture2D>("Sprites/Banana");
+            //Bullet bullet = new Bullet()
+            if (Keyboard.GetState().IsKeyDown(Keys.Right))
+            {
+                Bullet bullet = SpriteFactory.GenerateSprite<Bullet>();
+            }
+        }
+
         public override void Update(GameTime gameTime)
         {
             bool isShiftKeyPressed = Keyboard.GetState().IsKeyDown(Keys.LeftShift);

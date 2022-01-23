@@ -47,6 +47,8 @@ namespace Marooned
 
             // Load map
             Tiles.Content = Content;
+            
+            //Bullet = new Bullet(Content.Load<Texture2D>("Bullet")),
 
             _currentState = new MenuState(this, _graphics.GraphicsDevice, Content);
         }
