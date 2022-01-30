@@ -12,9 +12,9 @@ namespace Marooned.Sprites
         private Vector2 _direction;
         private Vector2 _linearVelocity;
         private float _damage;
-        private Vector2 _position;
+        //private Vector2 _position;
 
-        private bool IsRemoved = false; // Bullet should be removed from list
+        public bool IsRemoved = false; // Bullet should be removed from list
         
         public Bullet(Texture2D texture, float lifeSpan, Vector2 direction, Vector2 linearVelocity, float damage, Vector2 origin)
           : base(texture)
@@ -23,7 +23,7 @@ namespace Marooned.Sprites
             _direction = direction; // Direction of bullet
             _linearVelocity = linearVelocity; // Speed of bullet
             _damage = damage; // Amount of damage
-            _position = origin; // Starting position of bullet
+            Position = origin; // Starting position of bullet
         }
 
         public override void Update(GameTime gameTime)

@@ -1,4 +1,10 @@
-﻿using Marooned.Maps;
+﻿//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//                              BASICALLY MAIN
+//                              Launches levels
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+using Marooned.Maps;
 using Marooned.States;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -24,6 +30,7 @@ namespace Marooned
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
+            SpriteFactory.content = Content;
         }
 
         public void ChangeState(State state)
@@ -74,9 +81,6 @@ namespace Marooned
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
             
-
-
-
             _currentState.Draw(gameTime, _spriteBatch);
 
             base.Draw(gameTime);

@@ -1,4 +1,5 @@
 ﻿using Marooned.Sprites;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -11,17 +12,10 @@ namespace Marooned
     {
         public static ContentManager content;
 
-        public static T GenerateSprite<T>()
+        public static Bullet GenerateBullet(float lifeSpan, Vector2 direction, Vector2 linearVelocity, float damage, Vector2 origin)
         {
-            if (typeof(T) == typeof(Bullet))
-            {
-                var texture = content.Load<Texture2D>("Sprites/Banana");
-
-                return new Bullet(texture, 2f, );
-            } else
-            {
-                return default;
-            }
+            var texture = content.Load<Texture2D>("Sprites/Banana");
+            return new Bullet(texture, lifeSpan, direction, linearVelocity, damage, origin);
         }
     }
 }
