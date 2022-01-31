@@ -92,7 +92,7 @@ namespace Marooned.States
         }
         private void LoadMusic()
         {
-            Uri uri = new Uri("Content/Sounds/Music/ConcernedApe - Stardew Valley 1.5 Original Soundtrack - 03 Volcano Mines (Molten Jelly).mp3", UriKind.Relative);
+            Uri uri = new Uri("Content/Sounds/Music/ConcernedApe - Stardew Valley 1.5 Original Soundtrack - 03 Volcano Mines (Molten Jelly).ogg", UriKind.Relative);
             Song song = Song.FromUri("track_01", uri);
             MediaPlayer.Play(song);
             MediaPlayer.ActiveSongChanged += (s, e) => {

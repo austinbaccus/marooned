@@ -89,7 +89,7 @@ namespace Marooned.States
 
         private void LoadMusic()
         {
-            Uri uri = new Uri("Content/Sounds/Music/ConcernedApe - Stardew Valley 1.5 Original Soundtrack - 01 Ginger Island.mp3", UriKind.Relative);
+            Uri uri = new Uri("Content/Sounds/Music/ConcernedApe - Stardew Valley 1.5 Original Soundtrack - 01 Ginger Island.ogg", UriKind.Relative);
             Song song = Song.FromUri("mySong", uri);
             MediaPlayer.Play(song);
             MediaPlayer.ActiveSongChanged += (s, e) => {
