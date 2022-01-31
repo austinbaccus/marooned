@@ -1,4 +1,5 @@
-﻿using Marooned.States;
+﻿using Marooned.Factories;
+using Marooned.States;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -23,6 +24,8 @@ namespace Marooned
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
+
+            BulletFactory.content = Content;
         }
 
         public void ChangeState(State state)

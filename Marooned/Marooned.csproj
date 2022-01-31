@@ -77,4 +77,9 @@
       <HintPath>MonoGame.Extended.Tiled.dll</HintPath>
     </Reference>
   </ItemGroup>
+  <ItemGroup>
+    <None Update="Content\Sprites\Banana.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 </Project>

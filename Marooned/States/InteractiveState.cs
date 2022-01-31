@@ -50,12 +50,24 @@ namespace Marooned.States
             {
                 component.Draw(gameTime, spriteBatch);
             }
+            foreach (var bullet in _player.BulletList)
+            {
+                bullet.Draw(gameTime, spriteBatch);
+            }
             spriteBatch.End();
         }
 
         public override void PostUpdate(GameTime gameTime)
         {
             // remove sprites if they're not needed
+            for (int i = 0; i < _player.BulletList.Count; i++)
+            {
+                if (_player.BulletList[i].IsRemoved)
+                {
+                    _player.BulletList.RemoveAt(i);
+                    i--;
+                }
+            }
         }
 
         public override void Update(GameTime gameTime)
@@ -68,6 +80,10 @@ namespace Marooned.States
             foreach (var component in _components)
             {
                 component.Update(gameTime);
+            }
+            foreach (var bullet in _player.BulletList)
+            {
+                bullet.Update(gameTime);
             }
         }
 

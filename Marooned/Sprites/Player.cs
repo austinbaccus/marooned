@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Marooned.Factories;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -14,6 +16,13 @@ namespace Marooned.Sprites
         public Rectangle[] SourceRectangle = new Rectangle[18];
         public float Timer = 0;
         public int Threshold = 250;
+
+        public List<Bullet> BulletList = new List<Bullet>(); // List of bullets
+        private double _lastBulletTimestamp = 0;
+        private float _bulletLifespan = 2f;
+        private float _bulletVelocity = 7f;
+        private float _bulletFireRate = 100f;
+        
         private byte currentAnimationIndex;
         private byte direction = 1;
         private byte[] animationLoop = { 0, 1, 2, 1 };
@@ -49,6 +58,12 @@ namespace Marooned.Sprites
 
         public override void Update(GameTime gameTime)
         {
+            Move(gameTime);
+            Shoot(gameTime);
+        }
+
+        private void Move(GameTime gameTime)
+        {
             bool isShiftKeyPressed = Keyboard.GetState().IsKeyDown(Keys.LeftShift);
             if (Keyboard.GetState().IsKeyDown(Keys.W))
             {
@@ -73,13 +88,38 @@ namespace Marooned.Sprites
 
             // Update animation
             if (Timer > Threshold)
-            { 
+            {
                 currentAnimationIndex = (byte)((currentAnimationIndex + 1) % 4);
                 Timer = 0;
             }
             else
             {
                 Timer += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+            }
+        }
+
+        public void Shoot(GameTime gameTime)
+        {
+            if (gameTime.TotalGameTime.TotalMilliseconds - _lastBulletTimestamp > _bulletFireRate)
+            {
+                _lastBulletTimestamp = gameTime.TotalGameTime.TotalMilliseconds;
+
+                if (Keyboard.GetState().IsKeyDown(Keys.Right))
+                { // Shoot right
+                    BulletList.Add(BulletFactory.MakeBullet(_bulletLifespan, new Vector2(1, 0), new Vector2(_bulletVelocity, 1), 2f, new Vector2(this.Position.X, this.Position.Y)));
+                }
+                else if (Keyboard.GetState().IsKeyDown(Keys.Left))
+                { // Shoot left
+                    BulletList.Add(BulletFactory.MakeBullet(_bulletLifespan, new Vector2(-1, 0), new Vector2(_bulletVelocity, 1), 2f, new Vector2(this.Position.X, this.Position.Y)));
+                }
+                else if (Keyboard.GetState().IsKeyDown(Keys.Down))
+                { // Shoot down
+                    BulletList.Add(BulletFactory.MakeBullet(_bulletLifespan, new Vector2(0, 1), new Vector2(1, _bulletVelocity), 2f, new Vector2(this.Position.X, this.Position.Y)));
+                }
+                else if (Keyboard.GetState().IsKeyDown(Keys.Up))
+                { // Shoot up
+                    BulletList.Add(BulletFactory.MakeBullet(_bulletLifespan, new Vector2(0, -1), new Vector2(1, _bulletVelocity), 2f, new Vector2(this.Position.X, this.Position.Y)));
+                }
             }
         }
     }
