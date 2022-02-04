@@ -19,6 +19,7 @@ namespace Marooned.States
         private Camera _camera;
         private Player _player;
         private Map _map;
+        private Enemy _enemy;
 
         public GameState(Game1 game, GraphicsDevice graphicsDevice, ContentManager content) : base(game, graphicsDevice, content)
         {
@@ -81,7 +82,7 @@ namespace Marooned.States
         private void LoadSprites()
         {
             var texture = _content.Load<Texture2D>("Sprites/IslandParrot");
-
+            var eTexture = _content.Load<Texture2D>("Sprites/Skeleton");
             _player = new Player(texture)
             {
                 Position = new Vector2(0, 0),
@@ -89,6 +90,14 @@ namespace Marooned.States
             };
 
             _components.Add(_player);
+
+            _enemy = new Enemy(eTexture)
+            {
+                Position = new Vector2(50, 50),
+                Speed = 1f,
+            };
+
+            _components.Add(_enemy);
         }
         private void LoadMusic()
         {
