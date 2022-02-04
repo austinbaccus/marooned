@@ -93,7 +93,7 @@ namespace Marooned.States
 
             _enemy = new Enemy(eTexture)
             {
-                Position = new Vector2(50, 50),
+                Position = new Vector2(100, 100),
                 Speed = 1f,
             };
 

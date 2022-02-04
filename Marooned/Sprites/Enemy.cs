@@ -65,44 +65,44 @@ namespace Marooned.Sprites
 
         private void Move(GameTime gameTime)
         {
-            bool isShiftKeyPressed = Keyboard.GetState().IsKeyDown(Keys.LeftShift);
-            if (Keyboard.GetState().IsKeyDown(Keys.I))
-            {
-                Position.Y -= isShiftKeyPressed ? SlowSpeed : Speed;
-                direction = 9;
-            }
-            if (Keyboard.GetState().IsKeyDown(Keys.K))
-            {
-                Position.Y += isShiftKeyPressed ? SlowSpeed : Speed;
-                direction = 1;
-            }
-            if (Keyboard.GetState().IsKeyDown(Keys.J))
-            {
-                Position.X -= isShiftKeyPressed ? SlowSpeed : Speed;
-                direction = 13;
-            }
-            if (Keyboard.GetState().IsKeyDown(Keys.L))
-            {
-                Position.X += isShiftKeyPressed ? SlowSpeed : Speed;
-                direction = 5;
-            }
+            //bool isShiftKeyPressed = Keyboard.GetState().IsKeyDown(Keys.LeftShift);
+            //if (Keyboard.GetState().IsKeyDown(Keys.I))
+            //{
+            //    Position.Y -= isShiftKeyPressed ? SlowSpeed : Speed;
+            //    direction = 9;
+            //}
+            //if (Keyboard.GetState().IsKeyDown(Keys.K))
+            //{
+            //    Position.Y += isShiftKeyPressed ? SlowSpeed : Speed;
+            //    direction = 1;
+            //}
+            //if (Keyboard.GetState().IsKeyDown(Keys.J))
+            //{
+            //    Position.X -= isShiftKeyPressed ? SlowSpeed : Speed;
+            //    direction = 13;
+            //}
+            //if (Keyboard.GetState().IsKeyDown(Keys.L))
+            //{
+            //    Position.X += isShiftKeyPressed ? SlowSpeed : Speed;
+            //    direction = 5;
+            //}
 
-            // Update animation
-            if (Timer > Threshold)
-            {
-                //  0 | 3
-                // -1 | 2
-                // -1.5 | 1.5
-                currentAnimationIndex = (byte)((currentAnimationIndex + 1) % 4);
-                byte cur = animationLoop[currentAnimationIndex];
-                float adjusted = cur - 1f;
-                Position.Y += 3 * adjusted;
-                Timer = 0;
-            }
-            else
-            {
-                Timer += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
-            }
+            //// Update animation
+            //if (Timer > Threshold)
+            //{
+            //    //  0 | 3
+            //    // -1 | 2
+            //    // -1.5 | 1.5
+            //    currentAnimationIndex = (byte)((currentAnimationIndex + 1) % 4);
+            //    byte cur = animationLoop[currentAnimationIndex];
+            //    float adjusted = cur - 1f;
+            //    Position.Y += 3 * adjusted;
+            //    Timer = 0;
+            //}
+            //else
+            //{
+            //    Timer += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+            //}
             //Random rand = new Random();
 
             //while (Keyboard.GetState().IsKeyDown(Keys.Delete) == false) 
@@ -140,6 +140,39 @@ namespace Marooned.Sprites
             //        Timer += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
             //    }
             //}           
+            Random rand = new Random();
+            String rNum = rand.Next(0, 3).ToString();
+            bool isShiftKeyPressed = Keyboard.GetState().IsKeyDown(Keys.LeftShift);
+            if (rNum == "0")
+            {
+                Position.Y -= isShiftKeyPressed ? SlowSpeed : Speed;
+                direction = 1;
+            }
+            if (rNum == "1")
+            {
+                Position.Y += isShiftKeyPressed ? SlowSpeed : Speed;
+                direction = 0;
+            }
+            if (rNum == "2")
+            {
+                Position.X -= isShiftKeyPressed ? SlowSpeed : Speed;
+                direction = 0;
+            }
+            if (rNum == "3")
+            {
+                Position.X += isShiftKeyPressed ? SlowSpeed : Speed;
+                direction = 1;
+            }
+            // Update animation
+            if (Timer > Threshold)
+            {
+                currentAnimationIndex = (byte)((currentAnimationIndex + 1) % 4);
+                Timer = 0;
+            }
+            else
+            {
+                Timer += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+            }
         }
     }
 }
