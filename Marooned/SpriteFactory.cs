@@ -17,5 +17,11 @@ namespace Marooned
             var texture = content.Load<Texture2D>("Sprites/Banana");
             return new Bullet(texture, lifeSpan, direction, linearVelocity, damage, origin);
         }
+
+        public static Bullet GenerateEnemyBullet(float lifeSpan, Vector2 direction, Vector2 linearVelocity, float damage, Vector2 origin)
+        {
+            var texture = content.Load<Texture2D>("Sprites/FireBall");
+            return new Bullet(texture, lifeSpan, direction, linearVelocity, damage, origin);
+        }
     }
 }

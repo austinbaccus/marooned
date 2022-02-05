@@ -43,6 +43,9 @@ namespace Marooned.States
             foreach (var bullet in _player.BulletList)
                 bullet.Draw(gameTime, spriteBatch);
 
+            foreach (var bullet in _enemy.BulletList)
+                bullet.Draw(gameTime, spriteBatch);
+
             spriteBatch.End();
         }
 
@@ -54,6 +57,16 @@ namespace Marooned.States
                 if (_player.BulletList[i].IsRemoved)
                 {
                     _player.BulletList.RemoveAt(i);
+                    i--;
+                }
+
+                
+            }
+            for (int i = 0; i < _enemy.BulletList.Count; i++)
+            {
+                if (_enemy.BulletList[i].IsRemoved)
+                {
+                    _enemy.BulletList.RemoveAt(i);
                     i--;
                 }
             }
@@ -69,13 +82,16 @@ namespace Marooned.States
 
             foreach (var bullet in _player.BulletList)
                 bullet.Update(gameTime);
+
+            foreach (var bullet in _enemy.BulletList)
+                bullet.Update(gameTime);
         }
 
         private void LoadContent() // Loads everything
         {
             _camera = new Camera();
             LoadMap();
-            LoadMusic();
+            //LoadMusic();
             LoadSprites();
         }
 

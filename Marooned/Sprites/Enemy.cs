@@ -15,7 +15,9 @@ namespace Marooned.Sprites
         public float SlowSpeed = 1f;
         public Rectangle[] SourceRectangle = new Rectangle[18];
         public float Timer = 0;
-        public int Threshold = 250;
+        public int Threshold = 110;
+
+        public List<Bullet> BulletList = new List<Bullet>(); // List of bullets
 
         private byte currentAnimationIndex;
         private byte direction = 1;
@@ -60,86 +62,12 @@ namespace Marooned.Sprites
         public override void Update(GameTime gameTime)
         {
             Move(gameTime);
-
+            Shoot();
         }
 
         private void Move(GameTime gameTime)
         {
-            //bool isShiftKeyPressed = Keyboard.GetState().IsKeyDown(Keys.LeftShift);
-            //if (Keyboard.GetState().IsKeyDown(Keys.I))
-            //{
-            //    Position.Y -= isShiftKeyPressed ? SlowSpeed : Speed;
-            //    direction = 9;
-            //}
-            //if (Keyboard.GetState().IsKeyDown(Keys.K))
-            //{
-            //    Position.Y += isShiftKeyPressed ? SlowSpeed : Speed;
-            //    direction = 1;
-            //}
-            //if (Keyboard.GetState().IsKeyDown(Keys.J))
-            //{
-            //    Position.X -= isShiftKeyPressed ? SlowSpeed : Speed;
-            //    direction = 13;
-            //}
-            //if (Keyboard.GetState().IsKeyDown(Keys.L))
-            //{
-            //    Position.X += isShiftKeyPressed ? SlowSpeed : Speed;
-            //    direction = 5;
-            //}
-
-            //// Update animation
-            //if (Timer > Threshold)
-            //{
-            //    //  0 | 3
-            //    // -1 | 2
-            //    // -1.5 | 1.5
-            //    currentAnimationIndex = (byte)((currentAnimationIndex + 1) % 4);
-            //    byte cur = animationLoop[currentAnimationIndex];
-            //    float adjusted = cur - 1f;
-            //    Position.Y += 3 * adjusted;
-            //    Timer = 0;
-            //}
-            //else
-            //{
-            //    Timer += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
-            //}
-            //Random rand = new Random();
-
-            //while (Keyboard.GetState().IsKeyDown(Keys.Delete) == false) 
-            //{
-            //    String rNum = rand.Next(0, 3).ToString();
-            //    bool isShiftKeyPressed = Keyboard.GetState().IsKeyDown(Keys.LeftShift);
-            //    if ( rNum == "0")
-            //    {
-            //        Position.Y -= isShiftKeyPressed ? SlowSpeed : Speed;
-            //        direction = 9;
-            //    }
-            //    if (rNum == "1")
-            //    {
-            //        Position.Y += isShiftKeyPressed ? SlowSpeed : Speed;
-            //        direction = 1;
-            //    }
-            //    if (rNum == "2")
-            //    {
-            //        Position.X -= isShiftKeyPressed ? SlowSpeed : Speed;
-            //        direction = 13;
-            //    }
-            //    if (rNum == "3")
-            //    {
-            //        Position.X += isShiftKeyPressed ? SlowSpeed : Speed;
-            //        direction = 5;
-            //    }
-            //    // Update animation
-            //    if (Timer > Threshold)
-            //    {
-            //        currentAnimationIndex = (byte)((currentAnimationIndex + 1) % 4);
-            //        Timer = 0;
-            //    }
-            //    else
-            //    {
-            //        Timer += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
-            //    }
-            //}           
+            
             Random rand = new Random();
             String rNum = rand.Next(0, 3).ToString();
             bool isShiftKeyPressed = Keyboard.GetState().IsKeyDown(Keys.LeftShift);
@@ -173,6 +101,18 @@ namespace Marooned.Sprites
             {
                 Timer += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
             }
+        }
+
+        public void Shoot()
+        {
+            Random rand = new Random();
+            String rNum = rand.Next(0, 50).ToString();
+            if (rNum == "1")
+            { // Shoot left
+                Bullet bullet = SpriteFactory.GenerateEnemyBullet(2f, new Vector2(-1, 0), new Vector2(2, 1), 5f, new Vector2(this.Position.X, this.Position.Y));
+                BulletList.Add(bullet);
+            }
+           
         }
     }
 }
