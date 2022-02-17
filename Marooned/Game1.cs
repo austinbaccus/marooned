@@ -1,10 +1,4 @@
-﻿//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-//                              BASICALLY MAIN
-//                              Launches levels
-//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-
-using Marooned.Maps;
+using Marooned.Factories;
 using Marooned.States;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -20,17 +14,18 @@ namespace Marooned
         private State _currentState;
         private State _nextState;
 
-        public static int ScreenWidth = 800;
-        public static int ScreenHeight = 480;
+        public static int ScreenWidth = 1800;
+        public static int ScreenHeight = 1000;
 
-        Level_01 menuMap;
+        //Level_01 menuMap;
 
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
-            SpriteFactory.content = Content;
+			
+            BulletFactory.content = Content;
         }
 
         public void ChangeState(State state)
