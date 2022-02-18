@@ -27,28 +27,26 @@ namespace Marooned.Sprites
         private byte direction = 1;
         private byte[] animationLoop = { 0, 1, 2, 1 };
 
+        public double HitboxRadius = 1;
+
         public Player(Texture2D texture) : base(texture)
         {
             SourceRectangle[0] = new Rectangle(0, 0, 32, 32);     // 1  - idle down
             SourceRectangle[1] = new Rectangle(32, 0, 32, 32);    // 2  - fly down 1
             SourceRectangle[2] = new Rectangle(64, 0, 32, 32);    // 3  - fly down 2
             SourceRectangle[3] = new Rectangle(96, 0, 32, 32);    // 4  - fly down 3
-
             SourceRectangle[4] = new Rectangle(0, 32, 32, 32);    // 5  - idle right
             SourceRectangle[5] = new Rectangle(32, 32, 32, 32);   // 6  - fly right 1
             SourceRectangle[6] = new Rectangle(64, 32, 32, 32);   // 7  - fly right 2
             SourceRectangle[7] = new Rectangle(96, 32, 32, 32);   // 8  - fly right 3
-
             SourceRectangle[8] = new Rectangle(0, 64, 32, 32);    // 9  - idle up
             SourceRectangle[9] = new Rectangle(32, 64, 32, 32);   // 10 - fly up 1
             SourceRectangle[10] = new Rectangle(64, 64, 32, 32);  // 11 - fly up 2
             SourceRectangle[11] = new Rectangle(96, 64, 32, 32);  // 12 - fly up 3
-
             SourceRectangle[12] = new Rectangle(0, 96, 32, 32);   // 13 - idle left
             SourceRectangle[13] = new Rectangle(32, 96, 32, 32);  // 14 - fly left 1
             SourceRectangle[14] = new Rectangle(64, 96, 32, 32);  // 15 - fly left 2
             SourceRectangle[15] = new Rectangle(96, 96, 32, 32);  // 16 - fly left 3
-
             SourceRectangle[16] = new Rectangle(0, 128, 32, 32);  // 17 - idle flap
             SourceRectangle[17] = new Rectangle(32, 128, 32, 32); // 18 - idle monch
 
@@ -65,36 +63,6 @@ namespace Marooned.Sprites
             Move(gameTime);
             Shoot(gameTime);
 		}
-
-        public void Shoot()
-        {
-            if (Keyboard.GetState().IsKeyDown(Keys.Right))
-            { // Shoot right
-                Bullet bullet = SpriteFactory.GenerateBullet(2f, new Vector2 (1, 0), new Vector2(2, 1), 5f, new Vector2(this.Position.X, this.Position.Y));
-                BulletList.Add(bullet);
-            }
-            else if (Keyboard.GetState().IsKeyDown(Keys.Left))
-            { // Shoot right
-                Bullet bullet = SpriteFactory.GenerateBullet(2f, new Vector2(-1, 0), new Vector2(2, 1), 5f, new Vector2(this.Position.X, this.Position.Y));
-                BulletList.Add(bullet);
-            }
-            else if (Keyboard.GetState().IsKeyDown(Keys.Down))
-            { // Shoot right
-                Bullet bullet = SpriteFactory.GenerateBullet(2f, new Vector2(0, 1), new Vector2(1, 2), 5f, new Vector2(this.Position.X, this.Position.Y));
-                BulletList.Add(bullet);
-            }
-            else if (Keyboard.GetState().IsKeyDown(Keys.Up))
-            { // Shoot right
-                Bullet bullet = SpriteFactory.GenerateBullet(2f, new Vector2(0, -1), new Vector2(1, 2), 5f, new Vector2(this.Position.X, this.Position.Y));
-                BulletList.Add(bullet);
-            }
-        }
-
-        public void Move(GameTime gameTime)
-        {
-            Move(gameTime);
-            Shoot(gameTime);
-        }
 
         private void Move(GameTime gameTime)
         {

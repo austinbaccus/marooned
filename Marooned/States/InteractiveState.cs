@@ -9,6 +9,7 @@ using MonoGame.Extended.Tiled;
 using MonoGame.Extended.Tiled.Renderers;
 using MonoGame.Extended;
 using MonoGame.Extended.ViewportAdapters;
+using Marooned.Sprites.Enemies;
 
 namespace Marooned.States
 {
@@ -16,6 +17,7 @@ namespace Marooned.States
     {
         //private Map _map;
         private Player _player;
+        private List<Grunt> _grunts = new List<Grunt>();
         protected Camera _camera;
         private List<Component> _components;
 
@@ -32,6 +34,7 @@ namespace Marooned.States
             _components = new List<Component>();
             LoadContent();
             LoadSprites(playerSpritePath);
+            LoadEnemies();
             LoadMusic(songPaths);
             LoadMap(mapPath);
         }
@@ -54,6 +57,15 @@ namespace Marooned.States
             {
                 bullet.Draw(gameTime, spriteBatch);
             }
+            foreach(var grunt in _grunts)
+            {
+                grunt.Draw(gameTime, spriteBatch);
+                foreach (var bullet in grunt.BulletList)
+                {
+                    bullet.Draw(gameTime, spriteBatch);
+                }
+            }
+            
             spriteBatch.End();
         }
 
@@ -65,6 +77,14 @@ namespace Marooned.States
                 if (_player.BulletList[i].IsRemoved)
                 {
                     _player.BulletList.RemoveAt(i);
+                    i--;
+                }
+            }
+            for (int i = 0; i < _grunts.Count; i++)
+            {
+                if (_grunts[i].IsRemoved)
+                {
+                    _grunts.RemoveAt(i);
                     i--;
                 }
             }
@@ -85,6 +105,22 @@ namespace Marooned.States
             {
                 bullet.Update(gameTime);
             }
+            foreach (var grunt in _grunts)
+            {
+                grunt.Update(gameTime);
+                foreach (var bullet in grunt.BulletList)
+                {
+                    bullet.Update(gameTime);
+                    
+                    // did it hit the player?
+                    // get distance between bullet and player
+                    var distance = Math.Sqrt(Math.Abs((_player.Position.X - bullet.Position.X) + (_player.Position.Y - bullet.Position.Y)));
+                    if (distance <= _player.HitboxRadius)
+                    {
+                        int x = 2;
+                    }
+                }
+            }
         }
 
         private void LoadContent()
@@ -92,7 +128,7 @@ namespace Marooned.States
             _camera = new Camera();
             var viewportadapter = new BoxingViewportAdapter(_game.Window, _graphicsDevice, 1800, 1000);
             _cameraOrtho = new OrthographicCamera(viewportadapter);
-            _cameraOrtho.Zoom = 4.5f;
+            _cameraOrtho.Zoom = 3.0f;
         }
 
         private void LoadSprites(string playerSpritePath)
@@ -106,6 +142,19 @@ namespace Marooned.States
             };
 
             _components.Add(_player);
+        }
+
+        private void LoadEnemies()
+        {
+            var texture = _content.Load<Texture2D>("Sprites/Skeleton");
+
+            var enemy = new Sprites.Enemies.Grunt(texture, Sprites.Enemies.FiringPattern.Pattern.straight, Sprites.Enemies.MovementPattern.Pattern.down_left)
+            {
+                Position = new Vector2(100, 100),
+            };
+
+            _grunts.Add(enemy);
+            //_components.Add(enemy);
         }
 
         private void LoadMusic(List<string> songPaths)
