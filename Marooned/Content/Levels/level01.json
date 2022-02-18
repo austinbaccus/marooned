@@ -1,0 +1,21 @@
+﻿{
+  "title": "level 1",
+  "waves": 
+  [
+    {
+      "title": "wave 1",
+      "enemies": [
+        { "enemy": "skeleton" },
+        { "enemy": "skeleton" }
+      ]
+    },
+    {
+      "title": "wave 2",
+      "enemies": [
+        { "enemy": "skeleton" },
+        { "enemy": "skeleton" },
+        { "enemy": "skeleton" }
+      ]
+    }
+  ]
+}
