@@ -72,7 +72,7 @@
 /processorParam:Quality=Best
 /build:Sounds/Music/ConcernedApe - Stardew Valley 1.5 Original Soundtrack - 03 Volcano Mines (Molten Jelly).mp3;Sounds/Music/track_01.mp3
 
-#begin Sprites/banana.png
+#begin Sprites/Banana.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -82,7 +82,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Sprites/banana.png;Sprites/Banana.png
+/build:Sprites/Banana.png
 
 #begin Sprites/IslandParrot.png
 /importer:TextureImporter
