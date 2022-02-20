@@ -14,8 +14,8 @@ namespace Marooned
         private State _currentState;
         private State _nextState;
 
-        public static int ScreenWidth = 1800;
-        public static int ScreenHeight = 1000;
+        public static int ScreenWidth = 1080;
+        public static int ScreenHeight = 720;
 
         //Level_01 menuMap;
 
@@ -55,8 +55,10 @@ namespace Marooned
 
         protected override void Update(GameTime gameTime)
         {
+#if DEBUG
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
+#endif
 
             // State
             if (_nextState != null)

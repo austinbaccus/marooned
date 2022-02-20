@@ -1,38 +1,49 @@
 ﻿using Microsoft.Xna.Framework;
-using Marooned.Sprites;
 using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Extended;
+
+using Marooned.Sprites;
 
 namespace Marooned
 {
     public class Camera
     {
-        public Matrix Transform { get; private set; }
-        public void Follow(Sprite target)
+        private float _zoom = 0.45f;
+
+        public OrthographicCamera CameraOrtho;
+
+        public Camera(OrthographicCamera orthographicCamera)
         {
-            float zoom = 0.45f; // 0.45f is good
+            CameraOrtho = orthographicCamera;
+            CameraOrtho.Zoom = 1f / _zoom;
+        }
 
-            var position = Matrix.CreateTranslation(
-              -target.Position.X - (target.Rectangle.Width / 2),
-              -target.Position.Y - (target.Rectangle.Height / 2),
-              0);
+        public Matrix Transform { get; private set; }
+        public float Zoom {
+            get
+            {
+                return _zoom;
+            }
+            set
+            {
+                _zoom = value;
+                CameraOrtho.Zoom = 1f / _zoom;
+            }
+        }
 
-            var offset = Matrix.CreateTranslation(
-                Game1.ScreenWidth / 2,
-                Game1.ScreenHeight / 2,
-                0);
-
-            var scale = Matrix.CreateScale(new Vector3(zoom, zoom, 1));
+        public void Follow(Sprite target, Vector2 offset, GraphicsDevice graphics)
+        {
+            var scale = Matrix.CreateScale(new Vector3(Zoom, Zoom, 1));
             //Transform = position * offset * scale;
 
             // https://roguesharp.wordpress.com/2014/07/13/tutorial-5-creating-a-2d-camera-with-pan-and-zoom-in-monogame/
             var pos = Matrix.CreateTranslation(
-                target.Position.X - 150, // - (target.Rectangle.Width / 2), 
-                target.Position.Y - 100, // - (target.Rectangle.Height / 2), 
+                (target.Position.X + offset.X) - Zoom * graphics.Viewport.Width / 2f, 
+                (target.Position.Y + offset.Y) - Zoom * graphics.Viewport.Height / 2f, 
                 0);
 
             var transform = scale * pos;
             Transform = Matrix.Invert(transform);
-
         }
     }
 }
