@@ -21,6 +21,8 @@ namespace Marooned.Sprites.Enemies
         private float _bulletVelocity = 3f;
         private float _bulletFireRate = 1000f;
 
+        public int HitboxRadius = 10;
+
         public bool IsRemoved = false; // Grunt should be removed from list
 
         public Grunt(Texture2D texture, FiringPattern.Pattern firingPattern, MovementPattern.Pattern movementPattern) : base(texture)
@@ -37,7 +39,7 @@ namespace Marooned.Sprites.Enemies
 
         public override void Update(GameTime gameTime)
         {
-            Move(gameTime);
+            //Move(gameTime);
             Shoot(gameTime);
         }
 

@@ -27,7 +27,7 @@ namespace Marooned.Sprites
         private byte direction = 1;
         private byte[] animationLoop = { 0, 1, 2, 1 };
 
-        public double HitboxRadius = 1;
+        public int HitboxRadius = 10;
 
         public Player(Texture2D texture) : base(texture)
         {

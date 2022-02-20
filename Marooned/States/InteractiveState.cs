@@ -10,6 +10,7 @@ using MonoGame.Extended.Tiled.Renderers;
 using MonoGame.Extended;
 using MonoGame.Extended.ViewportAdapters;
 using Marooned.Sprites.Enemies;
+using MonoGame.Extended.Screens;
 
 namespace Marooned.States
 {
@@ -60,13 +61,34 @@ namespace Marooned.States
             foreach(var grunt in _grunts)
             {
                 grunt.Draw(gameTime, spriteBatch);
+                
+                
+                spriteBatch.Draw(Rectangle(spriteBatch, grunt.HitboxRadius, grunt.HitboxRadius), new Vector2(grunt.Position.X, grunt.Position.Y), Color.White * 0.5f); // Grunt HitBox
+
+
                 foreach (var bullet in grunt.BulletList)
                 {
                     bullet.Draw(gameTime, spriteBatch);
                 }
             }
-            
+
+            spriteBatch.Draw(Rectangle(spriteBatch, _player.HitboxRadius, _player.HitboxRadius), new Vector2(_player.Position.X + 12, _player.Position.Y + 15), Color.White*0.5f); // Player HitBox
+
             spriteBatch.End();
+        }
+
+        // Draw Rectangle Hitbox
+        private Texture2D Rectangle(SpriteBatch s, int width, int height)
+        {
+            Color[] data = new Color[width * height];
+            Texture2D rectTexture = new Texture2D(s.GraphicsDevice, width, height);
+
+            for (int i = 0; i < data.Length; ++i)
+                data[i] = Color.White;
+
+            rectTexture.SetData(data);
+
+            return rectTexture;
         }
 
         public override void PostUpdate(GameTime gameTime)
@@ -101,23 +123,45 @@ namespace Marooned.States
             {
                 component.Update(gameTime);
             }
-            foreach (var bullet in _player.BulletList)
+
+
+
+            for (int i = 0; i < _player.BulletList.Count; i++)
             {
-                bullet.Update(gameTime);
+                _player.BulletList[i].Update(gameTime);
+
+                foreach(var grunt in _grunts)
+                {
+                    var distance = Math.Sqrt( ((grunt.Position.X - _player.BulletList[i].Position.X) * (grunt.Position.X - _player.BulletList[i].Position.X)) + ((grunt.Position.Y - _player.BulletList[i].Position.Y) * (grunt.Position.Y - _player.BulletList[i].Position.Y)));
+                    
+                    if (distance <= grunt.HitboxRadius)
+                    {
+                        _player.BulletList.RemoveAt(i);
+                        i--;
+                    }
+                }
+
             }
+
+
+
+
             foreach (var grunt in _grunts)
             {
                 grunt.Update(gameTime);
-                foreach (var bullet in grunt.BulletList)
+
+                for (int i = 0; i < grunt.BulletList.Count; i++)
                 {
-                    bullet.Update(gameTime);
+                    grunt.BulletList[i].Update(gameTime);
                     
                     // did it hit the player?
                     // get distance between bullet and player
-                    var distance = Math.Sqrt(Math.Abs((_player.Position.X - bullet.Position.X) + (_player.Position.Y - bullet.Position.Y)));
+                    var distance = Math.Sqrt( (( (_player.Position.X + 12) - grunt.BulletList[i].Position.X)*( (_player.Position.X + 12) - grunt.BulletList[i].Position.X)) + (( (_player.Position.Y + 15) - grunt.BulletList[i].Position.Y)*( (_player.Position.Y + 15) - grunt.BulletList[i].Position.Y)) );
+                    
                     if (distance <= _player.HitboxRadius)
                     {
-                        int x = 2;
+                        grunt.BulletList.RemoveAt(i);
+                        i--;
                     }
                 }
             }
