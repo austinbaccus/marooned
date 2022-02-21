@@ -150,6 +150,7 @@ namespace Marooned.States
 
                         _player.BulletList.RemoveAt(i);
                         i--;
+                        break;
                     }
                 }
             }
@@ -199,7 +200,7 @@ namespace Marooned.States
 
             // Boss goes here, replace skeleton_mage with boss assets/props
             List<Grunt> wave4 = new List<Grunt>();
-            wave3.Add(EnemyFactory.MakeGrunt("skeleton_mage", new Vector2(150, 100), 5, "Sprites/PlayerHitbox"));
+            wave4.Add(EnemyFactory.MakeGrunt("skeleton_mage", new Vector2(150, 100), 5, "Sprites/PlayerHitbox"));
 
             _waves.Add(wave1);
             _waves.Add(wave2);
