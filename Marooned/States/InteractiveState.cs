@@ -197,6 +197,10 @@ namespace Marooned.States
             List<Grunt> wave3 = new List<Grunt>();
             wave3.Add(EnemyFactory.MakeGrunt("skeleton_mage", new Vector2(150, 100), 5, "Sprites/PlayerHitbox"));
 
+            // Boss goes here, replace skeleton_mage with boss assets/props
+            List<Grunt> wave4 = new List<Grunt>();
+            wave3.Add(EnemyFactory.MakeGrunt("skeleton_mage", new Vector2(150, 100), 5, "Sprites/PlayerHitbox"));
+
             _waves.Add(wave1);
             _waves.Add(wave2);
             _waves.Add(wave3);
