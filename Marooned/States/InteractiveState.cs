@@ -204,6 +204,7 @@ namespace Marooned.States
             _waves.Add(wave1);
             _waves.Add(wave2);
             _waves.Add(wave3);
+            _waves.Add(wave4);
         }
 
         private void LoadMusic(List<string> songPaths)
