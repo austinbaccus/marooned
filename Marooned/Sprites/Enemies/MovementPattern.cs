@@ -9,13 +9,13 @@ namespace Marooned.Sprites.Enemies
     {
         static List<Tuple<Vector2, int>> down_left = new List<Tuple<Vector2, int>>()
         {
-            new Tuple<Vector2, int>(new Vector2(0,1),1000),
-            new Tuple<Vector2, int>(new Vector2(-1,0),1000)
+            new Tuple<Vector2, int>(new Vector2(0,1),300),
+            new Tuple<Vector2, int>(new Vector2(-1,0),300)
         };
         static List<Tuple<Vector2, int>> down_right = new List<Tuple<Vector2, int>>()
         {
-            new Tuple<Vector2, int>(new Vector2(0,1),1000),
-            new Tuple<Vector2, int>(new Vector2(1,0),1000)
+            new Tuple<Vector2, int>(new Vector2(0,1),300),
+            new Tuple<Vector2, int>(new Vector2(1,0),300)
         };
 
         public enum Pattern

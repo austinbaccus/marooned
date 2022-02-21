@@ -42,15 +42,11 @@ namespace Marooned.Sprites.Enemies
 
         public override void Update(GameTime gameTime)
         {
-            //Move(gameTime);
+            Move(gameTime);
             Shoot(gameTime);
             CurrentAnimation.Update(gameTime);
 
-
-
             IsHitTimer(gameTime); // Timer to show red damage
-
-
 
 #if DEBUG
             HitboxSprite.Destination = new Rectangle(
