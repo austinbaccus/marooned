@@ -15,6 +15,8 @@ namespace Marooned.Sprites.Enemies
         private int _currentMovePattern = 0;
         private int _currentMovePatternTimeRemaining = 0;
 
+        public int Health = 0;
+
         public List<Bullet> BulletList = new List<Bullet>(); // List of bullets
         private double _lastBulletTimestamp = 0;
         private float _bulletLifespan = 2f;
@@ -29,8 +31,9 @@ namespace Marooned.Sprites.Enemies
 
         private Stopwatch timer = new Stopwatch(); // timer for damage
 
-        public Grunt(Texture2D texture, Rectangle[] animSources, FiringPattern.Pattern firingPattern, MovementPattern.Pattern movementPattern) : base(texture, animSources)
+        public Grunt(Texture2D texture, Rectangle[] animSources, FiringPattern.Pattern firingPattern, MovementPattern.Pattern movementPattern, int health) : base(texture, animSources)
         {
+            Health = health;
             _firePattern = FiringPattern.GetPattern(firingPattern);
             _movePattern = MovementPattern.GetPattern(movementPattern);
             _currentMovePatternTimeRemaining = _movePattern[0].Item2;
