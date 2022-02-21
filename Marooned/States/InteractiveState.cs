@@ -11,6 +11,7 @@ using MonoGame.Extended;
 using MonoGame.Extended.ViewportAdapters;
 using Marooned.Sprites.Enemies;
 using MonoGame.Extended.Screens;
+using Marooned.Factories;
 
 namespace Marooned.States
 {
@@ -121,7 +122,7 @@ namespace Marooned.States
                     }
                 }
             }
-
+            
             foreach (var grunt in _grunts)
             {
                 grunt.Update(gameTime);
@@ -169,27 +170,26 @@ namespace Marooned.States
 
         private void LoadEnemies()
         {
-            var texture = _content.Load<Texture2D>("Sprites/Skeleton");
-            // TODO: Better, non-hardcoded way of doing this
-            Rectangle[] animSources =
-            {
-                new Rectangle(0, 0, 16, 32)
-            };
+            _grunts.Add(EnemyFactory.MakeGrunt(
+                "skeleton",
+                new Vector2(100, 100),
+                5,
+                "Sprites/PlayerHitbox"
+            ));
 
-            var enemy = new Grunt(texture, animSources, FiringPattern.Pattern.straight, MovementPattern.Pattern.down_left)
-            {
-                Position = new Vector2(100, 100),
-#if DEBUG
-                HitboxSprite = new Sprite(_content.Load<Texture2D>("Sprites/PlayerHitbox")),
-#endif
-            };
-            enemy.Hitbox = new Hitbox(enemy)
-            {
-                Radius = 5,
-            };
+            _grunts.Add(EnemyFactory.MakeGrunt(
+                "skeleton_mage",
+                new Vector2(150, 150),
+                5,
+                "Sprites/PlayerHitbox"
+            ));
 
-            _grunts.Add(enemy);
-            //_components.Add(enemy);
+            _grunts.Add(EnemyFactory.MakeGrunt(
+                "skeleton_dangerous",
+                new Vector2(200, 200),
+                5,
+                "Sprites/PlayerHitbox"
+            ));
         }
 
         private void LoadMusic(List<string> songPaths)

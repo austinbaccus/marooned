@@ -27,6 +27,7 @@ namespace Marooned
             IsMouseVisible = true;
 
             BulletFactory.content = Content;
+            EnemyFactory.content = Content;
         }
 
         public void ChangeState(State state)
