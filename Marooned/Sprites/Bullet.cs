@@ -58,7 +58,7 @@ namespace Marooned.Sprites
                 IsRemoved = true;
             }
 
-            Position += _direction * _linearVelocity;
+            Position += _direction * (_linearVelocity * (float)gameTime.ElapsedGameTime.TotalSeconds);
         }
     }
 }

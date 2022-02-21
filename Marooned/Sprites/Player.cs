@@ -40,7 +40,7 @@ namespace Marooned.Sprites
         public List<Bullet> BulletList = new List<Bullet>(); // List of bullets
         private double _lastBulletTimestamp = 0;
         private float _bulletLifespan = 2f;
-        private float _bulletVelocity = 7f;
+        private float _bulletVelocity = 400f;
         private float _bulletFireRate = 100f;
 
         // TODO: Move these into some PlayerState struct or class

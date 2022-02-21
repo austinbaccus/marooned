@@ -17,7 +17,7 @@ namespace Marooned.Sprites.Enemies
         public List<Bullet> BulletList = new List<Bullet>(); // List of bullets
         private double _lastBulletTimestamp = 0;
         private float _bulletLifespan = 2f;
-        private float _bulletVelocity = 3f;
+        private float _bulletVelocity = 250f;
         private float _bulletFireRate = 1000;
 
         public bool IsRemoved = false; // Grunt should be removed from list
