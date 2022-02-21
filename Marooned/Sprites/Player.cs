@@ -25,6 +25,10 @@ namespace Marooned.Sprites
         public static readonly HashSet<Keys> LEFT_KEYS = new HashSet<Keys>() { Keys.A };
         public static readonly HashSet<Keys> DOWN_KEYS = new HashSet<Keys>() { Keys.S };
         public static readonly HashSet<Keys> RIGHT_KEYS = new HashSet<Keys>() { Keys.D };
+        public static readonly HashSet<Keys> SHOOT_UP_KEYS = new HashSet<Keys>() { Keys.Up };
+        public static readonly HashSet<Keys> SHOOT_LEFT_KEYS = new HashSet<Keys>() { Keys.Left };
+        public static readonly HashSet<Keys> SHOOT_DOWN_KEYS = new HashSet<Keys>() { Keys.Down };
+        public static readonly HashSet<Keys> SHOOT_RIGHT_KEYS = new HashSet<Keys>() { Keys.Right };
         public static readonly HashSet<Keys> FOCUS_KEYS = new HashSet<Keys>() { Keys.LeftShift };
 
         // TODO: Maybe have a control class for handling multiple animations?
@@ -230,21 +234,28 @@ namespace Marooned.Sprites
         {
             if (gameTime.TotalGameTime.TotalMilliseconds - _lastBulletTimestamp > _bulletFireRate)
             {
+                KeyboardState keyboardState = Keyboard.GetState();
+                Keys[] pressedKeys = keyboardState.GetPressedKeys();
+                bool shootUpPressed = pressedKeys.Any(k => SHOOT_UP_KEYS.Contains(k));
+                bool shootDownPressed = pressedKeys.Any(k => SHOOT_DOWN_KEYS.Contains(k));
+                bool shootLeftPressed = pressedKeys.Any(k => SHOOT_LEFT_KEYS.Contains(k));
+                bool shootRightPressed = pressedKeys.Any(k => SHOOT_RIGHT_KEYS.Contains(k));
+
                 _lastBulletTimestamp = gameTime.TotalGameTime.TotalMilliseconds;
 
-                if (Keyboard.GetState().IsKeyDown(Keys.Right))
+                if (shootRightPressed)
                 { // Shoot right
                     BulletList.Add(BulletFactory.MakeBullet(_bulletLifespan, new Vector2(1, 0), new Vector2(_bulletVelocity, 1), 2f, new Vector2(this.Position.X, this.Position.Y)));
                 }
-                else if (Keyboard.GetState().IsKeyDown(Keys.Left))
+                else if (shootLeftPressed)
                 { // Shoot left
                     BulletList.Add(BulletFactory.MakeBullet(_bulletLifespan, new Vector2(-1, 0), new Vector2(_bulletVelocity, 1), 2f, new Vector2(this.Position.X, this.Position.Y)));
                 }
-                else if (Keyboard.GetState().IsKeyDown(Keys.Down))
+                else if (shootDownPressed)
                 { // Shoot down
                     BulletList.Add(BulletFactory.MakeBullet(_bulletLifespan, new Vector2(0, 1), new Vector2(1, _bulletVelocity), 2f, new Vector2(this.Position.X, this.Position.Y)));
                 }
-                else if (Keyboard.GetState().IsKeyDown(Keys.Up))
+                else if (shootUpPressed)
                 { // Shoot up
                     BulletList.Add(BulletFactory.MakeBullet(_bulletLifespan, new Vector2(0, -1), new Vector2(1, _bulletVelocity), 2f, new Vector2(this.Position.X, this.Position.Y)));
                 }
