@@ -24,7 +24,7 @@ namespace Marooned.Factories
 
             var texture = content.Load<Texture2D>(jsObj.texture);
 
-            Grunt grunt = new Grunt(texture, new Rectangle[] { new Rectangle(0, 0, 16, 32) }, FiringPattern.Pattern.straight, MovementPattern.Pattern.down_left);
+            Grunt grunt = new Grunt(texture, new Rectangle[] { new Rectangle(0, 0, 16, 32) }, FiringPattern.Pattern.straight, MovementPattern.Pattern.down_left, (int)jsObj.health);
             grunt.Hitbox = new Hitbox(grunt) { Radius = hitboxRadius };
             grunt.Position = position;
 #if DEBUG

@@ -41,6 +41,7 @@ namespace Marooned.Sprites
 
         public float Speed;
         public float FocusSpeedFactor;
+        public int Health = 5;
 
         public List<Bullet> BulletList = new List<Bullet>(); // List of bullets
         private double _lastBulletTimestamp = 0;

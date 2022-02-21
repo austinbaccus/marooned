@@ -116,6 +116,7 @@ namespace Marooned.States
                 component.Update(gameTime);
             }
 
+            // check player for damage
             foreach (var grunt in _grunts)
             {
                 grunt.Update(gameTime);
@@ -130,23 +131,36 @@ namespace Marooned.States
                     {
                         _player.isHit = true; // Show red damage on grunt
 
+                        _player.Health--;
+                        if (_player.Health <= 0)
+                        {
+                            // "game over man! game over!"
+                            GoToMenu();
+                        }
+
                         grunt.BulletList.RemoveAt(i);
                         i--;
                     }
                 }
             }
 
+            // check enemies for damage
             for (int i = 0; i < _player.BulletList.Count; i++)
             {
                 Bullet bullet = _player.BulletList[i];
                 bullet.Update(gameTime);
 
-                foreach(var grunt in _grunts) // Did bullet hit a grunt?
+                for (int j = 0; j < _grunts.Count; j++)
                 {
 
-                    if (grunt.Hitbox.IsTouching(bullet.Hitbox))
+                    if (_grunts[j].Hitbox.IsTouching(bullet.Hitbox))
                     {
-                        grunt.isHit = true; // Show red damage on grunt
+                        _grunts[j].isHit = true; // Show red damage on grunt
+                        _grunts[j].Health--;
+                        if (_grunts[j].Health <= 0)
+                        {
+                            _grunts.RemoveAt(j);
+                        }
 
                         _player.BulletList.RemoveAt(i);
                         i--;
@@ -243,6 +257,16 @@ namespace Marooned.States
                 _grunts.AddRange(_waves[0]);
                 _waves.RemoveAt(0);
             }
+            else
+            {
+                // you won! game over
+                GoToMenu();
+            }
+        }
+
+        private void GoToMenu()
+        {
+            _game.ChangeState(new MenuState( _game, _graphicsDevice, _content));
         }
     }
 }
