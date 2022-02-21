@@ -13,6 +13,9 @@ using Marooned.Sprites.Enemies;
 using MonoGame.Extended.Screens;
 using Marooned.Factories;
 
+
+// BUG - fast tapping sometimes doesn't fire a bullet?S
+
 namespace Marooned.States
 {
     public class InteractiveState : State
@@ -69,10 +72,10 @@ namespace Marooned.States
         }
 
         // Draw Rectangle Hitbox
-        private void DrawRectangle(SpriteBatch s, float x, float y, float width, float height, Color? color=null)
-        {
-            s.DrawRectangle(new RectangleF(x, y, width, height), color ?? Color.White);
-        }
+        //private void DrawRectangle(SpriteBatch s, float x, float y, float width, float height, Color? color=null)
+        //{
+        //    s.DrawRectangle(new RectangleF(x, y, width, height), color ?? Color.White);
+        //}
 
         public override void PostUpdate(GameTime gameTime)
         {
@@ -108,21 +111,6 @@ namespace Marooned.States
                 component.Update(gameTime);
             }
 
-            for (int i = 0; i < _player.BulletList.Count; i++)
-            {
-                Bullet bullet = _player.BulletList[i];
-                bullet.Update(gameTime);
-
-                foreach(var grunt in _grunts)
-                {
-                    if (grunt.Hitbox.IsTouching(bullet.Hitbox))
-                    {
-                        _player.BulletList.RemoveAt(i);
-                        i--;
-                    }
-                }
-            }
-            
             foreach (var grunt in _grunts)
             {
                 grunt.Update(gameTime);
@@ -131,15 +119,44 @@ namespace Marooned.States
                 {
                     Bullet bullet = grunt.BulletList[i];
                     bullet.Update(gameTime);
-                    
+
                     // did it hit the player?
                     if (_player.Hitbox.IsTouching(bullet.Hitbox))
                     {
+
+                        _player.isHit = true; // Show red damage on grunt
+
+
                         grunt.BulletList.RemoveAt(i);
                         i--;
                     }
                 }
             }
+
+            for (int i = 0; i < _player.BulletList.Count; i++)
+            {
+                Bullet bullet = _player.BulletList[i];
+                bullet.Update(gameTime);
+
+                foreach(var grunt in _grunts) // Did bullet hit a grunt?
+                {
+
+                    if (grunt.Hitbox.IsTouching(bullet.Hitbox))
+                    {
+
+
+
+                        grunt.isHit = true; // Show red damage on grunt
+
+
+
+
+                        _player.BulletList.RemoveAt(i);
+                        i--;
+                    }
+                }
+            }
+
         }
 
         private void LoadContent()

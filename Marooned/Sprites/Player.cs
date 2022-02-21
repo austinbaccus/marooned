@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using Marooned.Factories;
@@ -57,6 +58,12 @@ namespace Marooned.Sprites
 
         private Sprite _hitboxSprite;
         private bool _shouldDrawHitbox = false;
+
+
+
+        private Stopwatch timer = new Stopwatch(); // timer for damage
+
+
 
         public Player(Texture2D texture, Texture2D hitboxTexture) : base(texture)
         {
@@ -173,6 +180,13 @@ namespace Marooned.Sprites
             _prevIsFocused = _isFocused;
             _prevIsMoving = _isMoving;
 
+
+
+            IsHitTimer(gameTime); // Timer to show red damage
+
+
+
+
             base.Update(gameTime);
         }
 
@@ -261,5 +275,28 @@ namespace Marooned.Sprites
                 }
             }
         }
+
+
+
+
+        public void IsHitTimer(GameTime gameTime)
+        {
+            if (isHit)
+            {
+                timer.Start(); // start timer
+            }
+
+            if (timer.ElapsedMilliseconds >= 50) // 2 Seconds elapsed
+            {
+                isHit = false;
+                timer.Stop();
+                timer.Reset();
+            }
+
+        }
+
+
+
+
     }
 }

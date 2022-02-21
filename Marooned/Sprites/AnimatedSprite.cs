@@ -5,6 +5,9 @@ namespace Marooned.Sprites
 {
     public class AnimatedSprite : Sprite
     {
+
+        public bool isHit; // Red Damage
+
         public Animation? CurrentAnimation { get; set; }
         public override Rectangle Rectangle
         {
@@ -34,9 +37,12 @@ namespace Marooned.Sprites
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
+
             // TODO: Should we even bother checking if CurrentAnimation is null?
             if (CurrentAnimation == null) return;
             CurrentAnimation.Update(gameTime);
+            
+            
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
@@ -58,17 +64,34 @@ namespace Marooned.Sprites
             }
             else
             {
-                spriteBatch.Draw(
+                if (isHit)
+                {
+                    spriteBatch.Draw(
                     texture: CurrentAnimation.Texture,
                     position: Position,
                     sourceRectangle: CurrentAnimation.CurrentSourceRectangle,
-                    color: Color.White,
+                    color: Color.Red,
                     rotation: 0f,
                     origin: Origin,
                     scale: Scale,
                     effects: SpriteEffects.None,
                     layerDepth: 0f
-                );
+                    );
+                }
+                else
+                {
+                   spriteBatch.Draw(
+                   texture: CurrentAnimation.Texture,
+                   position: Position,
+                   sourceRectangle: CurrentAnimation.CurrentSourceRectangle,
+                   color: Color.White,
+                   rotation: 0f,
+                   origin: Origin,
+                   scale: Scale,
+                   effects: SpriteEffects.None,
+                   layerDepth: 0f
+                    );
+                }
             }
         }
     }
