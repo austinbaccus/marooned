@@ -12,9 +12,7 @@ using MonoGame.Extended.ViewportAdapters;
 using Marooned.Sprites.Enemies;
 using MonoGame.Extended.Screens;
 using Marooned.Factories;
-
-
-// BUG - fast tapping sometimes doesn't fire a bullet?S
+using System.Diagnostics;
 
 namespace Marooned.States
 {
@@ -40,6 +38,10 @@ namespace Marooned.States
             LoadMusic(songPaths);
             LoadMap(mapPath);
         }
+
+        public float LevelTime { get; private set; }
+        public bool MiniBossActive { get; private set; }
+        public bool BossActive { get; private set; }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
@@ -200,26 +202,68 @@ namespace Marooned.States
         private void LoadEnemies()
         {
             List<Grunt> wave1 = new List<Grunt>();
-            wave1.Add(EnemyFactory.MakeGrunt("skeleton", new Vector2(100, 100), 5, "Sprites/PlayerHitbox"));
-            wave1.Add(EnemyFactory.MakeGrunt("skeleton", new Vector2(150, 100), 5, "Sprites/PlayerHitbox"));
-            wave1.Add(EnemyFactory.MakeGrunt("skeleton", new Vector2(200, 100), 5, "Sprites/PlayerHitbox"));
+            wave1.Add(EnemyFactory.MakeGrunt("skeleton", new Vector2(225, 100), 5));
+            wave1.Add(EnemyFactory.MakeGrunt("skeleton", new Vector2(250, 100), 5));
+            wave1.Add(EnemyFactory.MakeGrunt("skeleton", new Vector2(275, 100), 5));
 
             List<Grunt> wave2 = new List<Grunt>();
-            wave2.Add(EnemyFactory.MakeGrunt("skeleton", new Vector2(100, 100), 5, "Sprites/PlayerHitbox"));
-            wave2.Add(EnemyFactory.MakeGrunt("skeleton", new Vector2(200, 100), 5, "Sprites/PlayerHitbox"));
-            wave2.Add(EnemyFactory.MakeGrunt("skeleton_dangerous", new Vector2(150, 100), 5, "Sprites/PlayerHitbox"));
+            wave2.Add(EnemyFactory.MakeGrunt("skeleton", new Vector2(225, 100), 5));
+            wave2.Add(EnemyFactory.MakeGrunt("skeleton", new Vector2(275, 100), 5));
+            wave2.Add(EnemyFactory.MakeGrunt("skeleton_dangerous", new Vector2(250, 100), 5));
 
             List<Grunt> wave3 = new List<Grunt>();
-            wave3.Add(EnemyFactory.MakeGrunt("skeleton_mage", new Vector2(150, 100), 5, "Sprites/PlayerHitbox"));
+            wave3.Add(EnemyFactory.MakeGrunt("skeleton_mage", new Vector2(250, 100), 5));
 
             // Boss goes here, replace skeleton_mage with boss assets/props
             List<Grunt> wave4 = new List<Grunt>();
-            wave4.Add(EnemyFactory.MakeGrunt("skeleton_mage", new Vector2(150, 100), 5, "Sprites/PlayerHitbox"));
+            wave4.Add(EnemyFactory.MakeGrunt("miniboss1", new Vector2(250, 300), 10));
+
+            List<Grunt> wave5 = new List<Grunt>();
+            wave5.Add(EnemyFactory.MakeGrunt("boss1", new Vector2(250, 300), 30));
 
             _waves.Add(wave1);
             _waves.Add(wave2);
             _waves.Add(wave3);
             _waves.Add(wave4);
+            _waves.Add(wave5);
+
+            //            var miniBossTexture = _content.Load<Texture2D>("Sprites/MiniBoss1");
+            //            Rectangle[] miniBossIdleAnimSources =
+            //            {
+            //                new Rectangle(32 * 4 + (32 * 0), 0, 32, 40),
+            //                new Rectangle(32 * 4 + (32 * 1), 0, 32, 40),
+            //                new Rectangle(32 * 4 + (32 * 2), 0, 32, 40),
+            //                new Rectangle(32 * 4 + (32 * 3), 0, 32, 40),
+            //            };
+
+            //            _miniBoss = new Boss(miniBossTexture, miniBossIdleAnimSources, FiringPattern.Pattern.trident, MovementPattern.Pattern.down_left)
+            //            {
+            //                Position = new Vector2(200, 0),
+            //#if DEBUG
+            //                HitboxSprite = new Sprite(_content.Load<Texture2D>("Sprites/PlayerHitbox")),
+            //#endif
+            //            };
+            //            _miniBoss.Hitbox = new Hitbox(_miniBoss)
+            //            {
+            //                Radius = 5,
+            //            };
+
+            //            var bossTexture = _content.Load<Texture2D>("Sprites/Boss1");
+            //            Rectangle[] bossIdleAnimSources =
+            //            {
+            //                new Rectangle(0, 0, 64, 64),
+            //            };
+            //            _mainBoss = new Boss(bossTexture, bossIdleAnimSources, FiringPattern.Pattern.circle, MovementPattern.Pattern.down_right)
+            //            {
+            //                Position = new Vector2(200, 0),
+            //#if DEBUG
+            //                HitboxSprite = new Sprite(_content.Load<Texture2D>("Sprites/PlayerHitbox")),
+            //#endif
+            //            };
+            //            _mainBoss.Hitbox = new Hitbox(_miniBoss)
+            //            {
+            //                Radius = 5,
+            //            };
         }
 
         private void LoadMusic(List<string> songPaths)

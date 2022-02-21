@@ -17,10 +17,10 @@ namespace Marooned.Factories
         };
 
         // TODO: Make Bullets from an object pool for efficiency
-        public static Bullet MakeBullet(float lifeSpan, Vector2 direction, Vector2 linearVelocity, float damage, Vector2 origin)
+        public static Bullet MakeBullet(float lifeSpan, Vector2 linearVelocity, float damage, Vector2 origin)
         {
             var texture = content.Load<Texture2D>("Sprites/Banana");
-            Bullet newBullet = new Bullet(texture, _animSources, lifeSpan, direction, linearVelocity, damage, origin)
+            Bullet newBullet = new Bullet(texture, _animSources, lifeSpan, linearVelocity, damage, origin)
             {
 #if DEBUG
                 HitboxSprite = new Sprite(content.Load<Texture2D>("Sprites/PlayerHitbox")),

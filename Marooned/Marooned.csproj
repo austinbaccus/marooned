@@ -12,6 +12,8 @@
   </PropertyGroup>
   <ItemGroup>
     <None Remove="Content\blank-tile.png" />
+    <None Remove="Content\Enemies\boss1.json" />
+    <None Remove="Content\Enemies\miniboss1.json" />
     <None Remove="Content\Enemies\skeleton.json" />
     <None Remove="Content\Enemies\skeleton_dangerous.json" />
     <None Remove="Content\Enemies\skeleton_mage.json" />
@@ -29,6 +31,12 @@
     <None Remove="Content\water-animation.png" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\Enemies\boss1.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Enemies\miniboss1.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\Enemies\skeleton.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
