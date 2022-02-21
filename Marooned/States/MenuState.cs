@@ -72,14 +72,15 @@ namespace Marooned.States
             _game.ChangeState(new InteractiveState(
                 _game, 
                 _graphicsDevice, 
-                _content, 
+                _content,
                 "Maps/tutorial", 
                 new List<string>()
                 {
                     "Content/Sounds/Music/ConcernedApe - Stardew Valley 1.5 Original Soundtrack - 03 Volcano Mines (Molten Jelly).mp3",
                     "Content/Sounds/Music/ConcernedApe - Stardew Valley 1.5 Original Soundtrack - 01 Ginger Island.mp3"
                 },
-                "Sprites/IslandParrot"
+                "Sprites/IslandParrot",
+                "Sprites/PlayerHitbox"
             ));
         }
 

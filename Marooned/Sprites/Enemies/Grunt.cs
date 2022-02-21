@@ -7,9 +7,8 @@ using Marooned.Factories;
 
 namespace Marooned.Sprites.Enemies
 {
-    public class Grunt : Sprite
+    public class Grunt : AnimatedSprite
     {
-        public Rectangle SourceRectangle = new Rectangle(0, 0, 16, 32);
         private List<double> _firePattern;
         private List<Tuple<Vector2, int>> _movePattern;
         private int _currentMovePattern = 0;
@@ -18,30 +17,48 @@ namespace Marooned.Sprites.Enemies
         public List<Bullet> BulletList = new List<Bullet>(); // List of bullets
         private double _lastBulletTimestamp = 0;
         private float _bulletLifespan = 2f;
-        private float _bulletVelocity = 3f;
-        private float _bulletFireRate = 1000f;
-
-        public int HitboxRadius = 10;
+        private float _bulletVelocity = 250f;
+        private float _bulletFireRate = 1000;
 
         public bool IsRemoved = false; // Grunt should be removed from list
 
-        public Grunt(Texture2D texture, FiringPattern.Pattern firingPattern, MovementPattern.Pattern movementPattern) : base(texture)
+#if DEBUG
+        public Sprite HitboxSprite;
+#endif
+
+        public Grunt(Texture2D texture, Rectangle[] animSources, FiringPattern.Pattern firingPattern, MovementPattern.Pattern movementPattern) : base(texture, animSources)
         {
             _firePattern = FiringPattern.GetPattern(firingPattern);
             _movePattern = MovementPattern.GetPattern(movementPattern);
             _currentMovePatternTimeRemaining = _movePattern[0].Item2;
-        }
 
-        public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
-        {
-            spriteBatch.Draw(_texture, Position, SourceRectangle, Color.White);
+            CurrentAnimation.Play();
         }
+        
+        public Hitbox Hitbox { get; set; }
 
         public override void Update(GameTime gameTime)
         {
             //Move(gameTime);
             Shoot(gameTime);
+            CurrentAnimation.Update(gameTime);
+#if DEBUG
+            HitboxSprite.Destination = new Rectangle(
+                (int)(Position.X + Hitbox.Offset.X),
+                (int)(Position.Y + Hitbox.Offset.Y),
+                Hitbox.Radius * 2,
+                Hitbox.Radius * 2
+            );
+#endif
         }
+
+#if DEBUG
+        public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        {
+            base.Draw(gameTime, spriteBatch);
+            HitboxSprite.Draw(gameTime, spriteBatch);
+        }
+#endif
 
         private void Move(GameTime gameTime)
         {

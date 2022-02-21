@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Marooned.States
 {
+    // TODO: Use MonoGame.Extended's Screen Management instead (?)
     public abstract class State
     {
         #region Fields

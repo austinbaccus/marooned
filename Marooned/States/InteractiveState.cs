@@ -23,18 +23,14 @@ namespace Marooned.States
         private List<Component> _components;
 
         // Tiled
-        private OrthographicCamera _cameraOrtho;
         private TiledMap _tiledMap;
         private TiledMapRenderer _tiledMapRenderer;
 
-        public InteractiveState(Game1 game, GraphicsDevice graphicsDevice, ContentManager content, string mapPath, List<string> songPaths, string playerSpritePath) : base(game, graphicsDevice, content)
+        public InteractiveState(Game1 game, GraphicsDevice graphicsDevice, ContentManager content, string mapPath, List<string> songPaths, string playerSpritePath, string playerHitboxSpritePath) : base(game, graphicsDevice, content)
         {
-            _game = game;
-            _graphicsDevice = graphicsDevice;
-            _content = content;
             _components = new List<Component>();
             LoadContent();
-            LoadSprites(playerSpritePath);
+            LoadSprites(playerSpritePath, playerHitboxSpritePath);
             LoadEnemies();
             LoadMusic(songPaths);
             LoadMap(mapPath);
@@ -45,7 +41,7 @@ namespace Marooned.States
             _graphicsDevice.Clear(Color.CornflowerBlue);
 
             spriteBatch.Begin(sortMode: SpriteSortMode.Deferred, transformMatrix: _camera.Transform, samplerState: SamplerState.PointClamp);
-            _tiledMapRenderer.Draw(_cameraOrtho.GetViewMatrix());
+            _tiledMapRenderer.Draw(_camera.CameraOrtho.GetViewMatrix());
             spriteBatch.End();
 
             // A second spriteBatch.Begin()/End() section is needed to render the player after the map has been rendered.
@@ -61,10 +57,6 @@ namespace Marooned.States
             foreach(var grunt in _grunts)
             {
                 grunt.Draw(gameTime, spriteBatch);
-                
-                
-                spriteBatch.Draw(Rectangle(spriteBatch, grunt.HitboxRadius, grunt.HitboxRadius), new Vector2(grunt.Position.X, grunt.Position.Y), Color.White * 0.5f); // Grunt HitBox
-
 
                 foreach (var bullet in grunt.BulletList)
                 {
@@ -72,23 +64,13 @@ namespace Marooned.States
                 }
             }
 
-            spriteBatch.Draw(Rectangle(spriteBatch, _player.HitboxRadius, _player.HitboxRadius), new Vector2(_player.Position.X + 12, _player.Position.Y + 15), Color.White*0.5f); // Player HitBox
-
             spriteBatch.End();
         }
 
         // Draw Rectangle Hitbox
-        private Texture2D Rectangle(SpriteBatch s, int width, int height)
+        private void DrawRectangle(SpriteBatch s, float x, float y, float width, float height, Color? color=null)
         {
-            Color[] data = new Color[width * height];
-            Texture2D rectTexture = new Texture2D(s.GraphicsDevice, width, height);
-
-            for (int i = 0; i < data.Length; ++i)
-                data[i] = Color.White;
-
-            rectTexture.SetData(data);
-
-            return rectTexture;
+            s.DrawRectangle(new RectangleF(x, y, width, height), color ?? Color.White);
         }
 
         public override void PostUpdate(GameTime gameTime)
@@ -115,36 +97,30 @@ namespace Marooned.States
         public override void Update(GameTime gameTime)
         {
             _tiledMapRenderer.Update(gameTime);
-            _camera.Follow(_player);
-            Vector2 adj = new Vector2(_player.Position.X+100, _player.Position.Y+100);
-            _cameraOrtho.LookAt(adj);
+            // 4 is a magic number to get the player nearly center to the screen
+            _camera.Follow(_player, _player.Hitbox.Offset * 4, _graphicsDevice);
+            Vector2 adj = new Vector2(_player.Position.X, _player.Position.Y);
+            _camera.CameraOrtho.LookAt(adj);
 
             foreach (var component in _components)
             {
                 component.Update(gameTime);
             }
 
-
-
             for (int i = 0; i < _player.BulletList.Count; i++)
             {
-                _player.BulletList[i].Update(gameTime);
+                Bullet bullet = _player.BulletList[i];
+                bullet.Update(gameTime);
 
                 foreach(var grunt in _grunts)
                 {
-                    var distance = Math.Sqrt( ((grunt.Position.X - _player.BulletList[i].Position.X) * (grunt.Position.X - _player.BulletList[i].Position.X)) + ((grunt.Position.Y - _player.BulletList[i].Position.Y) * (grunt.Position.Y - _player.BulletList[i].Position.Y)));
-                    
-                    if (distance <= grunt.HitboxRadius)
+                    if (grunt.Hitbox.IsTouching(bullet.Hitbox))
                     {
                         _player.BulletList.RemoveAt(i);
                         i--;
                     }
                 }
-
             }
-
-
-
 
             foreach (var grunt in _grunts)
             {
@@ -152,13 +128,11 @@ namespace Marooned.States
 
                 for (int i = 0; i < grunt.BulletList.Count; i++)
                 {
-                    grunt.BulletList[i].Update(gameTime);
+                    Bullet bullet = grunt.BulletList[i];
+                    bullet.Update(gameTime);
                     
                     // did it hit the player?
-                    // get distance between bullet and player
-                    var distance = Math.Sqrt( (( (_player.Position.X + 12) - grunt.BulletList[i].Position.X)*( (_player.Position.X + 12) - grunt.BulletList[i].Position.X)) + (( (_player.Position.Y + 15) - grunt.BulletList[i].Position.Y)*( (_player.Position.Y + 15) - grunt.BulletList[i].Position.Y)) );
-                    
-                    if (distance <= _player.HitboxRadius)
+                    if (_player.Hitbox.IsTouching(bullet.Hitbox))
                     {
                         grunt.BulletList.RemoveAt(i);
                         i--;
@@ -169,20 +143,25 @@ namespace Marooned.States
 
         private void LoadContent()
         {
-            _camera = new Camera();
-            var viewportadapter = new BoxingViewportAdapter(_game.Window, _graphicsDevice, 1800, 1000);
-            _cameraOrtho = new OrthographicCamera(viewportadapter);
-            _cameraOrtho.Zoom = 3.0f;
+            var viewportadapter = new BoxingViewportAdapter(_game.Window, _graphicsDevice, _graphicsDevice.Viewport.Width, _graphicsDevice.Viewport.Height);
+            _camera = new Camera(new OrthographicCamera(viewportadapter));
         }
 
-        private void LoadSprites(string playerSpritePath)
+        private void LoadSprites(string playerSpritePath, string playerHitboxSpritePath)
         {
             var texture = _content.Load<Texture2D>(playerSpritePath);
+            var hitboxTexture = _content.Load<Texture2D>(playerHitboxSpritePath);
 
-            _player = new Player(texture)
+            _player = new Player(texture, hitboxTexture)
             {
                 Position = new Vector2(100, 100),
-                Speed = 2.2f,
+                Speed = 120f,
+                FocusSpeedFactor = 0.5f,
+            };
+            _player.Hitbox = new Hitbox(_player)
+            {
+                Radius = 5,
+                Offset = new Vector2(0, 5f),
             };
 
             _components.Add(_player);
@@ -191,10 +170,22 @@ namespace Marooned.States
         private void LoadEnemies()
         {
             var texture = _content.Load<Texture2D>("Sprites/Skeleton");
+            // TODO: Better, non-hardcoded way of doing this
+            Rectangle[] animSources =
+            {
+                new Rectangle(0, 0, 16, 32)
+            };
 
-            var enemy = new Sprites.Enemies.Grunt(texture, Sprites.Enemies.FiringPattern.Pattern.straight, Sprites.Enemies.MovementPattern.Pattern.down_left)
+            var enemy = new Grunt(texture, animSources, FiringPattern.Pattern.straight, MovementPattern.Pattern.down_left)
             {
                 Position = new Vector2(100, 100),
+#if DEBUG
+                HitboxSprite = new Sprite(_content.Load<Texture2D>("Sprites/PlayerHitbox")),
+#endif
+            };
+            enemy.Hitbox = new Hitbox(enemy)
+            {
+                Radius = 5,
             };
 
             _grunts.Add(enemy);
