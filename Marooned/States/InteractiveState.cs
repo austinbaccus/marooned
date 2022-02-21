@@ -226,44 +226,6 @@ namespace Marooned.States
             _waves.Add(wave3);
             _waves.Add(wave4);
             _waves.Add(wave5);
-
-            //            var miniBossTexture = _content.Load<Texture2D>("Sprites/MiniBoss1");
-            //            Rectangle[] miniBossIdleAnimSources =
-            //            {
-            //                new Rectangle(32 * 4 + (32 * 0), 0, 32, 40),
-            //                new Rectangle(32 * 4 + (32 * 1), 0, 32, 40),
-            //                new Rectangle(32 * 4 + (32 * 2), 0, 32, 40),
-            //                new Rectangle(32 * 4 + (32 * 3), 0, 32, 40),
-            //            };
-
-            //            _miniBoss = new Boss(miniBossTexture, miniBossIdleAnimSources, FiringPattern.Pattern.trident, MovementPattern.Pattern.down_left)
-            //            {
-            //                Position = new Vector2(200, 0),
-            //#if DEBUG
-            //                HitboxSprite = new Sprite(_content.Load<Texture2D>("Sprites/PlayerHitbox")),
-            //#endif
-            //            };
-            //            _miniBoss.Hitbox = new Hitbox(_miniBoss)
-            //            {
-            //                Radius = 5,
-            //            };
-
-            //            var bossTexture = _content.Load<Texture2D>("Sprites/Boss1");
-            //            Rectangle[] bossIdleAnimSources =
-            //            {
-            //                new Rectangle(0, 0, 64, 64),
-            //            };
-            //            _mainBoss = new Boss(bossTexture, bossIdleAnimSources, FiringPattern.Pattern.circle, MovementPattern.Pattern.down_right)
-            //            {
-            //                Position = new Vector2(200, 0),
-            //#if DEBUG
-            //                HitboxSprite = new Sprite(_content.Load<Texture2D>("Sprites/PlayerHitbox")),
-            //#endif
-            //            };
-            //            _mainBoss.Hitbox = new Hitbox(_miniBoss)
-            //            {
-            //                Radius = 5,
-            //            };
         }
 
         private void LoadMusic(List<string> songPaths)
