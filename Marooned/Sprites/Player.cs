@@ -260,19 +260,19 @@ namespace Marooned.Sprites
 
                 if (shootRightPressed)
                 { // Shoot right
-                    BulletList.Add(BulletFactory.MakeBullet(_bulletLifespan, new Vector2(1, 0), new Vector2(_bulletVelocity, 1), 2f, new Vector2(this.Position.X, this.Position.Y)));
+                    BulletList.Add(BulletFactory.MakeBullet(_bulletLifespan, new Vector2(_bulletVelocity, 0), 2f, new Vector2(this.Position.X, this.Position.Y)));
                 }
                 else if (shootLeftPressed)
                 { // Shoot left
-                    BulletList.Add(BulletFactory.MakeBullet(_bulletLifespan, new Vector2(-1, 0), new Vector2(_bulletVelocity, 1), 2f, new Vector2(this.Position.X, this.Position.Y)));
+                    BulletList.Add(BulletFactory.MakeBullet(_bulletLifespan, new Vector2(-_bulletVelocity, 0), 2f, new Vector2(this.Position.X, this.Position.Y)));
                 }
                 else if (shootDownPressed)
                 { // Shoot down
-                    BulletList.Add(BulletFactory.MakeBullet(_bulletLifespan, new Vector2(0, 1), new Vector2(1, _bulletVelocity), 2f, new Vector2(this.Position.X, this.Position.Y)));
+                    BulletList.Add(BulletFactory.MakeBullet(_bulletLifespan, new Vector2(0, _bulletVelocity), 2f, new Vector2(this.Position.X, this.Position.Y)));
                 }
                 else if (shootUpPressed)
                 { // Shoot up
-                    BulletList.Add(BulletFactory.MakeBullet(_bulletLifespan, new Vector2(0, -1), new Vector2(1, _bulletVelocity), 2f, new Vector2(this.Position.X, this.Position.Y)));
+                    BulletList.Add(BulletFactory.MakeBullet(_bulletLifespan, new Vector2(0, -_bulletVelocity), 2f, new Vector2(this.Position.X, this.Position.Y)));
                 }
             }
         }

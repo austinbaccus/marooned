@@ -10,18 +10,19 @@ namespace Marooned.Sprites.Enemies
 {
     public class Grunt : AnimatedSprite
     {
-        private List<double> _firePattern;
-        private List<Tuple<Vector2, int>> _movePattern;
-        private int _currentMovePattern = 0;
-        private int _currentMovePatternTimeRemaining = 0;
+        protected List<double> _firePattern;
+        protected List<Tuple<Vector2, int>> _movePattern;
+        protected int _currentMovePattern = 0;
+        protected int _currentMovePatternTimeRemaining = 0;
 
         public int Health = 0;
 
         public List<Bullet> BulletList = new List<Bullet>(); // List of bullets
-        private double _lastBulletTimestamp = 0;
-        private float _bulletLifespan = 2f;
-        private float _bulletVelocity = 250f;
-        private float _bulletFireRate = 1000;
+        protected double _lastBulletTimestamp = 0;
+        protected float _bulletLifespan = 2f;
+        protected float _bulletVelocity = 250f;
+        protected float _bulletFireRate = 1000;
+        protected Vector2 _referenceVector = new Vector2(0f, 1f);
 
         public bool IsRemoved = false; // Grunt should be removed from list
 
@@ -69,12 +70,12 @@ namespace Marooned.Sprites.Enemies
         }
 #endif
 
-        private void Move(GameTime gameTime)
+        protected virtual void Move(GameTime gameTime)
         {
             if (!IsRemoved)
             {
                 // move the grunt
-                Position += _movePattern[_currentMovePattern].Item1 * new Vector2(0.1f, 0.1f);
+                Position += _movePattern[_currentMovePattern].Item1 * (float)gameTime.ElapsedGameTime.TotalSeconds;
 
                 // decrement time left for that instruction
                 _currentMovePatternTimeRemaining--;
@@ -96,12 +97,19 @@ namespace Marooned.Sprites.Enemies
             }
         }
 
-        public void Shoot(GameTime gameTime)
+        protected virtual void Shoot(GameTime gameTime)
         {
             if (gameTime.TotalGameTime.TotalMilliseconds - _lastBulletTimestamp > _bulletFireRate)
             {
                 _lastBulletTimestamp = gameTime.TotalGameTime.TotalMilliseconds;
-                BulletList.Add(BulletFactory.MakeBullet(_bulletLifespan, new Vector2(0, 1), new Vector2(1, _bulletVelocity), 2f, new Vector2(this.Position.X, this.Position.Y)));
+
+                foreach (double angle in _firePattern)
+                {
+                    float dX = (float)Math.Cos(angle + Math.PI / 2);
+                    float dY = (float)Math.Sin(angle + Math.PI / 2);
+                    Vector2 angleVector = new Vector2(dX, dY);
+                    BulletList.Add(BulletFactory.MakeBullet(_bulletLifespan, angleVector * _bulletVelocity, 2f, new Vector2(this.Position.X, this.Position.Y)));
+                }
             }
         }
 
@@ -118,7 +126,6 @@ namespace Marooned.Sprites.Enemies
                 timer.Stop();
                 timer.Reset();  
             }
-            
         }
     }
 }

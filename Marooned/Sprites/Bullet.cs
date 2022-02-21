@@ -6,7 +6,6 @@ namespace Marooned.Sprites
     public class Bullet : AnimatedSprite
     {
         private float _timer;
-        private Vector2 _direction;
         private Vector2 _linearVelocity;
         private float _damage;
 #if DEBUG
@@ -14,10 +13,9 @@ namespace Marooned.Sprites
 #endif
 
         public bool IsRemoved = false; // Bullet should be removed from list
-        public Bullet(Texture2D texture, Rectangle[] animSources, float lifeSpan, Vector2 direction, Vector2 linearVelocity, float damage, Vector2 origin) : base(texture, animSources)
+        public Bullet(Texture2D texture, Rectangle[] animSources, float lifeSpan, Vector2 linearVelocity, float damage, Vector2 origin) : base(texture, animSources)
         {
             _timer = lifeSpan; // Life span of bullet
-            _direction = direction; // Direction of bullet
             _linearVelocity = linearVelocity; // Speed of bullet
             _damage = damage; // Amount of damage
             Position = origin; // Starting position of bullet
@@ -58,7 +56,7 @@ namespace Marooned.Sprites
                 IsRemoved = true;
             }
 
-            Position += _direction * (_linearVelocity * (float)gameTime.ElapsedGameTime.TotalSeconds);
+            Position += (_linearVelocity * (float)gameTime.ElapsedGameTime.TotalSeconds);
         }
     }
 }

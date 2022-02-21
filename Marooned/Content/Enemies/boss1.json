@@ -1,0 +1,9 @@
+﻿{
+  "health": 100,
+  "texture": ".\\Sprites\\Boss1",
+  "firing_pattern": "circle",
+  "movement_pattern": "boss",
+  "animation_sources": [
+    [ 0, 0, 64, 64 ]
+  ]
+}
