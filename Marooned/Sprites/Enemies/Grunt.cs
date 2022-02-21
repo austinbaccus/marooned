@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
 using System;
 using Marooned.Factories;
+using System.Diagnostics;
 
 namespace Marooned.Sprites.Enemies
 {
@@ -26,6 +27,8 @@ namespace Marooned.Sprites.Enemies
         public Sprite HitboxSprite;
 #endif
 
+        private Stopwatch timer = new Stopwatch(); // timer for damage
+
         public Grunt(Texture2D texture, Rectangle[] animSources, FiringPattern.Pattern firingPattern, MovementPattern.Pattern movementPattern) : base(texture, animSources)
         {
             _firePattern = FiringPattern.GetPattern(firingPattern);
@@ -42,6 +45,13 @@ namespace Marooned.Sprites.Enemies
             //Move(gameTime);
             Shoot(gameTime);
             CurrentAnimation.Update(gameTime);
+
+
+
+            IsHitTimer(gameTime); // Timer to show red damage
+
+
+
 #if DEBUG
             HitboxSprite.Destination = new Rectangle(
                 (int)(Position.X + Hitbox.Offset.X),
@@ -94,6 +104,22 @@ namespace Marooned.Sprites.Enemies
                 _lastBulletTimestamp = gameTime.TotalGameTime.TotalMilliseconds;
                 BulletList.Add(BulletFactory.MakeBullet(_bulletLifespan, new Vector2(0, 1), new Vector2(1, _bulletVelocity), 2f, new Vector2(this.Position.X, this.Position.Y)));
             }
+        }
+
+        public void IsHitTimer(GameTime gameTime)
+        {
+            if (isHit)
+            {
+                timer.Start(); // start timer
+            }
+
+            if (timer.ElapsedMilliseconds >= 50) // 2 Seconds elapsed
+            {
+                isHit = false;
+                timer.Stop();
+                timer.Reset();  
+            }
+            
         }
     }
 }
