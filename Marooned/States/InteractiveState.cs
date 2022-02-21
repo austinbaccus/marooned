@@ -23,6 +23,7 @@ namespace Marooned.States
         //private Map _map;
         private Player _player;
         private List<Grunt> _grunts = new List<Grunt>();
+        private List<List<Grunt>> _waves = new List<List<Grunt>>();
         protected Camera _camera;
         private List<Component> _components;
 
@@ -96,6 +97,10 @@ namespace Marooned.States
                     i--;
                 }
             }
+            if (_grunts.Count <= 0)
+            {
+                LoadNextWave();
+            }
         }
 
         public override void Update(GameTime gameTime)
@@ -123,9 +128,7 @@ namespace Marooned.States
                     // did it hit the player?
                     if (_player.Hitbox.IsTouching(bullet.Hitbox))
                     {
-
                         _player.isHit = true; // Show red damage on grunt
-
 
                         grunt.BulletList.RemoveAt(i);
                         i--;
@@ -143,13 +146,7 @@ namespace Marooned.States
 
                     if (grunt.Hitbox.IsTouching(bullet.Hitbox))
                     {
-
-
-
                         grunt.isHit = true; // Show red damage on grunt
-
-
-
 
                         _player.BulletList.RemoveAt(i);
                         i--;
@@ -187,26 +184,27 @@ namespace Marooned.States
 
         private void LoadEnemies()
         {
-            _grunts.Add(EnemyFactory.MakeGrunt(
-                "skeleton",
-                new Vector2(100, 100),
-                5,
-                "Sprites/PlayerHitbox"
-            ));
+            List<Grunt> wave1 = new List<Grunt>();
+            wave1.Add(EnemyFactory.MakeGrunt("skeleton", new Vector2(100, 100), 5, "Sprites/PlayerHitbox"));
+            wave1.Add(EnemyFactory.MakeGrunt("skeleton", new Vector2(150, 100), 5, "Sprites/PlayerHitbox"));
+            wave1.Add(EnemyFactory.MakeGrunt("skeleton", new Vector2(200, 100), 5, "Sprites/PlayerHitbox"));
 
-            _grunts.Add(EnemyFactory.MakeGrunt(
-                "skeleton_mage",
-                new Vector2(150, 150),
-                5,
-                "Sprites/PlayerHitbox"
-            ));
+            List<Grunt> wave2 = new List<Grunt>();
+            wave2.Add(EnemyFactory.MakeGrunt("skeleton", new Vector2(100, 100), 5, "Sprites/PlayerHitbox"));
+            wave2.Add(EnemyFactory.MakeGrunt("skeleton", new Vector2(200, 100), 5, "Sprites/PlayerHitbox"));
+            wave2.Add(EnemyFactory.MakeGrunt("skeleton_dangerous", new Vector2(150, 100), 5, "Sprites/PlayerHitbox"));
 
-            _grunts.Add(EnemyFactory.MakeGrunt(
-                "skeleton_dangerous",
-                new Vector2(200, 200),
-                5,
-                "Sprites/PlayerHitbox"
-            ));
+            List<Grunt> wave3 = new List<Grunt>();
+            wave3.Add(EnemyFactory.MakeGrunt("skeleton_mage", new Vector2(150, 100), 5, "Sprites/PlayerHitbox"));
+
+            // Boss goes here, replace skeleton_mage with boss assets/props
+            List<Grunt> wave4 = new List<Grunt>();
+            wave3.Add(EnemyFactory.MakeGrunt("skeleton_mage", new Vector2(150, 100), 5, "Sprites/PlayerHitbox"));
+
+            _waves.Add(wave1);
+            _waves.Add(wave2);
+            _waves.Add(wave3);
+            _waves.Add(wave4);
         }
 
         private void LoadMusic(List<string> songPaths)
@@ -235,6 +233,15 @@ namespace Marooned.States
         {
             _tiledMap = _content.Load<TiledMap>(mapPath);
             _tiledMapRenderer = new TiledMapRenderer(_graphicsDevice, _tiledMap);
+        }
+
+        private void LoadNextWave()
+        {
+            if (_waves.Count > 0)
+            {
+                _grunts.AddRange(_waves[0]);
+                _waves.RemoveAt(0);
+            }
         }
     }
 }
