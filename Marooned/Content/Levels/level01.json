@@ -4,6 +4,7 @@
   [
     {
       "title": "wave 1",
+      "movementPattern": "down_left",
       "enemies": [
         { "enemy": "skeleton" },
         { "enemy": "skeleton" }
@@ -11,6 +12,7 @@
     },
     {
       "title": "wave 2",
+      "movementPattern": "down_left",
       "enemies": [
         { "enemy": "skeleton" },
         { "enemy": "skeleton" },

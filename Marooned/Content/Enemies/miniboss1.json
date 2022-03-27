@@ -1,0 +1,12 @@
+{
+  "health": 100,
+  "texture": ".\\Sprites\\MiniBoss1",
+  "firing_pattern": "trident",
+  "movement_pattern": "miniboss",
+  "animation_sources": [
+    [ 128, 0, 32, 40 ],
+    [ 160, 0, 32, 40 ],
+    [ 192, 0, 32, 40 ],
+    [ 224, 0, 32, 40 ]
+  ]
+}

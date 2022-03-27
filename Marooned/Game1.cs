@@ -3,29 +3,31 @@ using Marooned.States;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 
 namespace Marooned
 {
     public class Game1 : Game
     {
-        private GraphicsDeviceManager _graphics;
-        private SpriteBatch _spriteBatch;
+        public GraphicsDeviceManager Graphics { get; private set; }
+        public SpriteBatch SpriteBatch { get; private set; }
 
-        private State _currentState;
+        public State CurrentState { get; private set; }
         private State _nextState;
 
-        public static int ScreenWidth = 1800;
-        public static int ScreenHeight = 1000;
+        public const int SCREEN_WIDTH = 1280;
+        public const int SCREEN_HEIGHT = 720;
 
         //Level_01 menuMap;
 
         public Game1()
         {
-            _graphics = new GraphicsDeviceManager(this);
+            Graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
 			
             BulletFactory.content = Content;
+            EnemyFactory.content = Content;
         }
 
         public void ChangeState(State state)
@@ -35,39 +37,47 @@ namespace Marooned
 
         protected override void Initialize()
         {
+            // Allows for FPS higher than 60
+            TargetElapsedTime = TimeSpan.FromSeconds(1f / 144f);
+            // Makes the game run the same regardless of FPS (assuming we take into account <c>gameTime</c> for update calculations)
+            IsFixedTimeStep = true;
             Window.IsBorderless = false;
             Window.AllowUserResizing = true;
-            _graphics.PreferredBackBufferWidth = ScreenWidth;
-            _graphics.PreferredBackBufferHeight = ScreenHeight;
-            _graphics.ApplyChanges();
+
             base.Initialize();
+
+            Graphics.PreferredBackBufferWidth = SCREEN_WIDTH;
+            Graphics.PreferredBackBufferHeight = SCREEN_HEIGHT;
+            Graphics.ApplyChanges();
         }
 
         protected override void LoadContent()
         {
-            _spriteBatch = new SpriteBatch(GraphicsDevice);
+            SpriteBatch = new SpriteBatch(GraphicsDevice);
 
             // Load map
             Tiles.Content = Content;
             
             //Bullet = new Bullet(Content.Load<Texture2D>("Bullet")),
 
-            _currentState = new MenuState(this, _graphics.GraphicsDevice, Content);
+            CurrentState = new MenuState(this, Graphics.GraphicsDevice, Content);
         }
 
         protected override void Update(GameTime gameTime)
         {
+#if DEBUG
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
+#endif
 
             // State
             if (_nextState != null)
             {
-                _currentState = _nextState;
+                CurrentState = _nextState;
                 _nextState = null;
             }
-            _currentState.Update(gameTime);
-            _currentState.PostUpdate(gameTime);
+            CurrentState.Update(gameTime);
+            CurrentState.PostUpdate(gameTime);
 
             base.Update(gameTime);
         }
@@ -76,7 +86,7 @@ namespace Marooned
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
             
-            _currentState.Draw(gameTime, _spriteBatch);
+            CurrentState.Draw(gameTime, SpriteBatch);
 
             base.Draw(gameTime);
         }
