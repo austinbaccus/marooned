@@ -22,6 +22,7 @@ namespace Marooned.States
         private Player _player;
         private List<Grunt> _grunts = new List<Grunt>();
         private List<List<Grunt>> _waves = new List<List<Grunt>>();
+        private List<Sprite> _hearts = new List<Sprite>();
         protected Camera _camera;
         private List<Component> _components;
 
@@ -37,6 +38,7 @@ namespace Marooned.States
             LoadEnemies();
             LoadMusic(songPaths);
             LoadMap(mapPath);
+            LoadLives();
         }
 
         public float LevelTime { get; private set; }
@@ -53,14 +55,20 @@ namespace Marooned.States
 
             // A second spriteBatch.Begin()/End() section is needed to render the player after the map has been rendered.
             spriteBatch.Begin(sortMode: SpriteSortMode.Deferred, transformMatrix: _camera.Transform, samplerState: SamplerState.PointClamp);
+
+            // draw misc. components
             foreach (var component in _components)
             {
                 component.Draw(gameTime, spriteBatch);
             }
+
+            // draw bullets
             foreach (var bullet in _player.BulletList)
             {
                 bullet.Draw(gameTime, spriteBatch);
             }
+
+            // draw grunts
             foreach(var grunt in _grunts)
             {
                 grunt.Draw(gameTime, spriteBatch);
@@ -71,6 +79,14 @@ namespace Marooned.States
                 }
             }
 
+            spriteBatch.End();
+
+            // draw HUD
+            spriteBatch.Begin(sortMode: SpriteSortMode.Deferred, samplerState: SamplerState.PointClamp);
+            foreach (Sprite heart in _hearts)
+            {
+                heart.Draw(gameTime, spriteBatch);
+            }
             spriteBatch.End();
         }
 
@@ -133,8 +149,8 @@ namespace Marooned.States
                     {
                         _player.isHit = true; // Show red damage on grunt
 
-                        _player.Health--;
-                        if (_player.Health <= 0)
+                        _player.Lives--;
+                        if (_player.Lives <= 0)
                         {
                             // "game over man! game over!"
                             GoToMenu();
@@ -171,6 +187,8 @@ namespace Marooned.States
                 }
             }
 
+            // update lives
+            UpdateLives();
         }
 
         private void LoadContent()
@@ -256,6 +274,18 @@ namespace Marooned.States
             _tiledMapRenderer = new TiledMapRenderer(_graphicsDevice, _tiledMap);
         }
 
+        private void LoadLives()
+        {
+            var texture = _content.Load<Texture2D>("Sprites/Heart");
+            for (int i = 0; i < 5; i++)
+            {
+                _hearts.Add(new Sprite(texture));
+                _hearts[i].Position.X = (i * 40) + 40;
+                _hearts[i].Position.Y = 40;
+                _hearts[i].Scale = 4f;
+            }
+        }
+
         private void LoadNextWave()
         {
             if (_waves.Count > 0)
@@ -273,6 +303,32 @@ namespace Marooned.States
         private void GoToMenu()
         {
             _game.ChangeState(new MenuState( _game, _graphicsDevice, _content));
+        }
+
+        private void UpdateLives()
+        {
+            while (_hearts.Count != _player.Lives)
+            {
+                _hearts.RemoveAt(_hearts.Count - 1);
+
+                // redraw HUD
+                for (int i = 0; i < _player.Lives; i++)
+                {
+                    _hearts[i].Position.X = (i * 40) + 40;
+                    _hearts[i].Position.Y = 40;
+                    _hearts[i].Scale = 4f;
+                }
+
+                // respawn player
+                _player.Position = new Vector2(100, 100);
+
+                // despawn existing bullets
+                foreach (var grunt in _grunts)
+                {
+                    grunt.BulletList.Clear();
+                }
+                _player.BulletList.Clear();
+            }
         }
     }
 }
