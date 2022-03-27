@@ -18,21 +18,20 @@ namespace Marooned.States
 {
     public class InteractiveState : State
     {
-        //private Map _map;
-        private Player _player;
-        private List<Grunt> _grunts = new List<Grunt>();
-        private List<List<Grunt>> _waves = new List<List<Grunt>>();
-        private List<Sprite> _hearts = new List<Sprite>();
-        protected Camera _camera;
-        private List<Component> _components;
+        public Player player;
+        public List<Grunt> grunts = new List<Grunt>();
+        public List<List<Grunt>> waves = new List<List<Grunt>>();
+        public List<Sprite> hearts = new List<Sprite>();
+        public Camera camera;
+        public List<Component> components;
 
         // Tiled
-        private TiledMap _tiledMap;
-        private TiledMapRenderer _tiledMapRenderer;
+        public TiledMap tiledMap;
+        public TiledMapRenderer tiledMapRenderer;
 
         public InteractiveState(Game1 game, GraphicsDevice graphicsDevice, ContentManager content, string mapPath, List<string> songPaths, string playerSpritePath, string playerHitboxSpritePath) : base(game, graphicsDevice, content)
         {
-            _components = new List<Component>();
+            components = new List<Component>();
             LoadContent();
             LoadSprites(playerSpritePath, playerHitboxSpritePath);
             LoadEnemies();
@@ -47,29 +46,29 @@ namespace Marooned.States
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            _graphicsDevice.Clear(Color.CornflowerBlue);
+            graphicsDevice.Clear(Color.CornflowerBlue);
 
-            spriteBatch.Begin(sortMode: SpriteSortMode.Deferred, transformMatrix: _camera.Transform, samplerState: SamplerState.PointClamp);
-            _tiledMapRenderer.Draw(_camera.CameraOrtho.GetViewMatrix());
+            spriteBatch.Begin(sortMode: SpriteSortMode.Deferred, transformMatrix: camera.Transform, samplerState: SamplerState.PointClamp);
+            tiledMapRenderer.Draw(camera.CameraOrtho.GetViewMatrix());
             spriteBatch.End();
 
             // A second spriteBatch.Begin()/End() section is needed to render the player after the map has been rendered.
-            spriteBatch.Begin(sortMode: SpriteSortMode.Deferred, transformMatrix: _camera.Transform, samplerState: SamplerState.PointClamp);
+            spriteBatch.Begin(sortMode: SpriteSortMode.Deferred, transformMatrix: camera.Transform, samplerState: SamplerState.PointClamp);
 
             // draw misc. components
-            foreach (var component in _components)
+            foreach (var component in components)
             {
                 component.Draw(gameTime, spriteBatch);
             }
 
             // draw bullets
-            foreach (var bullet in _player.BulletList)
+            foreach (var bullet in player.BulletList)
             {
                 bullet.Draw(gameTime, spriteBatch);
             }
 
             // draw grunts
-            foreach(var grunt in _grunts)
+            foreach(var grunt in grunts)
             {
                 grunt.Draw(gameTime, spriteBatch);
 
@@ -83,39 +82,33 @@ namespace Marooned.States
 
             // draw HUD
             spriteBatch.Begin(sortMode: SpriteSortMode.Deferred, samplerState: SamplerState.PointClamp);
-            foreach (Sprite heart in _hearts)
+            foreach (Sprite heart in hearts)
             {
                 heart.Draw(gameTime, spriteBatch);
             }
             spriteBatch.End();
         }
 
-        // Draw Rectangle Hitbox
-        //private void DrawRectangle(SpriteBatch s, float x, float y, float width, float height, Color? color=null)
-        //{
-        //    s.DrawRectangle(new RectangleF(x, y, width, height), color ?? Color.White);
-        //}
-
         public override void PostUpdate(GameTime gameTime)
         {
             // remove sprites if they're not needed
-            for (int i = 0; i < _player.BulletList.Count; i++)
+            for (int i = 0; i < player.BulletList.Count; i++)
             {
-                if (_player.BulletList[i].IsRemoved)
+                if (player.BulletList[i].IsRemoved)
                 {
-                    _player.BulletList.RemoveAt(i);
+                    player.BulletList.RemoveAt(i);
                     i--;
                 }
             }
-            for (int i = 0; i < _grunts.Count; i++)
+            for (int i = 0; i < grunts.Count; i++)
             {
-                if (_grunts[i].IsRemoved)
+                if (grunts[i].IsRemoved)
                 {
-                    _grunts.RemoveAt(i);
+                    grunts.RemoveAt(i);
                     i--;
                 }
             }
-            if (_grunts.Count <= 0)
+            if (grunts.Count <= 0)
             {
                 LoadNextWave();
             }
@@ -123,19 +116,19 @@ namespace Marooned.States
 
         public override void Update(GameTime gameTime)
         {
-            _tiledMapRenderer.Update(gameTime);
+            tiledMapRenderer.Update(gameTime);
             // 4 is a magic number to get the player nearly center to the screen
-            _camera.Follow(_player, _player.Hitbox.Offset * 4, _graphicsDevice);
-            Vector2 adj = new Vector2(_player.Position.X, _player.Position.Y);
-            _camera.CameraOrtho.LookAt(adj);
+            camera.Follow(player, player.Hitbox.Offset * 4, graphicsDevice);
+            Vector2 adj = new Vector2(player.Position.X, player.Position.Y);
+            camera.CameraOrtho.LookAt(adj);
 
-            foreach (var component in _components)
+            foreach (var component in components)
             {
                 component.Update(gameTime);
             }
 
             // check player for damage
-            foreach (var grunt in _grunts)
+            foreach (var grunt in grunts)
             {
                 grunt.Update(gameTime);
 
@@ -145,12 +138,12 @@ namespace Marooned.States
                     bullet.Update(gameTime);
 
                     // did it hit the player?
-                    if (_player.Hitbox.IsTouching(bullet.Hitbox))
+                    if (player.Hitbox.IsTouching(bullet.Hitbox))
                     {
-                        _player.isHit = true; // Show red damage on grunt
+                        player.isHit = true; // Show red damage on grunt
 
-                        _player.Lives--;
-                        if (_player.Lives <= 0)
+                        player.Lives--;
+                        if (player.Lives <= 0)
                         {
                             // "game over man! game over!"
                             GoToMenu();
@@ -163,24 +156,24 @@ namespace Marooned.States
             }
 
             // check enemies for damage
-            for (int i = 0; i < _player.BulletList.Count; i++)
+            for (int i = 0; i < player.BulletList.Count; i++)
             {
-                Bullet bullet = _player.BulletList[i];
+                Bullet bullet = player.BulletList[i];
                 bullet.Update(gameTime);
 
-                for (int j = 0; j < _grunts.Count; j++)
+                for (int j = 0; j < grunts.Count; j++)
                 {
 
-                    if (_grunts[j].Hitbox.IsTouching(bullet.Hitbox))
+                    if (grunts[j].Hitbox.IsTouching(bullet.Hitbox))
                     {
-                        _grunts[j].isHit = true; // Show red damage on grunt
-                        _grunts[j].Health--;
-                        if (_grunts[j].Health <= 0)
+                        grunts[j].isHit = true; // Show red damage on grunt
+                        grunts[j].Health--;
+                        if (grunts[j].Health <= 0)
                         {
-                            _grunts.RemoveAt(j);
+                            grunts.RemoveAt(j);
                         }
 
-                        _player.BulletList.RemoveAt(i);
+                        player.BulletList.RemoveAt(i);
                         i--;
                         break;
                     }
@@ -193,28 +186,28 @@ namespace Marooned.States
 
         private void LoadContent()
         {
-            var viewportadapter = new BoxingViewportAdapter(_game.Window, _graphicsDevice, _graphicsDevice.Viewport.Width, _graphicsDevice.Viewport.Height);
-            _camera = new Camera(new OrthographicCamera(viewportadapter));
+            var viewportadapter = new BoxingViewportAdapter(game.Window, graphicsDevice, graphicsDevice.Viewport.Width, graphicsDevice.Viewport.Height);
+            camera = new Camera(new OrthographicCamera(viewportadapter));
         }
 
         private void LoadSprites(string playerSpritePath, string playerHitboxSpritePath)
         {
-            var texture = _content.Load<Texture2D>(playerSpritePath);
-            var hitboxTexture = _content.Load<Texture2D>(playerHitboxSpritePath);
+            var texture = content.Load<Texture2D>(playerSpritePath);
+            var hitboxTexture = content.Load<Texture2D>(playerHitboxSpritePath);
 
-            _player = new Player(texture, hitboxTexture)
+            player = new Player(texture, hitboxTexture)
             {
                 Position = new Vector2(100, 100),
                 Speed = 120f,
                 FocusSpeedFactor = 0.5f,
             };
-            _player.Hitbox = new Hitbox(_player)
+            player.Hitbox = new Hitbox(player)
             {
                 Radius = 5,
                 Offset = new Vector2(0, 5f),
             };
 
-            _components.Add(_player);
+            components.Add(player);
         }
 
         private void LoadEnemies()
@@ -239,11 +232,11 @@ namespace Marooned.States
             List<Grunt> wave5 = new List<Grunt>();
             wave5.Add(EnemyFactory.MakeGrunt("boss1", new Vector2(250, 300), 30));
 
-            _waves.Add(wave1);
-            _waves.Add(wave2);
-            _waves.Add(wave3);
-            _waves.Add(wave4);
-            _waves.Add(wave5);
+            waves.Add(wave1);
+            waves.Add(wave2);
+            waves.Add(wave3);
+            waves.Add(wave4);
+            waves.Add(wave5);
         }
 
         private void LoadMusic(List<string> songPaths)
@@ -270,28 +263,28 @@ namespace Marooned.States
 
         private void LoadMap(string mapPath)
         {
-            _tiledMap = _content.Load<TiledMap>(mapPath);
-            _tiledMapRenderer = new TiledMapRenderer(_graphicsDevice, _tiledMap);
+            tiledMap = content.Load<TiledMap>(mapPath);
+            tiledMapRenderer = new TiledMapRenderer(graphicsDevice, tiledMap);
         }
 
         private void LoadLives()
         {
-            var texture = _content.Load<Texture2D>("Sprites/Heart");
+            var texture = content.Load<Texture2D>("Sprites/Heart");
             for (int i = 0; i < 5; i++)
             {
-                _hearts.Add(new Sprite(texture));
-                _hearts[i].Position.X = (i * 40) + 40;
-                _hearts[i].Position.Y = 40;
-                _hearts[i].Scale = 4f;
+                hearts.Add(new Sprite(texture));
+                hearts[i].Position.X = (i * 40) + 40;
+                hearts[i].Position.Y = 40;
+                hearts[i].Scale = 4f;
             }
         }
 
         private void LoadNextWave()
         {
-            if (_waves.Count > 0)
+            if (waves.Count > 0)
             {
-                _grunts.AddRange(_waves[0]);
-                _waves.RemoveAt(0);
+                grunts.AddRange(waves[0]);
+                waves.RemoveAt(0);
             }
             else
             {
@@ -302,32 +295,32 @@ namespace Marooned.States
 
         private void GoToMenu()
         {
-            _game.ChangeState(new MenuState( _game, _graphicsDevice, _content));
+            game.ChangeState(new MenuState(game, graphicsDevice, content));
         }
 
         private void UpdateLives()
         {
-            while (_hearts.Count != _player.Lives)
+            while (hearts.Count != player.Lives)
             {
-                _hearts.RemoveAt(_hearts.Count - 1);
+                hearts.RemoveAt(hearts.Count - 1);
 
                 // redraw HUD
-                for (int i = 0; i < _player.Lives; i++)
+                for (int i = 0; i < player.Lives; i++)
                 {
-                    _hearts[i].Position.X = (i * 40) + 40;
-                    _hearts[i].Position.Y = 40;
-                    _hearts[i].Scale = 4f;
+                    hearts[i].Position.X = (i * 40) + 40;
+                    hearts[i].Position.Y = 40;
+                    hearts[i].Scale = 4f;
                 }
 
                 // respawn player
-                _player.Position = new Vector2(100, 100);
+                player.Position = new Vector2(100, 100);
 
                 // despawn existing bullets
-                foreach (var grunt in _grunts)
+                foreach (var grunt in grunts)
                 {
                     grunt.BulletList.Clear();
                 }
-                _player.BulletList.Clear();
+                player.BulletList.Clear();
             }
         }
     }

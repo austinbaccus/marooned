@@ -10,12 +10,12 @@ namespace Marooned.States
 {
     public class MenuState : State
     {
-        private List<Component> _components;
+        public List<Component> components;
 
         public MenuState(Game1 game, GraphicsDevice graphicsDevice, ContentManager content) : base(game, graphicsDevice, content)
         {
-            var buttonTexture = _content.Load<Texture2D>("Controls/Button");
-            var buttonFont = _content.Load<SpriteFont>("Fonts/Font");
+            var buttonTexture = content.Load<Texture2D>("Controls/Button");
+            var buttonFont = content.Load<SpriteFont>("Fonts/Font");
 
             var newGameButton = new Button(buttonTexture, buttonFont)
             {
@@ -41,7 +41,7 @@ namespace Marooned.States
 
             quitGameButton.Click += QuitGameButton_Click;
 
-            _components = new List<Component>()
+            components = new List<Component>()
             {
                 newGameButton,
                 loadGameButton,
@@ -55,7 +55,7 @@ namespace Marooned.States
         {
             spriteBatch.Begin();
 
-            foreach (var component in _components)
+            foreach (var component in components)
                 component.Draw(gameTime, spriteBatch);
 
             spriteBatch.End();
@@ -69,10 +69,10 @@ namespace Marooned.States
         private void NewGameButton_Click(object sender, EventArgs e)
         {
             // TODO: Right now we are manually passing in map parameters when changing state. Later on this will be delegated to the Level Interpreter.
-            _game.ChangeState(new InteractiveState(
-                _game, 
-                _graphicsDevice, 
-                _content,
+            game.ChangeState(new InteractiveState(
+                game, 
+                graphicsDevice, 
+                content,
                 "Maps/tutorial", 
                 new List<string>()
                 {
@@ -91,13 +91,13 @@ namespace Marooned.States
 
         public override void Update(GameTime gameTime)
         {
-            foreach (var component in _components)
+            foreach (var component in components)
                 component.Update(gameTime);
         }
 
         private void QuitGameButton_Click(object sender, EventArgs e)
         {
-            _game.Exit();
+            game.Exit();
         }
 
         private void LoadMusic()

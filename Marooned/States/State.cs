@@ -9,11 +9,11 @@ namespace Marooned.States
     {
         #region Fields
 
-        protected ContentManager _content;
+        public ContentManager content;
 
-        protected GraphicsDevice _graphicsDevice;
+        public GraphicsDevice graphicsDevice;
 
-        protected Game1 _game;
+        public Game1 game;
 
         #endregion
 
@@ -25,11 +25,11 @@ namespace Marooned.States
 
         public State(Game1 game, GraphicsDevice graphicsDevice, ContentManager content)
         {
-            _game = game;
+            this.game = game;
 
-            _graphicsDevice = graphicsDevice;
+            this.graphicsDevice = graphicsDevice;
 
-            _content = content;
+            this.content = content;
         }
 
         public abstract void Update(GameTime gameTime);
