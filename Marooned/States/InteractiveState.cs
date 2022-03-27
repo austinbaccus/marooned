@@ -10,9 +10,7 @@ using MonoGame.Extended.Tiled.Renderers;
 using MonoGame.Extended;
 using MonoGame.Extended.ViewportAdapters;
 using Marooned.Sprites.Enemies;
-using MonoGame.Extended.Screens;
 using Marooned.Factories;
-using System.Diagnostics;
 
 namespace Marooned.States
 {
@@ -20,7 +18,7 @@ namespace Marooned.States
     {
         public Player player;
         public List<Grunt> grunts = new List<Grunt>();
-        public List<List<Grunt>> waves = new List<List<Grunt>>();
+        public Stack<List<Grunt>> waves = new Stack<List<Grunt>>();
         public List<Sprite> hearts = new List<Sprite>();
         public Camera camera;
         public List<Component> components;
@@ -232,11 +230,11 @@ namespace Marooned.States
             List<Grunt> wave5 = new List<Grunt>();
             wave5.Add(EnemyFactory.MakeGrunt("boss1", new Vector2(250, 300), 30));
 
-            waves.Add(wave1);
-            waves.Add(wave2);
-            waves.Add(wave3);
-            waves.Add(wave4);
-            waves.Add(wave5);
+            waves.Push(wave5);
+            waves.Push(wave4);
+            waves.Push(wave3);
+            waves.Push(wave2);
+            waves.Push(wave1);
         }
 
         private void LoadMusic(List<string> songPaths)
@@ -283,8 +281,8 @@ namespace Marooned.States
         {
             if (waves.Count > 0)
             {
-                grunts.AddRange(waves[0]);
-                waves.RemoveAt(0);
+                grunts.AddRange(waves.Peek());
+                waves.Pop();
             }
             else
             {
