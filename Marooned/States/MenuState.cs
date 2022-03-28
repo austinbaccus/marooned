@@ -20,26 +20,20 @@ namespace Marooned.States
 
             var newGameButton = new Button(buttonTexture, buttonFont)
             {
-                Position = new Vector2(350, 200),
                 Text = "New Game",
             };
-
             newGameButton.Click += NewGameButton_Click;
 
             var loadGameButton = new Button(buttonTexture, buttonFont)
             {
-                Position = new Vector2(350, 250),
                 Text = "Load Game",
             };
-
             loadGameButton.Click += LoadGameButton_Click;
 
             var quitGameButton = new Button(buttonTexture, buttonFont)
             {
-                Position = new Vector2(350, 300),
                 Text = "Quit Game",
             };
-
             quitGameButton.Click += QuitGameButton_Click;
 
             components = new List<Component>()
@@ -69,6 +63,13 @@ namespace Marooned.States
 
         public override void Update(GameTime gameTime)
         {
+            for (int i = 0; i < components.Count; i++)
+            {
+                Button button = (Button)components[i];
+                button.Position = Utils.GetCenterPos(button.Rectangle.Width, button.Rectangle.Height, graphicsDevice.Viewport)
+                                - new Vector2(0, components.Count * button.Rectangle.Height / 2)
+                                + i * new Vector2(0, button.Rectangle.Height);
+            }
             foreach (var component in components)
                 component.Update(gameTime);
         }

@@ -12,32 +12,31 @@ namespace Marooned.States
         public InteractiveState BackgroundState { get; set; }
         public List<Component> components;
 
+        private Button _retryButton;
+        private Button _returnMenuButton;
+
         public GameOverState(Game1 game, GraphicsDevice graphicsDevice, ContentManager content) : base(game, graphicsDevice, content)
         {
             View = new GameOverView(this);
             var buttonTexture = content.Load<Texture2D>("Controls/Button");
             var buttonFont = content.Load<SpriteFont>("Fonts/Font");
 
-            var retryButton = new Button(buttonTexture, buttonFont)
+            _retryButton = new Button(buttonTexture, buttonFont)
             {
-                Position = new Vector2(350, 200),
                 Text = "Retry",
             };
+            _retryButton.Click += RetryButton_Click;
 
-            retryButton.Click += RetryButton_Click;
-
-            var returnMenuButton = new Button(buttonTexture, buttonFont)
+            _returnMenuButton = new Button(buttonTexture, buttonFont)
             {
-                Position = new Vector2(350, 250),
                 Text = "Return to Menu",
             };
-
-            returnMenuButton.Click += ReturnMenuButton_Click;
+            _returnMenuButton.Click += ReturnMenuButton_Click;
 
             components = new List<Component>()
             {
-                retryButton,
-                returnMenuButton,
+                _retryButton,
+                _returnMenuButton,
             };
         }
 
@@ -57,6 +56,8 @@ namespace Marooned.States
 
         public override void Update(GameTime gameTime)
         {
+            _retryButton.Position = Utils.GetCenterPos(_retryButton.Rectangle.Width, _retryButton.Rectangle.Height, graphicsDevice.Viewport) - new Vector2(0, _retryButton.Rectangle.Height / 2);
+            _returnMenuButton.Position = Utils.GetCenterPos(_returnMenuButton.Rectangle.Width, _returnMenuButton.Rectangle.Height, graphicsDevice.Viewport) + new Vector2(0, _retryButton.Rectangle.Height / 2);
             foreach (var component in components)
                 component.Update(gameTime);
         }
