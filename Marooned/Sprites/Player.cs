@@ -36,7 +36,6 @@ namespace Marooned.Sprites
         //       (That way, other sprites like Grunt can reuse the same principle of grouped animations).
         private Dictionary<Direction, Animation> _flyAnimations;
         private Dictionary<Direction, Animation> _idleAnimations;
-        private Animation _invisibleAnimation;
         private readonly double _flyAnimationSpeed = 0.07d;
         private readonly double _focusAnimationSpeedFactor = 2d;
 
@@ -139,13 +138,6 @@ namespace Marooned.Sprites
                     }
                 ),
             };
-            _invisibleAnimation = new Animation(
-                texture,
-                new Rectangle[]
-                {
-                    new Rectangle(32 * 4, 32 * 3, SPRITE_WIDTH, SPRITE_HEIGHT),
-                }
-            );
 
             CurrentAnimation = _idleAnimations[Direction.UP];
             // TODO: Set animation speed somewhere else
