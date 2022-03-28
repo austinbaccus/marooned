@@ -20,8 +20,9 @@ namespace Marooned.States
         public List<Grunt> grunts = new List<Grunt>();
         public Stack<List<Grunt>> waves = new Stack<List<Grunt>>();
         public List<Sprite> hearts = new List<Sprite>();
-        public Camera camera;
-        public List<Component> components;
+        public OrthographicCamera camera;
+
+        private List<Component> components;
 
         // Tiled
         public TiledMap tiledMap;
@@ -48,12 +49,12 @@ namespace Marooned.States
         {
             graphicsDevice.Clear(Color.CornflowerBlue);
 
-            spriteBatch.Begin(sortMode: SpriteSortMode.Deferred, transformMatrix: camera.Transform, samplerState: SamplerState.PointClamp);
-            tiledMapRenderer.Draw(camera.CameraOrtho.GetViewMatrix());
+            spriteBatch.Begin(sortMode: SpriteSortMode.Deferred, transformMatrix: camera.GetViewMatrix(), samplerState: SamplerState.PointClamp);
+            tiledMapRenderer.Draw(camera.GetViewMatrix());
             spriteBatch.End();
 
             // A second spriteBatch.Begin()/End() section is needed to render the player after the map has been rendered.
-            spriteBatch.Begin(sortMode: SpriteSortMode.Deferred, transformMatrix: camera.Transform, samplerState: SamplerState.PointClamp);
+            spriteBatch.Begin(sortMode: SpriteSortMode.Deferred, transformMatrix: camera.GetViewMatrix(), samplerState: SamplerState.PointClamp);
 
             // draw misc. components
             foreach (var component in components)
@@ -118,9 +119,7 @@ namespace Marooned.States
         {
             tiledMapRenderer.Update(gameTime);
             // 4 is a magic number to get the player nearly center to the screen
-            camera.Follow(player, player.Hitbox.Offset * 4, graphicsDevice);
-            Vector2 adj = new Vector2(player.Position.X, player.Position.Y);
-            camera.CameraOrtho.LookAt(adj);
+            camera.LookAt(player.Position + player.Hitbox.Offset * 4);
 
             foreach (var component in components)
             {
@@ -190,7 +189,8 @@ namespace Marooned.States
         private void LoadContent()
         {
             var viewportadapter = new BoxingViewportAdapter(game.Window, graphicsDevice, graphicsDevice.Viewport.Width, graphicsDevice.Viewport.Height);
-            camera = new Camera(new OrthographicCamera(viewportadapter));
+            camera = new OrthographicCamera(viewportadapter);
+            camera.Zoom = 2f;
         }
 
         private void LoadSprites(string playerSpritePath, string playerHitboxSpritePath)

@@ -1,35 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using Marooned.Sprites;
 using Marooned.States;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using MonoGame.Extended.Tiled.Renderers;
 
 namespace Marooned
 {
     public interface View
     {
-        public void Draw(State state, GameTime gameTime, SpriteBatch spriteBatch);
+        public void Draw(State state, List<Component> components, GameTime gameTime, SpriteBatch spriteBatch);
     }
     public class InteractiveView : View
     {
-        public void Draw(State s, GameTime gameTime, SpriteBatch spriteBatch)
+        public void Draw(State s, List<Component> components, GameTime gameTime, SpriteBatch spriteBatch)
         {
             InteractiveState state = (InteractiveState)s;
 
             state.graphicsDevice.Clear(Color.CornflowerBlue);
 
-            spriteBatch.Begin(sortMode: SpriteSortMode.Deferred, transformMatrix: state.camera.Transform, samplerState: SamplerState.PointClamp);
-            state.tiledMapRenderer.Draw(state.camera.CameraOrtho.GetViewMatrix());
-            spriteBatch.End();
+            spriteBatch.Begin(sortMode: SpriteSortMode.Deferred, transformMatrix: state.camera.GetViewMatrix(), samplerState: SamplerState.PointClamp);
 
-            // A second spriteBatch.Begin()/End() section is needed to render the player after the map has been rendered.
-            spriteBatch.Begin(sortMode: SpriteSortMode.Deferred, transformMatrix: state.camera.Transform, samplerState: SamplerState.PointClamp);
+            state.tiledMapRenderer.Draw(state.camera.GetViewMatrix());
 
             // draw misc. components
-            foreach (var component in state.components)
+            foreach (var component in components)
             {
                 component.Draw(gameTime, spriteBatch);
             }
@@ -65,13 +59,11 @@ namespace Marooned
 
     public class MenuView : View
     {
-        public void Draw(State s, GameTime gameTime, SpriteBatch spriteBatch)
+        public void Draw(State state, List<Component> components, GameTime gameTime, SpriteBatch spriteBatch)
         {
-            MenuState state = (MenuState)s;
-
             spriteBatch.Begin();
 
-            foreach (var component in state.components)
+            foreach (var component in components)
             {
                 component.Draw(gameTime, spriteBatch);
             }

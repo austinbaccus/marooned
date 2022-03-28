@@ -10,7 +10,7 @@ namespace Marooned.States
 {
     public class MenuState : State
     {
-        public List<Component> components;
+        private List<Component> components;
 
         public MenuState(Game1 game, GraphicsDevice graphicsDevice, ContentManager content) : base(game, graphicsDevice, content)
         {
