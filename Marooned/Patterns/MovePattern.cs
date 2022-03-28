@@ -1,11 +1,10 @@
-﻿using Microsoft.Xna.Framework;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using Microsoft.Xna.Framework;
 
 namespace Marooned.Sprites.Enemies
 {
-    public class MovementPattern
+    public class MovePattern
     {
         static float ENEMY_MOVEMENT_SPEED_FACTOR = 10f;
         static float MINIBOSS_MOVEMENT_SPEED_FACTOR = 50f;

@@ -11,6 +11,7 @@ using MonoGame.Extended;
 using MonoGame.Extended.ViewportAdapters;
 using Marooned.Sprites.Enemies;
 using Marooned.Factories;
+using Marooned.Controllers;
 
 namespace Marooned.States
 {
@@ -73,6 +74,8 @@ namespace Marooned.States
 
         public override void Update(GameTime gameTime)
         {
+            inputController.Update(gameTime);
+
             tiledMapRenderer.Update(gameTime);
             // 4 is a magic number to get the player nearly center to the screen
             camera.LookAt(player.Position + player.Hitbox.Offset * 4);
@@ -168,7 +171,7 @@ namespace Marooned.States
             var texture = content.Load<Texture2D>(playerSpritePath);
             var hitboxTexture = content.Load<Texture2D>(playerHitboxSpritePath);
 
-            player = new Player(texture, hitboxTexture)
+            player = new Player(texture, hitboxTexture, inputController)
             {
                 Position = _spawnPoint,
                 Speed = 120f,

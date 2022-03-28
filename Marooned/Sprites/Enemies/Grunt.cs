@@ -33,11 +33,11 @@ namespace Marooned.Sprites.Enemies
         public bool isHit; // Red Damage
         private Stopwatch _damageTimer = new Stopwatch(); // timer for damage
 
-        public Grunt(Texture2D texture, Rectangle[] animSources, FiringPattern.Pattern firingPattern, MovementPattern.Pattern movementPattern, int health) : base(texture, animSources)
+        public Grunt(Texture2D texture, Rectangle[] animSources, FiringPattern.Pattern firingPattern, MovePattern.Pattern movementPattern, int health) : base(texture, animSources)
         {
             Health = health;
             _firePattern = FiringPattern.GetPattern(firingPattern);
-            _movePattern = MovementPattern.GetPattern(movementPattern);
+            _movePattern = MovePattern.GetPattern(movementPattern);
             _currentMovePatternTimeRemaining = _movePattern[0].Item2;
 
             CurrentAnimation.Play();

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Marooned.Controllers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -18,6 +19,8 @@ namespace Marooned.States
 
         public Game1 game;
 
+        public InputController inputController;
+
         #endregion
 
         #region Methods
@@ -29,6 +32,8 @@ namespace Marooned.States
             this.graphicsDevice = graphicsDevice;
 
             this.content = content;
+
+            inputController = new InputController(this);
         }
 
         public abstract void PostUpdate(GameTime gameTime);

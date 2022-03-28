@@ -9,7 +9,7 @@ namespace Marooned.Sprites.Enemies
 {
     public class Boss : Grunt
     {
-        public Boss(Texture2D texture, Rectangle[] animSources, FiringPattern.Pattern firingPattern, MovementPattern.Pattern movementPattern, int health) : base(texture, animSources, firingPattern, movementPattern, health)
+        public Boss(Texture2D texture, Rectangle[] animSources, FiringPattern.Pattern firingPattern, MovePattern.Pattern movementPattern, int health) : base(texture, animSources, firingPattern, movementPattern, health)
         {
         }
     }

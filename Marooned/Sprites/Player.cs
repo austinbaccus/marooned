@@ -2,36 +2,18 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
+using Marooned.Actions;
+using Marooned.Controllers;
+using Marooned.Enum;
 using Marooned.Factories;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 namespace Marooned.Sprites
 {
-    public enum Direction
-    {
-        NONE,
-        UP,
-        LEFT,
-        DOWN,
-        RIGHT,
-    }
-
     public class Player : AnimatedSprite
     {
-        public static readonly HashSet<Keys> UP_KEYS = new HashSet<Keys>() { Keys.W };
-        public static readonly HashSet<Keys> LEFT_KEYS = new HashSet<Keys>() { Keys.A };
-        public static readonly HashSet<Keys> DOWN_KEYS = new HashSet<Keys>() { Keys.S };
-        public static readonly HashSet<Keys> RIGHT_KEYS = new HashSet<Keys>() { Keys.D };
-        public static readonly HashSet<Keys> SHOOT_UP_KEYS = new HashSet<Keys>() { Keys.Up };
-        public static readonly HashSet<Keys> SHOOT_LEFT_KEYS = new HashSet<Keys>() { Keys.Left };
-        public static readonly HashSet<Keys> SHOOT_DOWN_KEYS = new HashSet<Keys>() { Keys.Down };
-        public static readonly HashSet<Keys> SHOOT_RIGHT_KEYS = new HashSet<Keys>() { Keys.Right };
-        public static readonly HashSet<Keys> FOCUS_KEYS = new HashSet<Keys>() { Keys.LeftShift };
-
         // TODO: Maybe have a control class for handling multiple animations?
         //       (That way, other sprites like Grunt can reuse the same principle of grouped animations).
         private Dictionary<Direction, Animation> _flyAnimations;
@@ -49,9 +31,6 @@ namespace Marooned.Sprites
         private float _bulletVelocity = 400f;
         private float _bulletFireRate = 100f;
 
-        // TODO: Move these into some PlayerState struct or class
-        private Direction _prevDirection = Direction.NONE;
-        private Direction _currentDirection = Direction.NONE;
         private bool _prevIsMoving = false;
         private bool _isMoving = false;
         private bool _prevIsFocused = false;
@@ -60,11 +39,17 @@ namespace Marooned.Sprites
         private Sprite _hitboxSprite;
         private bool _shouldDrawHitbox = false;
 
+        // TODO: Move these into some PlayerState struct or class
+        private Direction _prevDirection = Direction.NONE;
+        private Direction _currentDirection = Direction.NONE;
+
         public bool isHit = false;
         private Stopwatch _damageTimer = new Stopwatch();
         private Stopwatch _invulnerabilityTimer = new Stopwatch();
 
-        public Player(Texture2D texture, Texture2D hitboxTexture) : base(texture)
+        private InputController _inputController;
+
+        public Player(Texture2D texture, Texture2D hitboxTexture, InputController inputController) : base(texture)
         {
             // TODO: Find a better way to handle instantiating player animations
             const int SPRITE_WIDTH = 32;
@@ -140,6 +125,11 @@ namespace Marooned.Sprites
                 ),
             };
 
+            // TODO: Find a better way to initialize InputController
+            _inputController = inputController;
+            _inputController.OnKeyDownEvent += HandleKeyDown;
+            _inputController.OnKeyUpEvent += HandleKeyUp;
+
             CurrentAnimation = _idleAnimations[Direction.UP];
             // TODO: Set animation speed somewhere else
             CurrentAnimation.Speed = _flyAnimationSpeed;
@@ -148,11 +138,71 @@ namespace Marooned.Sprites
         }
 
         public Hitbox Hitbox { get; set; }
-        public bool IsFocused { get => _isFocused; }
+        public bool IsFocused
+        {
+            get => _isFocused;
+            set
+            {
+                _prevIsFocused = _isFocused;
+                _isFocused = value;
+            }
+        }
+        public bool IsMoving
+        {
+            get => _isMoving;
+            set
+            {
+                _prevIsMoving = _isMoving;
+                _isMoving = value;
+            }
+        }
+        public Direction CurrentDirection
+        {
+            get => _currentDirection;
+            set
+            {
+                _prevDirection = CurrentDirection;
+                _currentDirection = value;
+            }
+        }
         public bool ChangedState { get => _prevIsMoving != _isMoving
                                        || _prevDirection != _currentDirection
                                        || _prevIsFocused != _isFocused; }
         public bool IsInvulnerable { get; set; } = false;
+        public Script Script { get; private set; } = new Script();
+
+        public void HandleKeyDown(object sender, KeyEventArgs e)
+        {
+            bool focusPressed = InputController.FOCUS_KEYS.Contains(e.Key);
+
+            if (focusPressed)
+            {
+                IsFocused = true;
+                Script.AddAction(new FocusAction(this));
+            }
+
+            HandleInputMove(e);
+            HandleInputShoot(e);
+        }
+
+        public void HandleKeyUp(object sender, KeyEventArgs e)
+        {
+            bool upReleased = InputController.UP_KEYS.Contains(e.Key);
+            bool downReleased = InputController.DOWN_KEYS.Contains(e.Key);
+            bool leftReleased = InputController.LEFT_KEYS.Contains(e.Key);
+            bool rightReleased = InputController.RIGHT_KEYS.Contains(e.Key);
+            if (upReleased || downReleased || leftReleased || rightReleased)
+            {
+                IsMoving = false;
+            }
+
+            bool focusReleased = InputController.FOCUS_KEYS.Contains(e.Key);
+            if (focusReleased)
+            {
+                IsFocused = false;
+                Script.AddAction(new UnfocusAction(this));
+            }
+        }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
@@ -165,8 +215,8 @@ namespace Marooned.Sprites
 
         public override void Update(GameTime gameTime)
         {
-            Move(gameTime);
-            Shoot(gameTime);
+            Script.ExecuteAll(gameTime);
+            UpdateAnimation();
             _hitboxSprite.Destination = new Rectangle(
                 (int)(Position.X + Hitbox.Offset.X),
                 (int)(Position.Y + Hitbox.Offset.Y),
@@ -176,10 +226,6 @@ namespace Marooned.Sprites
             );
             _shouldDrawHitbox = IsFocused;
 
-            _prevDirection = _currentDirection;
-            _prevIsFocused = _isFocused;
-            _prevIsMoving = _isMoving;
-
             UpdateDamageTimer(gameTime);
             UpdateInvulnerabilityTimer(gameTime);
 
@@ -188,92 +234,123 @@ namespace Marooned.Sprites
 
         private Animation GetRelevantAnimation()
         {
-            Dictionary<Direction, Animation> _sourceAnimation = _isMoving ? _flyAnimations : _idleAnimations;
-            return _sourceAnimation[_currentDirection];
+            Dictionary<Direction, Animation> _sourceAnimation = IsMoving ? _flyAnimations : _idleAnimations;
+            return _sourceAnimation[CurrentDirection];
         }
 
-        private void Move(GameTime gameTime)
+        private void UpdateAnimation()
         {
-            // TODO: Maybe implement a custom KeyboardHandler class that stores things like previous keyboard states, etc...
-            //       (MonoGame.Extended looks like it has something).
-            KeyboardState keyboardState = Keyboard.GetState();
-            Keys[] pressedKeys = keyboardState.GetPressedKeys();
-            bool upPressed = pressedKeys.Any(k => UP_KEYS.Contains(k));
-            bool downPressed = pressedKeys.Any(k => DOWN_KEYS.Contains(k));
-            bool leftPressed = pressedKeys.Any(k => LEFT_KEYS.Contains(k));
-            bool rightPressed = pressedKeys.Any(k => RIGHT_KEYS.Contains(k));
-            bool focusPressed = pressedKeys.Any(k => FOCUS_KEYS.Contains(k));
-
-            _isFocused = focusPressed;
-            // Multiply by <c>(float)gameTime.ElapsedGameTime.TotalSeconds</c> so the movement is consistent regardless of the current FPS
-            float newSpeed = Speed * (_isFocused ? FocusSpeedFactor : 1f) * (float)gameTime.ElapsedGameTime.TotalSeconds;
-            bool moved = false;
-
-            if (upPressed)
-            {
-                Position.Y -= newSpeed;
-                _currentDirection = Direction.UP;
-                moved = true;
-            }
-            if (downPressed)
-            {
-                Position.Y += newSpeed;
-                _currentDirection = Direction.DOWN;
-                moved = true;
-            }
-            if (leftPressed)
-            {
-                Position.X -= newSpeed;
-                _currentDirection = Direction.LEFT;
-                moved = true;
-            }
-            if (rightPressed)
-            {
-                Position.X += newSpeed;
-                _currentDirection = Direction.RIGHT;
-                moved = true;
-            }
-
-            _isMoving = moved;
-
             if (ChangedState)
             {
                 Animation animation = GetRelevantAnimation();
                 CurrentAnimation.Stop();
                 CurrentAnimation = animation;
-                CurrentAnimation.Speed = _isFocused ? (_flyAnimationSpeed * _focusAnimationSpeedFactor) : _flyAnimationSpeed;
+                CurrentAnimation.Speed = IsFocused ? (_flyAnimationSpeed * _focusAnimationSpeedFactor) : _flyAnimationSpeed;
                 CurrentAnimation.Play();
             }
         }
 
-        public void Shoot(GameTime gameTime)
+        private void HandleInputMove(KeyEventArgs e)
         {
-            if (gameTime.TotalGameTime.TotalMilliseconds - _lastBulletTimestamp > _bulletFireRate)
-            {
-                KeyboardState keyboardState = Keyboard.GetState();
-                Keys[] pressedKeys = keyboardState.GetPressedKeys();
-                bool shootUpPressed = pressedKeys.Any(k => SHOOT_UP_KEYS.Contains(k));
-                bool shootDownPressed = pressedKeys.Any(k => SHOOT_DOWN_KEYS.Contains(k));
-                bool shootLeftPressed = pressedKeys.Any(k => SHOOT_LEFT_KEYS.Contains(k));
-                bool shootRightPressed = pressedKeys.Any(k => SHOOT_RIGHT_KEYS.Contains(k));
+            bool upPressed = InputController.UP_KEYS.Contains(e.Key);
+            bool downPressed = InputController.DOWN_KEYS.Contains(e.Key);
+            bool leftPressed = InputController.LEFT_KEYS.Contains(e.Key);
+            bool rightPressed = InputController.RIGHT_KEYS.Contains(e.Key);
 
-                _lastBulletTimestamp = gameTime.TotalGameTime.TotalMilliseconds;
+            float newSpeed = Speed * (IsFocused ? FocusSpeedFactor : 1f);
+
+            if (upPressed)
+            {
+                Script.AddAction(new LinearMoveAction(this)
+                {
+                    Direction = new Vector2(0, -1),
+                    Speed = newSpeed,
+                });
+                CurrentDirection = Direction.UP;
+                IsMoving = true;
+            }
+            if (downPressed)
+            {
+                Script.AddAction(new LinearMoveAction(this)
+                {
+                    Direction = new Vector2(0, 1),
+                    Speed = newSpeed,
+                });
+                CurrentDirection = Direction.DOWN;
+                IsMoving = true;
+            }
+            if (leftPressed)
+            {
+                Script.AddAction(new LinearMoveAction(this)
+                {
+                    Direction = new Vector2(-1, 0),
+                    Speed = newSpeed,
+                });
+                CurrentDirection = Direction.LEFT;
+                IsMoving = true;
+            }
+            if (rightPressed)
+            {
+                Script.AddAction(new LinearMoveAction(this)
+                {
+                    Direction = new Vector2(1, 0),
+                    Speed = newSpeed,
+                });
+                CurrentDirection = Direction.RIGHT;
+                IsMoving = true;
+            }
+        }
+
+        public void HandleInputShoot(KeyEventArgs e)
+        {
+            if (e.GameTime.TotalGameTime.TotalMilliseconds - _lastBulletTimestamp > _bulletFireRate)
+            {
+                _lastBulletTimestamp = e.GameTime.TotalGameTime.TotalMilliseconds;
+
+                bool shootUpPressed = InputController.SHOOT_UP_KEYS.Contains(e.Key);
+                bool shootDownPressed = InputController.SHOOT_DOWN_KEYS.Contains(e.Key);
+                bool shootLeftPressed = InputController.SHOOT_LEFT_KEYS.Contains(e.Key);
+                bool shootRightPressed = InputController.SHOOT_RIGHT_KEYS.Contains(e.Key);
 
                 if (shootRightPressed)
-                { // Shoot right
-                    BulletList.Add(BulletFactory.MakeBullet(_bulletLifespan, new Vector2(_bulletVelocity, 0), 2f, new Vector2(this.Position.X, this.Position.Y)));
+                {
+                    Script.AddAction(new ShootAction(BulletList)
+                    {
+                        LifeSpan = _bulletLifespan,
+                        Velocity = new Vector2(_bulletVelocity, 0),
+                        Damage = 2f,
+                        Origin = new Vector2(this.Position.X, this.Position.Y),
+                    });
                 }
                 else if (shootLeftPressed)
-                { // Shoot left
-                    BulletList.Add(BulletFactory.MakeBullet(_bulletLifespan, new Vector2(-_bulletVelocity, 0), 2f, new Vector2(this.Position.X, this.Position.Y)));
+                {
+                    Script.AddAction(new ShootAction(BulletList)
+                    {
+                        LifeSpan = _bulletLifespan,
+                        Velocity = new Vector2(-_bulletVelocity, 0),
+                        Damage = 2f,
+                        Origin = new Vector2(this.Position.X, this.Position.Y),
+                    });
                 }
                 else if (shootDownPressed)
-                { // Shoot down
-                    BulletList.Add(BulletFactory.MakeBullet(_bulletLifespan, new Vector2(0, _bulletVelocity), 2f, new Vector2(this.Position.X, this.Position.Y)));
+                {
+                    Script.AddAction(new ShootAction(BulletList)
+                    {
+                        LifeSpan = _bulletLifespan,
+                        Velocity = new Vector2(0, _bulletVelocity),
+                        Damage = 2f,
+                        Origin = new Vector2(this.Position.X, this.Position.Y),
+                    });
                 }
                 else if (shootUpPressed)
-                { // Shoot up
-                    BulletList.Add(BulletFactory.MakeBullet(_bulletLifespan, new Vector2(0, -_bulletVelocity), 2f, new Vector2(this.Position.X, this.Position.Y)));
+                {
+                    Script.AddAction(new ShootAction(BulletList)
+                    {
+                        LifeSpan = _bulletLifespan,
+                        Velocity = new Vector2(0, -_bulletVelocity),
+                        Damage = 2f,
+                        Origin = new Vector2(this.Position.X, this.Position.Y),
+                    });
                 }
             }
         }
