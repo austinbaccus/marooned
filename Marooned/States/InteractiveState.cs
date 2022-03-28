@@ -39,56 +39,12 @@ namespace Marooned.States
             LoadMusic(songPaths);
             LoadMap(mapPath);
             LoadLives();
+            View = new InteractiveView(this, tiledMapRenderer, camera, hearts);
         }
 
         public float LevelTime { get; private set; }
         public bool MiniBossActive { get; private set; }
         public bool BossActive { get; private set; }
-
-        public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
-        {
-            graphicsDevice.Clear(Color.CornflowerBlue);
-
-            spriteBatch.Begin(sortMode: SpriteSortMode.Deferred, transformMatrix: camera.GetViewMatrix(), samplerState: SamplerState.PointClamp);
-            tiledMapRenderer.Draw(camera.GetViewMatrix());
-            spriteBatch.End();
-
-            // A second spriteBatch.Begin()/End() section is needed to render the player after the map has been rendered.
-            spriteBatch.Begin(sortMode: SpriteSortMode.Deferred, transformMatrix: camera.GetViewMatrix(), samplerState: SamplerState.PointClamp);
-
-            // draw misc. components
-            foreach (var component in components)
-            {
-                component.Draw(gameTime, spriteBatch);
-            }
-
-            // draw bullets
-            foreach (var bullet in player.BulletList)
-            {
-                bullet.Draw(gameTime, spriteBatch);
-            }
-
-            // draw grunts
-            foreach(var grunt in grunts)
-            {
-                grunt.Draw(gameTime, spriteBatch);
-
-                foreach (var bullet in grunt.BulletList)
-                {
-                    bullet.Draw(gameTime, spriteBatch);
-                }
-            }
-
-            spriteBatch.End();
-
-            // draw HUD
-            spriteBatch.Begin(sortMode: SpriteSortMode.Deferred, samplerState: SamplerState.PointClamp);
-            foreach (Sprite heart in hearts)
-            {
-                heart.Draw(gameTime, spriteBatch);
-            }
-            spriteBatch.End();
-        }
 
         public override void PostUpdate(GameTime gameTime)
         {
@@ -147,7 +103,7 @@ namespace Marooned.States
                             if (player.Lives <= 0)
                             {
                                 // "game over man! game over!"
-                                GoToMenu();
+                                OnDeath();
                             }
 
                             grunt.BulletList.RemoveAt(i);
@@ -185,12 +141,26 @@ namespace Marooned.States
             // update lives
             UpdateLives();
         }
+        public override List<Component> GetComponents()
+        {
+            List<Component> componentAggregation = new List<Component>();
+            componentAggregation.AddRange(components);
+            componentAggregation.AddRange(player.BulletList);
+            componentAggregation.AddRange(grunts);
+            foreach (var grunt in grunts)
+            {
+                componentAggregation.AddRange(grunt.BulletList);
+            }
+            return componentAggregation;
+        }
 
         private void LoadContent()
         {
             var viewportadapter = new BoxingViewportAdapter(game.Window, graphicsDevice, graphicsDevice.Viewport.Width, graphicsDevice.Viewport.Height);
-            camera = new OrthographicCamera(viewportadapter);
-            camera.Zoom = 2f;
+            camera = new OrthographicCamera(viewportadapter)
+            {
+                Zoom = 2f,
+            };
         }
 
         private void LoadSprites(string playerSpritePath, string playerHitboxSpritePath)
@@ -215,25 +185,35 @@ namespace Marooned.States
 
         private void LoadEnemies()
         {
-            List<Grunt> wave1 = new List<Grunt>();
-            wave1.Add(EnemyFactory.MakeGrunt("skeleton", new Vector2(225, 100), 5));
-            wave1.Add(EnemyFactory.MakeGrunt("skeleton", new Vector2(250, 100), 5));
-            wave1.Add(EnemyFactory.MakeGrunt("skeleton", new Vector2(275, 100), 5));
+            List<Grunt> wave1 = new List<Grunt>
+            {
+                EnemyFactory.MakeGrunt("skeleton", new Vector2(225, 100), 5),
+                EnemyFactory.MakeGrunt("skeleton", new Vector2(250, 100), 5),
+                EnemyFactory.MakeGrunt("skeleton", new Vector2(275, 100), 5)
+            };
 
-            List<Grunt> wave2 = new List<Grunt>();
-            wave2.Add(EnemyFactory.MakeGrunt("skeleton", new Vector2(225, 100), 5));
-            wave2.Add(EnemyFactory.MakeGrunt("skeleton", new Vector2(275, 100), 5));
-            wave2.Add(EnemyFactory.MakeGrunt("skeleton_dangerous", new Vector2(250, 100), 5));
+            List<Grunt> wave2 = new List<Grunt>
+            {
+                EnemyFactory.MakeGrunt("skeleton", new Vector2(225, 100), 5),
+                EnemyFactory.MakeGrunt("skeleton", new Vector2(275, 100), 5),
+                EnemyFactory.MakeGrunt("skeleton_dangerous", new Vector2(250, 100), 5)
+            };
 
-            List<Grunt> wave3 = new List<Grunt>();
-            wave3.Add(EnemyFactory.MakeGrunt("skeleton_mage", new Vector2(250, 100), 5));
+            List<Grunt> wave3 = new List<Grunt>
+            {
+                EnemyFactory.MakeGrunt("skeleton_mage", new Vector2(250, 100), 5)
+            };
 
             // Boss goes here, replace skeleton_mage with boss assets/props
-            List<Grunt> wave4 = new List<Grunt>();
-            wave4.Add(EnemyFactory.MakeGrunt("miniboss1", new Vector2(250, 300), 10));
+            List<Grunt> wave4 = new List<Grunt>
+            {
+                EnemyFactory.MakeGrunt("miniboss1", new Vector2(250, 300), 10)
+            };
 
-            List<Grunt> wave5 = new List<Grunt>();
-            wave5.Add(EnemyFactory.MakeGrunt("boss1", new Vector2(250, 300), 30));
+            List<Grunt> wave5 = new List<Grunt>
+            {
+                EnemyFactory.MakeGrunt("boss1", new Vector2(250, 300), 30)
+            };
 
             waves.Push(wave5);
             waves.Push(wave4);
@@ -292,13 +272,8 @@ namespace Marooned.States
             else
             {
                 // you won! game over
-                GoToMenu();
+                game.ChangeState(new MenuState(game, graphicsDevice, content));
             }
-        }
-
-        private void GoToMenu()
-        {
-            game.ChangeState(new MenuState(game, graphicsDevice, content));
         }
 
         private void UpdateLives()
@@ -307,7 +282,7 @@ namespace Marooned.States
             {
                 hearts.RemoveAt(hearts.Count - 1);
 
-                // redraw HUD
+                // update HUD
                 for (int i = 0; i < player.Lives; i++)
                 {
                     hearts[i].Position.X = (i * 40) + 40;
@@ -326,6 +301,34 @@ namespace Marooned.States
                 }
                 player.BulletList.Clear();
             }
+        }
+
+        public void OnDeath()
+        {
+            components.Remove(player);
+            game.ChangeState(new GameOverState(game, graphicsDevice, content)
+            {
+                BackgroundState = this,
+            });
+        }
+
+        // TODO: Use a creational pattern to create an InteractiveState (or states in general?)
+        public static InteractiveState CreateDefaultState(Game1 game, GraphicsDevice graphicsDevice, ContentManager content)
+        {
+            // TODO: Right now we are manually passing in map parameters when changing state. Later on this will be delegated to the Level Interpreter.
+            return new InteractiveState(
+                game,
+                graphicsDevice,
+                content,
+                "Maps/tutorial",
+                new List<string>()
+                {
+                    "Content/Sounds/Music/ConcernedApe - Stardew Valley 1.5 Original Soundtrack - 03 Volcano Mines (Molten Jelly).mp3",
+                    "Content/Sounds/Music/ConcernedApe - Stardew Valley 1.5 Original Soundtrack - 01 Ginger Island.mp3"
+                },
+                "Sprites/IslandParrot",
+                "Sprites/PlayerHitbox"
+            );
         }
     }
 }

@@ -74,7 +74,7 @@ namespace Marooned.Controls
             _previousMouse = _currentMouse;
             _currentMouse = Mouse.GetState();
 
-            var mouseRectangle = new Rectangle(_currentMouse.X, _currentMouse.Y, 1, 1);
+            var mouseRectangle = new Rectangle(_currentMouse.Position.X, _currentMouse.Position.Y, 1, 1);
 
             _isHovering = false;
 
