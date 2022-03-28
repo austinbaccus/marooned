@@ -5,9 +5,6 @@ namespace Marooned.Sprites
 {
     public class AnimatedSprite : Sprite
     {
-
-        public bool isHit; // Red Damage
-
         public Animation? CurrentAnimation { get; set; }
         public override Rectangle Rectangle
         {

@@ -60,6 +60,7 @@ namespace Marooned.Sprites
         private Sprite _hitboxSprite;
         private bool _shouldDrawHitbox = false;
 
+        public bool isHit = false;
         private Stopwatch _damageTimer = new Stopwatch();
         private Stopwatch _invulnerabilityTimer = new Stopwatch();
 
