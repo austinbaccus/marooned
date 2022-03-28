@@ -35,6 +35,8 @@ namespace Marooned.Sprites
 
         public virtual float Scale { get; set; } = 1f;
 
+        public virtual Color Color { get; set; } = Color.White;
+
         public override void Update(GameTime gameTime)
         {
         }
@@ -47,7 +49,7 @@ namespace Marooned.Sprites
                     texture: _texture,
                     destinationRectangle: destination,
                     sourceRectangle: null,
-                    color: Color.White,
+                    color: Color,
                     rotation: 0f,
                     origin: Origin,
                     effects: SpriteEffects.None,
@@ -60,7 +62,7 @@ namespace Marooned.Sprites
                     texture: _texture,
                     position: Position,
                     sourceRectangle: null,
-                    color: Color.White,
+                    color: Color,
                     rotation: 0f,
                     origin: Origin,
                     scale: Scale,

@@ -27,6 +27,8 @@ namespace Marooned.States
         public TiledMap tiledMap;
         public TiledMapRenderer tiledMapRenderer;
 
+        private Vector2 _spawnPoint = new Vector2(300, 300);
+
         public InteractiveState(Game1 game, GraphicsDevice graphicsDevice, ContentManager content, string mapPath, List<string> songPaths, string playerSpritePath, string playerHitboxSpritePath) : base(game, graphicsDevice, content)
         {
             components = new List<Component>();
@@ -135,20 +137,23 @@ namespace Marooned.States
                     Bullet bullet = grunt.BulletList[i];
                     bullet.Update(gameTime);
 
-                    // did it hit the player?
-                    if (player.Hitbox.IsTouching(bullet.Hitbox))
+                    if (!player.IsInvulnerable)
                     {
-                        player.isHit = true; // Show red damage on grunt
-
-                        player.Lives--;
-                        if (player.Lives <= 0)
+                        // did it hit the player?
+                        if (player.Hitbox.IsTouching(bullet.Hitbox))
                         {
-                            // "game over man! game over!"
-                            GoToMenu();
-                        }
+                            player.isHit = true; // Show red damage on grunt
 
-                        grunt.BulletList.RemoveAt(i);
-                        i--;
+                            player.Lives--;
+                            if (player.Lives <= 0)
+                            {
+                                // "game over man! game over!"
+                                GoToMenu();
+                            }
+
+                            grunt.BulletList.RemoveAt(i);
+                            i--;
+                        }
                     }
                 }
             }
@@ -195,7 +200,7 @@ namespace Marooned.States
 
             player = new Player(texture, hitboxTexture)
             {
-                Position = new Vector2(100, 100),
+                Position = _spawnPoint,
                 Speed = 120f,
                 FocusSpeedFactor = 0.5f,
             };
@@ -311,7 +316,8 @@ namespace Marooned.States
                 }
 
                 // respawn player
-                player.Position = new Vector2(100, 100);
+                player.Position = _spawnPoint;
+                player.StartInvulnerableState();
 
                 // despawn existing bullets
                 foreach (var grunt in grunts)

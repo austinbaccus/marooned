@@ -36,6 +36,7 @@ namespace Marooned.Sprites
         //       (That way, other sprites like Grunt can reuse the same principle of grouped animations).
         private Dictionary<Direction, Animation> _flyAnimations;
         private Dictionary<Direction, Animation> _idleAnimations;
+        private Animation _invisibleAnimation;
         private readonly double _flyAnimationSpeed = 0.07d;
         private readonly double _focusAnimationSpeedFactor = 2d;
 
@@ -60,11 +61,8 @@ namespace Marooned.Sprites
         private Sprite _hitboxSprite;
         private bool _shouldDrawHitbox = false;
 
-
-
-        private Stopwatch timer = new Stopwatch(); // timer for damage
-
-
+        private Stopwatch _damageTimer = new Stopwatch();
+        private Stopwatch _invulnerabilityTimer = new Stopwatch();
 
         public Player(Texture2D texture, Texture2D hitboxTexture) : base(texture)
         {
@@ -141,6 +139,13 @@ namespace Marooned.Sprites
                     }
                 ),
             };
+            _invisibleAnimation = new Animation(
+                texture,
+                new Rectangle[]
+                {
+                    new Rectangle(32 * 4, 32 * 3, SPRITE_WIDTH, SPRITE_HEIGHT),
+                }
+            );
 
             CurrentAnimation = _idleAnimations[Direction.UP];
             // TODO: Set animation speed somewhere else
@@ -154,6 +159,7 @@ namespace Marooned.Sprites
         public bool ChangedState { get => _prevIsMoving != _isMoving
                                        || _prevDirection != _currentDirection
                                        || _prevIsFocused != _isFocused; }
+        public bool IsInvulnerable { get; set; } = false;
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
@@ -181,14 +187,16 @@ namespace Marooned.Sprites
             _prevIsFocused = _isFocused;
             _prevIsMoving = _isMoving;
 
-
-
-            IsHitTimer(gameTime); // Timer to show red damage
-
-
-
+            UpdateDamageTimer(gameTime);
+            UpdateInvulnerabilityTimer(gameTime);
 
             base.Update(gameTime);
+        }
+
+        private Animation GetRelevantAnimation()
+        {
+            Dictionary<Direction, Animation> _sourceAnimation = _isMoving ? _flyAnimations : _idleAnimations;
+            return _sourceAnimation[_currentDirection];
         }
 
         private void Move(GameTime gameTime)
@@ -237,9 +245,9 @@ namespace Marooned.Sprites
 
             if (ChangedState)
             {
-                Dictionary<Direction, Animation> _sourceAnimation = _isMoving ? _flyAnimations : _idleAnimations;
+                Animation animation = GetRelevantAnimation();
                 CurrentAnimation.Stop();
-                CurrentAnimation = _sourceAnimation[_currentDirection];
+                CurrentAnimation = animation;
                 CurrentAnimation.Speed = _isFocused ? (_flyAnimationSpeed * _focusAnimationSpeedFactor) : _flyAnimationSpeed;
                 CurrentAnimation.Play();
             }
@@ -277,27 +285,43 @@ namespace Marooned.Sprites
             }
         }
 
-
-
-
-        public void IsHitTimer(GameTime gameTime)
+        public void UpdateDamageTimer(GameTime gameTime)
         {
             if (isHit)
             {
-                timer.Start(); // start timer
+                _damageTimer.Start(); // start timer
+                Color = Color.Red;
             }
 
-            if (timer.ElapsedMilliseconds >= 50) // 2 Seconds elapsed
+            if (_damageTimer.ElapsedMilliseconds >= 50)
             {
                 isHit = false;
-                timer.Stop();
-                timer.Reset();
+                Color = Color.White;
+                _damageTimer.Stop();
+                _damageTimer.Reset();
             }
-
         }
 
+        public void StartInvulnerableState()
+        {
+            IsInvulnerable = true;
+            _invulnerabilityTimer.Start();
+        }
 
+        public void UpdateInvulnerabilityTimer(GameTime gameTime)
+        {
+            if (IsInvulnerable)
+            {
+                Color = Color.White * (float)((Math.Sin(_invulnerabilityTimer.ElapsedMilliseconds * gameTime.ElapsedGameTime.TotalSeconds * 5) + 1) / 2);
+            }
 
-
+            if (_invulnerabilityTimer.Elapsed.TotalSeconds >= 2)
+            {
+                IsInvulnerable = false;
+                _invulnerabilityTimer.Stop();
+                _invulnerabilityTimer.Reset();
+                Color = Color.White;
+            }
+        }
     }
 }

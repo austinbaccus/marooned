@@ -55,7 +55,7 @@ namespace Marooned.Sprites
                     texture: CurrentAnimation.Texture,
                     destinationRectangle: destination,
                     sourceRectangle: CurrentAnimation.CurrentSourceRectangle,
-                    color: Color.White,
+                    color: Color,
                     rotation: 0f,
                     origin: Origin,
                     effects: SpriteEffects.None,
@@ -64,34 +64,17 @@ namespace Marooned.Sprites
             }
             else
             {
-                if (isHit)
-                {
-                    spriteBatch.Draw(
+                spriteBatch.Draw(
                     texture: CurrentAnimation.Texture,
                     position: Position,
                     sourceRectangle: CurrentAnimation.CurrentSourceRectangle,
-                    color: Color.Red,
+                    color: Color,
                     rotation: 0f,
                     origin: Origin,
                     scale: Scale,
                     effects: SpriteEffects.None,
                     layerDepth: 0f
-                    );
-                }
-                else
-                {
-                   spriteBatch.Draw(
-                   texture: CurrentAnimation.Texture,
-                   position: Position,
-                   sourceRectangle: CurrentAnimation.CurrentSourceRectangle,
-                   color: Color.White,
-                   rotation: 0f,
-                   origin: Origin,
-                   scale: Scale,
-                   effects: SpriteEffects.None,
-                   layerDepth: 0f
-                    );
-                }
+                );
             }
         }
     }
