@@ -10,38 +10,33 @@ namespace Marooned.States
 {
     public class MenuState : State
     {
-        private List<Component> _components;
+        private List<Component> components;
 
         public MenuState(Game1 game, GraphicsDevice graphicsDevice, ContentManager content) : base(game, graphicsDevice, content)
         {
-            var buttonTexture = _content.Load<Texture2D>("Controls/Button");
-            var buttonFont = _content.Load<SpriteFont>("Fonts/Font");
+            View = new MenuView(this);
+            var buttonTexture = content.Load<Texture2D>("Controls/Button");
+            var buttonFont = content.Load<SpriteFont>("Fonts/Font");
 
             var newGameButton = new Button(buttonTexture, buttonFont)
             {
-                Position = new Vector2(350, 200),
                 Text = "New Game",
             };
-
             newGameButton.Click += NewGameButton_Click;
 
             var loadGameButton = new Button(buttonTexture, buttonFont)
             {
-                Position = new Vector2(350, 250),
                 Text = "Load Game",
             };
-
             loadGameButton.Click += LoadGameButton_Click;
 
             var quitGameButton = new Button(buttonTexture, buttonFont)
             {
-                Position = new Vector2(350, 300),
                 Text = "Quit Game",
             };
-
             quitGameButton.Click += QuitGameButton_Click;
 
-            _components = new List<Component>()
+            components = new List<Component>()
             {
                 newGameButton,
                 loadGameButton,
@@ -51,16 +46,6 @@ namespace Marooned.States
             LoadMusic();
         }
 
-        public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
-        {
-            spriteBatch.Begin();
-
-            foreach (var component in _components)
-                component.Draw(gameTime, spriteBatch);
-
-            spriteBatch.End();
-        }
-
         private void LoadGameButton_Click(object sender, EventArgs e)
         {
             Console.WriteLine("Load Game");
@@ -68,20 +53,7 @@ namespace Marooned.States
 
         private void NewGameButton_Click(object sender, EventArgs e)
         {
-            // TODO: Right now we are manually passing in map parameters when changing state. Later on this will be delegated to the Level Interpreter.
-            _game.ChangeState(new InteractiveState(
-                _game, 
-                _graphicsDevice, 
-                _content,
-                "Maps/tutorial", 
-                new List<string>()
-                {
-                    "Content/Sounds/Music/ConcernedApe - Stardew Valley 1.5 Original Soundtrack - 03 Volcano Mines (Molten Jelly).mp3",
-                    "Content/Sounds/Music/ConcernedApe - Stardew Valley 1.5 Original Soundtrack - 01 Ginger Island.mp3"
-                },
-                "Sprites/IslandParrot",
-                "Sprites/PlayerHitbox"
-            ));
+            game.ChangeState(InteractiveState.CreateDefaultState(game, graphicsDevice, content));
         }
 
         public override void PostUpdate(GameTime gameTime)
@@ -91,13 +63,25 @@ namespace Marooned.States
 
         public override void Update(GameTime gameTime)
         {
-            foreach (var component in _components)
+            for (int i = 0; i < components.Count; i++)
+            {
+                Button button = (Button)components[i];
+                button.Position = Utils.GetCenterPos(button.Rectangle.Width, button.Rectangle.Height, graphicsDevice.Viewport)
+                                - new Vector2(0, components.Count * button.Rectangle.Height / 2)
+                                + i * new Vector2(0, button.Rectangle.Height);
+            }
+            foreach (var component in components)
                 component.Update(gameTime);
+        }
+
+        public override List<Component> GetComponents()
+        {
+            return components;
         }
 
         private void QuitGameButton_Click(object sender, EventArgs e)
         {
-            _game.Exit();
+            game.Exit();
         }
 
         private void LoadMusic()
@@ -109,12 +93,6 @@ namespace Marooned.States
                 song.Dispose();
                 System.Diagnostics.Debug.WriteLine("Song ended and disposed");
             };
-        }
-
-        private void LoadMap()
-        {
-            //menuMap = new Level_01();
-            //menuMap.Generate();
         }
     }
 }

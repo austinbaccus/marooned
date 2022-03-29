@@ -83,8 +83,8 @@ namespace Marooned
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
-            
-            CurrentState.Draw(gameTime, SpriteBatch);
+
+            CurrentState.View.Draw(gameTime, SpriteBatch);
 
             base.Draw(gameTime);
         }

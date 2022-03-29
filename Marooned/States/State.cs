@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Collections.Generic;
+using Marooned.Controllers;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -9,30 +11,36 @@ namespace Marooned.States
     {
         #region Fields
 
-        protected ContentManager _content;
+        public View View { get; protected set; }
 
-        protected GraphicsDevice _graphicsDevice;
+        public ContentManager content;
 
-        protected Game1 _game;
+        public GraphicsDevice graphicsDevice;
+
+        public Game1 game;
+
+        public InputController inputController;
 
         #endregion
 
         #region Methods
 
-        public abstract void Draw(GameTime gameTime, SpriteBatch spriteBatch);
+        public State(Game1 game, GraphicsDevice graphicsDevice, ContentManager content)
+        {
+            this.game = game;
+
+            this.graphicsDevice = graphicsDevice;
+
+            this.content = content;
+
+            inputController = new InputController(this);
+        }
 
         public abstract void PostUpdate(GameTime gameTime);
 
-        public State(Game1 game, GraphicsDevice graphicsDevice, ContentManager content)
-        {
-            _game = game;
-
-            _graphicsDevice = graphicsDevice;
-
-            _content = content;
-        }
-
         public abstract void Update(GameTime gameTime);
+
+        public abstract List<Component> GetComponents();
 
         #endregion
     }

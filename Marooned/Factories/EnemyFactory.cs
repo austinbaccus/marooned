@@ -33,7 +33,7 @@ namespace Marooned.Factories
 
             [JsonProperty("movement_pattern")]
             [JsonConverter(typeof(StringEnumConverter))]
-            public MovementPattern.Pattern? MovementPattern { get; set; } = null;
+            public MovePattern.Pattern? MovementPattern { get; set; } = null;
 
             [JsonProperty("animation_sources")]
             public List<List<int>>? AnimationSources { get; set; } = null;
@@ -49,7 +49,7 @@ namespace Marooned.Factories
             var texture = content.Load<Texture2D>(enemyJson.Texture);
 
             FiringPattern.Pattern firingPattern = enemyJson.FiringPattern ?? FiringPattern.Pattern.straight;
-            MovementPattern.Pattern movementPattern = enemyJson.MovementPattern ?? MovementPattern.Pattern.down_left;
+            MovePattern.Pattern movementPattern = enemyJson.MovementPattern ?? MovePattern.Pattern.down_left;
 
             // TODO: Probably make a Json parser for Rectangle (?)
             Rectangle[] animSources;
