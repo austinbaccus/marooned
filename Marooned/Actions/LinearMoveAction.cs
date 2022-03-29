@@ -1,4 +1,4 @@
-﻿using Marooned.Enum;
+﻿using Marooned.Enums;
 using Marooned.Sprites;
 using Microsoft.Xna.Framework;
 

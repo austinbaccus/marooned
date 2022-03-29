@@ -1,4 +1,4 @@
-﻿namespace Marooned.Enum
+﻿namespace Marooned.Enums
 {
     public enum Direction
     {

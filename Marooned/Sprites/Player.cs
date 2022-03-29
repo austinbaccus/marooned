@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using Marooned.Actions;
 using Marooned.Controllers;
-using Marooned.Enum;
+using Marooned.Enums;
 using Marooned.Factories;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -48,6 +48,7 @@ namespace Marooned.Sprites
         private Stopwatch _invulnerabilityTimer = new Stopwatch();
 
         private InputController _inputController;
+        private Dictionary<Direction, LinearMoveAction> _moveActions;
 
         public Player(Texture2D texture, Texture2D hitboxTexture, InputController inputController) : base(texture)
         {
