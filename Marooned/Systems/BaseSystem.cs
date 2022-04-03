@@ -7,7 +7,9 @@ namespace Marooned.Systems
     public class BaseSystem<T> where T: BaseComponent
     {
         private static List<T> _components = new List<T>();
-        private static T instance;
+        private static BaseSystem<T> instance = new BaseSystem<T>();
+        //make the constructor private so that this class cannot be
+        //instantiated
         private BaseSystem() { }
 
         // Update each component
@@ -26,7 +28,8 @@ namespace Marooned.Systems
             _components.Add(component);
         }
 
-        public static T GetInstance()
+        //Get the only object available
+        public static BaseSystem<T> GetInstance()
         {
             return instance;
         }
