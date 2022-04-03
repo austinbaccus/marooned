@@ -6,8 +6,12 @@ namespace Marooned.Systems
 {
     public class BaseSystem<T> where T: BaseComponent
     {
-        private List<T> _components = new List<T>();
-        public void Update(GameTime gameTime)
+        private static List<T> _components = new List<T>();
+        private static T instance;
+        private BaseSystem() { }
+
+        // Update each component
+        public static void Update(GameTime gameTime)
         {
             foreach(T component in _components)
             {
@@ -15,11 +19,16 @@ namespace Marooned.Systems
             }
         }
 
-        // add components
+        // Add components
 
-        public void AddComponent(T component)
+        public static void AddComponent(T component)
         {
             _components.Add(component);
+        }
+
+        public static T GetInstance()
+        {
+            return instance;
         }
     }
 }
