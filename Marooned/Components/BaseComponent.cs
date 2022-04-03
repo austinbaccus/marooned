@@ -5,7 +5,12 @@ namespace Marooned.Components
 {
     public abstract class BaseComponent
     {
-        public Entity Entity { get; private set; }
+        protected Entity _entity;
+
+        public BaseComponent(Entity entity)
+        {
+            _entity = entity;
+        }
 
         public abstract void Update(GameTime gameTime);
     }
