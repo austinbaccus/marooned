@@ -23,7 +23,7 @@ namespace Marooned.States
         public List<Sprite> hearts = new List<Sprite>();
         public OrthographicCamera camera;
 
-        private List<Component> components;
+        private List<ComponentOld> components;
 
         // Tiled
         public TiledMap tiledMap;
@@ -33,7 +33,7 @@ namespace Marooned.States
 
         public InteractiveState(Game1 game, GraphicsDevice graphicsDevice, ContentManager content, string mapPath, List<string> songPaths, string playerSpritePath, string playerHitboxSpritePath) : base(game, graphicsDevice, content)
         {
-            components = new List<Component>();
+            components = new List<ComponentOld>();
             LoadContent();
             LoadSprites(playerSpritePath, playerHitboxSpritePath);
             LoadEnemies();
@@ -144,9 +144,9 @@ namespace Marooned.States
             // update lives
             UpdateLives();
         }
-        public override List<Component> GetComponents()
+        public override List<ComponentOld> GetComponents()
         {
-            List<Component> componentAggregation = new List<Component>();
+            List<ComponentOld> componentAggregation = new List<ComponentOld>();
             componentAggregation.AddRange(components);
             componentAggregation.AddRange(player.BulletList);
             componentAggregation.AddRange(grunts);

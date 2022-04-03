@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Marooned.Sprites
 {
-    public class Sprite : Component
+    public class Sprite : ComponentOld
     {
         internal Texture2D _texture;
         public Vector2 Position;

@@ -5,7 +5,7 @@ using System;
 
 namespace Marooned.Controls
 {
-    public class Button : Component
+    public class Button : ComponentOld
     {
         #region Fields
 

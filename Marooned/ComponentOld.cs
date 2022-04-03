@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Marooned
 {
-    public abstract class Component
+    public abstract class ComponentOld
     {
         public abstract void Draw(GameTime gameTime, SpriteBatch spriteBatch);
 

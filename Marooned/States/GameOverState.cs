@@ -10,7 +10,7 @@ namespace Marooned.States
     public class GameOverState : State
     {
         public InteractiveState BackgroundState { get; set; }
-        public List<Component> components;
+        public List<ComponentOld> components;
 
         private Button _retryButton;
         private Button _returnMenuButton;
@@ -33,7 +33,7 @@ namespace Marooned.States
             };
             _returnMenuButton.Click += ReturnMenuButton_Click;
 
-            components = new List<Component>()
+            components = new List<ComponentOld>()
             {
                 _retryButton,
                 _returnMenuButton,
@@ -62,7 +62,7 @@ namespace Marooned.States
                 component.Update(gameTime);
         }
 
-        public override List<Component> GetComponents()
+        public override List<ComponentOld> GetComponents()
         {
             return components;
         }

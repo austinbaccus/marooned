@@ -10,7 +10,7 @@ namespace Marooned.States
 {
     public class MenuState : State
     {
-        private List<Component> components;
+        private List<ComponentOld> components;
 
         public MenuState(Game1 game, GraphicsDevice graphicsDevice, ContentManager content) : base(game, graphicsDevice, content)
         {
@@ -36,7 +36,7 @@ namespace Marooned.States
             };
             quitGameButton.Click += QuitGameButton_Click;
 
-            components = new List<Component>()
+            components = new List<ComponentOld>()
             {
                 newGameButton,
                 loadGameButton,
@@ -74,7 +74,7 @@ namespace Marooned.States
                 component.Update(gameTime);
         }
 
-        public override List<Component> GetComponents()
+        public override List<ComponentOld> GetComponents()
         {
             return components;
         }

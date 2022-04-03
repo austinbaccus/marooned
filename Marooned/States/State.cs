@@ -40,7 +40,7 @@ namespace Marooned.States
 
         public abstract void Update(GameTime gameTime);
 
-        public abstract List<Component> GetComponents();
+        public abstract List<ComponentOld> GetComponents();
 
         #endregion
     }
