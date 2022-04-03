@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework;
 
 namespace Marooned.Components
 {
-    public abstract class Component
+    public abstract class BaseComponent
     {
         public Entity Entity { get; private set; }
 
