@@ -40,6 +40,10 @@ data/
         bullets/
             [Example] regular_bullet.json
             ...
+        powerups/
+            [Example] regular_powerup.json
+            [Example] improved_powerup.json
+            ...
     scripts/
         [Example] spawn_fairy_swarm.json
         ...
@@ -55,7 +59,27 @@ parsed and loaded. When a [`spawn`](#spawn-action) action.
 
 # Entity JSON
 
+Every entity may have an optional `prototype` attribute, which is essentially
+a way of copying another entity as a sort of "base" entity. For instance, a
+`hard_fairy.json` could just look like this:
 
+```json
+{
+    "prototype": "normal_fairy",
+    "components": [
+        {
+            "type": "health",
+            "value": 50
+        }
+    ],
+    "on_death_script": [
+        {
+            "action": "spawn",
+            "entity": "regular_powerup"
+        }
+    ]
+}
+```
 
 ## Entity JSON Components
 
@@ -110,6 +134,10 @@ Here is a simple example of a `reimu.json` entity JSON under `players/`:
         {
             "type": "respawn",
             "respawns_left": 3
+        },
+        {
+            "type": "powerup",
+            "value": "regular"
         }
     ],
     "script": []
@@ -195,6 +223,19 @@ Usage:
 Attributes:
 - `script: string`, the name of the script to execute (name as in its
 JSON file name)
+
+## Powerup Action
+
+Usage:
+```json
+{
+    "action": "powerup",
+    "powerup": "regular"
+}
+```
+
+Attributes:
+- `powerup: string`, the name of the powerup to grant to the entity
 
 # Conventions
 
