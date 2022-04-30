@@ -208,3 +208,4 @@ in JSON.
 sections on each component JSON that needs it
   - e.g., once we add something like a `PhysicsComponent`, we should add a
   `PhysicsComponent JSON` section
+- Add level interpreter section
