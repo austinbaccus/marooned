@@ -196,6 +196,11 @@ public class Script
 }
 ```
 
+## Actor
+
+An **actor** is something that runs a [script](#script). This can be as simple
+as an entity in the game, or it can be the current level.
+
 # Script JSON
 
 A script can be written in JSON, then referenced anywhere in an actor's JSON.
@@ -253,11 +258,6 @@ defines the following:
 which means, when the fairy dies, it will run the `spawn_regular_power.json` script.
 
 Note that a script may also run other scripts using the [`script`](#script-action) action.
-
-## Actor
-
-An **actor** is something that runs a [script](#script). This can be as simple
-as an entity in the game, or it can be the current level.
 
 ## Time
 
