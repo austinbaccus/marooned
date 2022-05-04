@@ -86,17 +86,7 @@ a way of copying another entity as a sort of "base" entity. For instance, a
 ## Entity JSON Components
 
 Every entity JSON can have some set of components, as long as the specified
-component has a corresponding component JSON. That is, the component can be
-loaded directly from JSON.
-
-Each component has a `type` attribute that corresponds to some real
-[component](#component). i.e.,
-
-```json
-{
-    "type": "name of component"
-}
-```
+component has a corresponding [component JSON](#component-json].
 
 Usually, they will also have a `value` attribute, but they may also have other
 attributes named something other than `value`. For instance, if there were
