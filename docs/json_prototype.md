@@ -134,7 +134,7 @@ Here is a simple example of a `reimu.json` entity JSON under `players/`:
             "value": "textures/reimu.png"
         },
         {
-            "type": "player_input"
+            "type": "player_move_input"
         },
         {
             "type": "physics",
