@@ -2,12 +2,13 @@
 
 ## Entity
 
-An object that has components. Each [Entity JSON](#entity-json) corresponds
+An object that has components. Each [entity JSON](#entity-json) corresponds
 to an entity.
 
 ## Component
 
-A grouping of data.
+A grouping of data. Each [component JSON](#component-json) corresponds
+to a component.
 
 ## System
 
@@ -32,7 +33,7 @@ data/
             [Example] marisa.json
             ...
         enemies/
-            [Example] normal_fairy.json
+            [Example] regular_fairy.json
             [Example] hard_fairy.json
             ...
         bosses/
@@ -46,6 +47,7 @@ data/
             ...
     scripts/
         [Example] spawn_fairy_swarm.json
+        [Example] spawn_regular_powerup.json
         ...
 ```
 
@@ -65,7 +67,7 @@ a way of copying another entity as a sort of "base" entity. For instance, a
 
 ```json
 {
-    "prototype": "normal_fairy",
+    "prototype": "regular_fairy",
     "components": [
         {
             "type": "health",
@@ -74,8 +76,8 @@ a way of copying another entity as a sort of "base" entity. For instance, a
     ],
     "on_death_script": [
         {
-            "action": "spawn",
-            "entity": "regular_powerup"
+            "action": "script",
+            "script": "spawn_regular_powerup"
         }
     ]
 }
@@ -111,6 +113,27 @@ a `HealthComponent`, then an enemy could have that component by specifying:
 
 in its JSON file.
 
+An entity JSON will also usually have a [`script`](#script) attribute, which defines
+the script the entity will run. For instance:
+
+```json
+"script": [
+    {
+        "action": "script",
+        "script": "spawn_fairy_swarm"
+    },
+    {
+        "time": 5,
+        "action": "spawn",
+        "position": "150 -10",
+        "entity": "hard_fairy"
+    }
+]
+```
+
+will run the `spawn_fairy_swarm` script (at `time=0`, as [`time`](#time) is omitted), then
+5 seconds later will [`spawn`](#spawn-action) 1 `hard_fairy` entity.
+
 Here is a simple example of a `reimu.json` entity JSON under `players/`:
 
 ```json
@@ -144,7 +167,20 @@ Here is a simple example of a `reimu.json` entity JSON under `players/`:
 }
 ```
 
-where `"type": "texure"` corresponds to a `TextureComponent`.
+where e.g., `"type": "texure"` corresponds to a `TextureComponent`.
+
+# Component JSON
+
+```json
+{
+    "type": "component name"
+}
+```
+
+The `type` is a string corresponding to some component. Each component
+type will have its own additional attributes that can be inserted into
+its corresponding JSON. For instance, the `respawn` component has
+an additional attribute called `respawns_left`.
 
 # Script
 
@@ -162,11 +198,71 @@ public class Script
 {
     public Queue<IAction> Actions;
 
-    public void AddAction(IAction action);
+    public void Add(IAction action);
+    public void RemoveAll();
+    public void RemoveFirst();
     public void ExecuteAll(GameTime gameTime);
     public void ExecuteFirst(GameTime gameTime);
 }
 ```
+
+# Script JSON
+
+A script can be written in JSON, then referenced anywhere in an actor's JSON.
+A script JSON is simply a list of [actions](#actions). For instance, the
+`spawn_fairy_swarm` might look something like this:
+
+```json
+[
+    {
+        "action": "spawn",
+        "entity": "regular_fairy",
+        "position": "310 50",
+        "script": [
+            "action": "move",
+            "pattern": "left",
+            "duration": 5
+        ]
+    },
+    {
+        "action": "spawn",
+        "entity": "regular_fairy",
+        "position": "320 50",
+        "script": [
+            "action": "move",
+            "pattern": "left",
+            "duration": 5
+        ]
+    },
+    {
+        "action": "spawn",
+        "entity": "regular_fairy",
+        "position": "330 50",
+        "script": [
+            "action": "move",
+            "pattern": "left",
+            "duration": 5
+        ]
+    }
+]
+```
+
+For instance,
+in the `hard_fairy.json` example in the [entity JSON](#entity-json) section, the JSON
+defines the following:
+
+```json
+"on_death_script": [
+    {
+        "action": "script",
+        "script": "spawn_regular_powerup"
+    }
+]
+```
+
+which means, when the fairy dies, it will run the `spawn_regular_power.json` script.
+
+Note that a script may also run other scripts using the [`script`](#script-action) action.
 
 ## Actor
 
@@ -190,7 +286,7 @@ the action is to be performed after the [script](#script) is executed.
 ```cs
 public interface IAction
 {
-    public void Execute(GameTime gameTime);
+    void Execute(GameTime gameTime);
 }
 ```
 
@@ -201,14 +297,23 @@ Usage:
 {
     "action": "spawn",
     "entity": "entity json name to spawn",
-    "count": 1
+    "position": "vector2",
+    "count": 5,
+    "script": []
 }
 ```
 
 Attributes:
 - `entity: string`, the name of the entity to spawn (name as in its 
 JSON file name)
+- [Optional] `position: Vector2`, the position at which to spawn the entity
+  - When omitted, will spawn at the location of the [actor](#actor). Note: this means
+  it *should* be included for a Level actor, otherwise it would just spawn at 0, 0.
 - [Optional] `count: integer`, the number of entities to spawn
+  - Defaults to 1
+- [Optional] `script: `[`ScriptJSON`](#script-json), the script to run for the entity.
+  - This merges into the entity's script; this will **not** override an entity's
+  script, but run "alongside" it.
 
 ## Script Action
 
@@ -224,18 +329,32 @@ Attributes:
 - `script: string`, the name of the script to execute (name as in its
 JSON file name)
 
-## Powerup Action
+## Attach Action
 
 Usage:
 ```json
 {
-    "action": "powerup",
-    "powerup": "regular"
+    "action": "attach",
+    "components": []
 }
 ```
 
 Attributes:
-- `powerup: string`, the name of the powerup to grant to the entity
+- `components: list of components`, list of components to attach to the entity
+
+## Detach Action
+
+Usage:
+```json
+{
+    "action": "detach",
+    "components": [""]
+}
+```
+
+Attributes:
+- `components: list of names of components`, list of name of components to detach
+from the entity (each name being a string, same as `type` attribute in a component JSON).
 
 # Conventions
 
