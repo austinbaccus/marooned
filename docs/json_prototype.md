@@ -214,9 +214,16 @@ A script JSON is simply a list of [actions](#actions). For instance, the
         "entity": "regular_fairy",
         "position": "310 50",
         "script": [
-            "action": "move",
-            "pattern": "left",
-            "duration": 5
+            {
+                "action": "move",
+                "pattern": "left",
+                "duration": 5
+            },
+            {
+                "action": "move",
+                "pattern": "up",
+                "duration": 5
+            }
         ]
     },
     {
@@ -224,9 +231,16 @@ A script JSON is simply a list of [actions](#actions). For instance, the
         "entity": "regular_fairy",
         "position": "320 50",
         "script": [
-            "action": "move",
-            "pattern": "left",
-            "duration": 5
+            {
+                "action": "move",
+                "pattern": "left",
+                "duration": 5
+            },
+            {
+                "action": "move",
+                "pattern": "up",
+                "duration": 5
+            }
         ]
     },
     {
@@ -234,9 +248,16 @@ A script JSON is simply a list of [actions](#actions). For instance, the
         "entity": "regular_fairy",
         "position": "330 50",
         "script": [
-            "action": "move",
-            "pattern": "left",
-            "duration": 5
+            {
+                "action": "move",
+                "pattern": "left",
+                "duration": 5
+            },
+            {
+                "action": "move",
+                "pattern": "up",
+                "duration": 5
+            }
         ]
     }
 ]
