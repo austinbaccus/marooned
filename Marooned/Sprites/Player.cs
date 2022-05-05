@@ -203,6 +203,12 @@ namespace Marooned.Sprites
                 IsFocused = false;
                 Script.AddAction(new UnfocusAction(this));
             }
+
+            // cheat mode
+            if (InputController.CHEAT_KEYS.Contains(e.Key))
+            {
+                IsInvulnerable = !IsInvulnerable;
+            }
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
@@ -384,6 +390,10 @@ namespace Marooned.Sprites
             if (IsInvulnerable)
             {
                 Color = Color.White * (float)((Math.Sin(_invulnerabilityTimer.ElapsedMilliseconds * gameTime.ElapsedGameTime.TotalSeconds * 5) + 1) / 2);
+            }
+            else
+            {
+                Color = Color.White;
             }
 
             if (_invulnerabilityTimer.Elapsed.TotalSeconds >= 2)

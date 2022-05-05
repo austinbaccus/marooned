@@ -26,6 +26,7 @@ namespace Marooned.Controllers
         public static HashSet<Keys> SHOOT_DOWN_KEYS = new HashSet<Keys>() { Keys.Down };
         public static HashSet<Keys> SHOOT_RIGHT_KEYS = new HashSet<Keys>() { Keys.Right };
         public static HashSet<Keys> FOCUS_KEYS = new HashSet<Keys>() { Keys.LeftShift };
+        public static HashSet<Keys> CHEAT_KEYS = new HashSet<Keys>() { Keys.OemTilde };
 
         public event EventHandler<KeyEventArgs> OnKeyPressEvent;
         public event EventHandler<KeyEventArgs> OnKeyDownEvent;
