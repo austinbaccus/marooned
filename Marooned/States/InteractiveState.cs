@@ -284,14 +284,14 @@ namespace Marooned.States
                 EnemyFactory.MakeGrunt("boss1", new Vector2(250, 0), 30, MovePattern.Pattern.fire_boss, MovePattern.Pattern.boss)
             };
 
-            //waves.Push(wave8);
+            waves.Push(wave8);
             //waves.Push(wave7);
             //waves.Push(wave6);
             //waves.Push(wave5);
             //waves.Push(wave4);
             //waves.Push(wave3);
             //waves.Push(wave2);
-            waves.Push(wave1);
+            //waves.Push(wave1);
         }
 
         private void LoadMusic(List<string> songPaths)
