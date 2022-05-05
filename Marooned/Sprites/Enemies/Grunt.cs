@@ -108,7 +108,7 @@ namespace Marooned.Sprites.Enemies
                     float dX = (float)Math.Cos(angle + Math.PI / 2);
                     float dY = (float)Math.Sin(angle + Math.PI / 2);
                     Vector2 angleVector = new Vector2(dX, dY);
-                    BulletList.Add(BulletFactory.MakeBullet(_bulletLifespan, angleVector * _bulletVelocity, 2f, new Vector2(this.Position.X, this.Position.Y)));
+                    BulletList.Add(BulletFactory.MakeBullet(gameContext, _bulletLifespan, angleVector * _bulletVelocity, 2f, new Vector2(this.Position.X, this.Position.Y)));
                 }
             }
         }

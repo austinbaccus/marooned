@@ -9,6 +9,8 @@ namespace Marooned
 {
     public class Game1 : Game
     {
+        public static string CONTENT_DIRECTORY = "Content";
+
         public const int SCREEN_WIDTH = 1280;
         public const int SCREEN_HEIGHT = 720;
 
@@ -20,11 +22,8 @@ namespace Marooned
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
-            Content.RootDirectory = "Content";
+            Content.RootDirectory = CONTENT_DIRECTORY;
             IsMouseVisible = true;
-
-            BulletFactory.content = Content;
-            EnemyFactory.content = Content;
         }
 
         protected override void Initialize()
@@ -45,7 +44,7 @@ namespace Marooned
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             _gameContext = new GameContext(this, _graphics, _spriteBatch, Content);
-            _gameContext.StateManager.ChangeState(new MenuState(_gameContext));
+            _gameContext.StateManager.SwapState(new MenuState(_gameContext));
         }
 
         protected override void LoadContent()
@@ -68,6 +67,8 @@ namespace Marooned
 
         protected override void Draw(GameTime gameTime)
         {
+            _gameContext.GraphicsDevice.Clear(Color.CornflowerBlue);
+
             _gameContext.GameTime = gameTime;
 
             _gameContext.StateManager.Draw();

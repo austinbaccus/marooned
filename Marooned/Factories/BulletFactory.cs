@@ -7,7 +7,6 @@ namespace Marooned.Factories
 {
     public static class BulletFactory
     {
-        public static ContentManager content;
         // TODO: Come up with a better, non-hardcoded way to instantiate source rectangles.
         private static readonly Rectangle[] _animSources = {
             new Rectangle(18, 18, 16, 20),
@@ -17,13 +16,13 @@ namespace Marooned.Factories
         };
 
         // TODO: Make Bullets from an object pool for efficiency
-        public static Bullet MakeBullet(float lifeSpan, Vector2 linearVelocity, float damage, Vector2 origin)
+        public static Bullet MakeBullet(GameContext gameContext, float lifeSpan, Vector2 linearVelocity, float damage, Vector2 origin)
         {
-            var texture = content.Load<Texture2D>("Sprites/Banana");
+            var texture = gameContext.Content.Load<Texture2D>("Sprites/Banana");
             Bullet newBullet = new Bullet(texture, _animSources, lifeSpan, linearVelocity, damage, origin)
             {
 #if DEBUG
-                HitboxSprite = new Sprite(content.Load<Texture2D>("Sprites/PlayerHitbox")),
+                HitboxSprite = new Sprite(gameContext.Content.Load<Texture2D>("Sprites/PlayerHitbox")),
 #endif
             };
             newBullet.Hitbox = new Hitbox(newBullet)

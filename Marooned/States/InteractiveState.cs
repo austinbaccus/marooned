@@ -19,23 +19,27 @@ namespace Marooned.States
     {
         private List<ComponentOld> _components;
         private Vector2 _spawnPoint = new Vector2(300, 300);
+        private Level _level;
+
+        private string _mapPath;
+        private List<string> _songPaths;
+        private string _playerSpritePath;
+        private string _playerHitboxSpritePath;
 
         public InteractiveState(GameContext gameContext, string mapPath, List<string> songPaths, string playerSpritePath, string playerHitboxSpritePath) : base(gameContext)
         {
             _components = new List<ComponentOld>();
+
+            _mapPath = mapPath;
+            _songPaths = songPaths;
+            _playerSpritePath = playerSpritePath;
+            _playerHitboxSpritePath = playerHitboxSpritePath;
 
             InputController = new InputController(this);
 
             Systems = new SequentialSystem<GameContext>(
                 // systems here
             );
-
-            LoadContent();
-            LoadSprites(playerSpritePath, playerHitboxSpritePath);
-            LoadEnemies();
-            LoadMusic(songPaths);
-            LoadMap(mapPath);
-            LoadLives();
         }
 
         // Tiled
@@ -165,6 +169,12 @@ namespace Marooned.States
             {
                 Zoom = 2f,
             };
+
+            LoadSprites(_playerSpritePath, _playerHitboxSpritePath);
+            LoadEnemies();
+            LoadMusic(_songPaths);
+            LoadMap(_mapPath);
+            LoadLives();
         }
 
         private void LoadSprites(string playerSpritePath, string playerHitboxSpritePath)
@@ -191,32 +201,32 @@ namespace Marooned.States
         {
             List<Grunt> wave1 = new List<Grunt>
             {
-                EnemyFactory.MakeGrunt("skeleton", new Vector2(225, 100), 5),
-                EnemyFactory.MakeGrunt("skeleton", new Vector2(250, 100), 5),
-                EnemyFactory.MakeGrunt("skeleton", new Vector2(275, 100), 5)
+                EnemyFactory.MakeGrunt(GameContext, "skeleton", new Vector2(225, 100), 5),
+                EnemyFactory.MakeGrunt(GameContext, "skeleton", new Vector2(250, 100), 5),
+                EnemyFactory.MakeGrunt(GameContext, "skeleton", new Vector2(275, 100), 5)
             };
 
             List<Grunt> wave2 = new List<Grunt>
             {
-                EnemyFactory.MakeGrunt("skeleton", new Vector2(225, 100), 5),
-                EnemyFactory.MakeGrunt("skeleton", new Vector2(275, 100), 5),
-                EnemyFactory.MakeGrunt("skeleton_dangerous", new Vector2(250, 100), 5)
+                EnemyFactory.MakeGrunt(GameContext, "skeleton", new Vector2(225, 100), 5),
+                EnemyFactory.MakeGrunt(GameContext, "skeleton", new Vector2(275, 100), 5),
+                EnemyFactory.MakeGrunt(GameContext, "skeleton_dangerous", new Vector2(250, 100), 5)
             };
 
             List<Grunt> wave3 = new List<Grunt>
             {
-                EnemyFactory.MakeGrunt("skeleton_mage", new Vector2(250, 100), 5)
+                EnemyFactory.MakeGrunt(GameContext, "skeleton_mage", new Vector2(250, 100), 5)
             };
 
             // Boss goes here, replace skeleton_mage with boss assets/props
             List<Grunt> wave4 = new List<Grunt>
             {
-                EnemyFactory.MakeGrunt("miniboss1", new Vector2(250, 300), 10)
+                EnemyFactory.MakeGrunt(GameContext, "miniboss1", new Vector2(250, 300), 10)
             };
 
             List<Grunt> wave5 = new List<Grunt>
             {
-                EnemyFactory.MakeGrunt("boss1", new Vector2(250, 300), 30)
+                EnemyFactory.MakeGrunt(GameContext, "boss1", new Vector2(250, 300), 30)
             };
 
             Waves.Push(wave5);
@@ -231,21 +241,26 @@ namespace Marooned.States
             int songIdx = 0;
 
             // load first song
-            Uri uri = new Uri(songPaths[songIdx], UriKind.Relative);
-            Song song = Song.FromUri("track", uri);
+            Song song = GameContext.Content.Load<Song>(songPaths[songIdx]);
             MediaPlayer.Play(song);
 
-            MediaPlayer.ActiveSongChanged += (s, e) => {
-                // dispose of current song
-                song.Dispose();
-                songIdx = (songIdx + 1) % songPaths.Count;
-                System.Diagnostics.Debug.WriteLine("Song ended and disposed");
+            // TODO: Find a better way to handle multiple songs, since it
+            // doesn't work with the new handling of content loading/unloading.
+            // (Maybe a PlaylistManager or SongManager class?).
+            // Note: with the current handling of content loading/unloading, you
+            // do NOT need to manually call `Dispose()`; that will automatically be
+            // called when a state is unloaded. That might be why this doesn't work.
+            //MediaPlayer.ActiveSongChanged += (s, e) =>
+            //{
+            //    // dispose of current song
+            //    song.Dispose();
+            //    songIdx = (songIdx + 1) % songPaths.Count;
+            //    System.Diagnostics.Debug.WriteLine("Song ended and disposed");
 
-                // play next song
-                uri = new Uri(songPaths[songIdx], UriKind.Relative);
-                song = Song.FromUri("track", uri);
-                MediaPlayer.Play(song);
-            };
+            //    // play next song
+            //    song = GameContext.Content.Load<Song>(songPaths[songIdx]);
+            //    MediaPlayer.Play(song);
+            //};
         }
 
         private void LoadMap(string mapPath)
@@ -276,7 +291,7 @@ namespace Marooned.States
             else
             {
                 // you won! game over
-                GameContext.StateManager.ChangeState(new MenuState(GameContext));
+                GameContext.StateManager.SwapState(new MenuState(GameContext));
             }
         }
 
@@ -310,7 +325,7 @@ namespace Marooned.States
         public void OnDeath()
         {
             _components.Remove(Player);
-            GameContext.StateManager.ChangeState(new GameOverState(GameContext));
+            GameContext.StateManager.SwapState(new GameOverState(GameContext));
         }
 
         // TODO: Use a creational pattern to create an InteractiveState (or states in general?)
@@ -322,8 +337,8 @@ namespace Marooned.States
                 "Maps/tutorial",
                 new List<string>()
                 {
-                    "Content/Sounds/Music/ConcernedApe - Stardew Valley 1.5 Original Soundtrack - 03 Volcano Mines (Molten Jelly).mp3",
-                    "Content/Sounds/Music/ConcernedApe - Stardew Valley 1.5 Original Soundtrack - 01 Ginger Island.mp3"
+                    "Sounds/Music/ConcernedApe - Stardew Valley 1.5 Original Soundtrack - 03 Volcano Mines (Molten Jelly)",
+                    "Sounds/Music/ConcernedApe - Stardew Valley 1.5 Original Soundtrack - 01 Ginger Island"
                 },
                 "Sprites/IslandParrot",
                 "Sprites/PlayerHitbox"

@@ -1,11 +1,12 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Marooned.States;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 
 namespace Marooned.Controls
 {
-    public class Button : ComponentOld
+    public class Button : DrawableGameComponent
     {
         #region Fields
 
@@ -31,6 +32,8 @@ namespace Marooned.Controls
 
         public Vector2 Position { get; set; }
 
+        public GameContext GameContext { get; set; }
+
         public Rectangle Rectangle
         {
             get
@@ -45,8 +48,10 @@ namespace Marooned.Controls
 
         #region Methods
 
-        public Button(Texture2D texture, SpriteFont font)
+        public Button(GameContext gameContext, Texture2D texture, SpriteFont font) : base(gameContext.Game)
         {
+            GameContext = gameContext;
+
             _texture = texture;
 
             _font = font;
@@ -54,22 +59,28 @@ namespace Marooned.Controls
             PenColour = Color.Black;
         }
 
-        public override void Draw(GameContext gameContext)
+        public override void Draw(GameTime gameTime)
         {
+            GameContext.SpriteBatch.Begin();
+
             var color = _isHovering ? Color.Gray : Color.White;
 
-            gameContext.SpriteBatch.Draw(_texture, Rectangle, color);
+            GameContext.SpriteBatch.Draw(_texture, Rectangle, color);
 
             if (!string.IsNullOrEmpty(Text))
             {
                 var x = (Rectangle.X + (Rectangle.Width / 2)) - (_font.MeasureString(Text).X / 2);
                 var y = (Rectangle.Y + (Rectangle.Height / 2)) - (_font.MeasureString(Text).Y / 2);
 
-                gameContext.SpriteBatch.DrawString(_font, Text, new Vector2(x, y), PenColour);
+                GameContext.SpriteBatch.DrawString(_font, Text, new Vector2(x, y), PenColour);
             }
+
+            GameContext.SpriteBatch.End();
+
+            base.Draw(gameTime);
         }
 
-        public override void Update(GameContext gameContext)
+        public override void Update(GameTime gameTime)
         {
             _previousMouse = _currentMouse;
             _currentMouse = Mouse.GetState();
@@ -87,6 +98,8 @@ namespace Marooned.Controls
                     Click?.Invoke(this, new EventArgs());
                 }
             }
+
+            base.Update(gameTime);
         }
 
         #endregion

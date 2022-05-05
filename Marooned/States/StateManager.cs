@@ -14,27 +14,54 @@ namespace Marooned
         public State PreviousState { get; private set; }
         public State CurrentState
         {
-            get {
+            get
+            {
                 if (IsEmpty()) return null;
                 return States.Peek();
             }
         }
 
-        public void ChangeState(State state)
+        public void SwapState(State state)
         {
-            PreviousState = CurrentState;
-            PushState(state);
+            if (!IsEmpty())
+            {
+                UnloadCurrentState();
+                States.Pop();
+            }
+            States.Push(state);
             LoadState(state);
         }
 
-        public void PopState()
+        public void PushState(State state)
         {
-            States.Pop();
-            // Need to get previous state before previous
-            // state to get the new previous state
-            State currentState = States.Pop();
-            PreviousState = States.Peek();
-            ChangeState(currentState);
+            if (!IsEmpty())
+            {
+                UnloadCurrentState();
+            }
+            States.Push(state);
+            LoadState(state);
+        }
+
+        public void ReturnToPreviousState()
+        {
+            if (!IsEmpty())
+            {
+                UnloadCurrentState();
+                States.Pop();
+                // Need to get previous state before previous
+                // state to get the new previous state
+                State currentState = States.Pop();
+                if (IsEmpty())
+                {
+                    PreviousState = null;
+                }
+                else
+                {
+                    PreviousState = States.Peek();
+                }
+                PushState(currentState);
+                LoadState(currentState);
+            }
         }
 
         public bool IsEmpty()
@@ -67,17 +94,18 @@ namespace Marooned
             CurrentState?.Draw();
         }
 
-        private void PushState(State state)
+        private void UnloadCurrentState()
         {
-            States.Push(state);
+            if (CurrentState != null)
+            {
+                CurrentState.UnloadContent();
+                CurrentState.Dispose();
+                PreviousState = CurrentState;
+            }
         }
 
         private void LoadState(State state)
         {
-            CurrentState.UnloadContent();
-            CurrentState.Dispose();
-            PreviousState = CurrentState;
-
             state.GameContext = GameContext;
             state.Initialize();
             state.LoadContent();

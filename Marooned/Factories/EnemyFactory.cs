@@ -39,8 +39,7 @@ namespace Marooned.Factories
             public List<List<int>>? AnimationSources { get; set; } = null;
         }
 
-        public static ContentManager? content;
-        public static Grunt MakeGrunt(string enemyType, Vector2 position, int hitboxRadius)
+        public static Grunt MakeGrunt(GameContext gameContext, string enemyType, Vector2 position, int hitboxRadius)
         {
             // load json file
             string json = File.ReadAllText($"./Content/Enemies/{enemyType}.json");
@@ -51,7 +50,7 @@ namespace Marooned.Factories
                 throw new Exception($"Could not find enemy: {enemyType}.json");
             }
 
-            var texture = content!.Load<Texture2D>(enemyJson.Texture);
+            var texture = gameContext.Content.Load<Texture2D>(enemyJson.Texture);
 
             FiringPattern.Pattern firingPattern = enemyJson.FiringPattern ?? FiringPattern.Pattern.straight;
             MovePattern.Pattern movementPattern = enemyJson.MovementPattern ?? MovePattern.Pattern.down_left;
@@ -80,7 +79,7 @@ namespace Marooned.Factories
             grunt.Hitbox = new Hitbox(grunt) { Radius = hitboxRadius };
             grunt.Position = position;
 #if DEBUG
-            grunt.HitboxSprite = new Sprite(content!.Load<Texture2D>("Sprites/PlayerHitbox"));
+            grunt.HitboxSprite = new Sprite(gameContext.Content.Load<Texture2D>("Sprites/PlayerHitbox"));
 #endif
             return grunt;
         }

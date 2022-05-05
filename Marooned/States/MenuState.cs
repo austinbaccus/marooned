@@ -10,40 +10,10 @@ namespace Marooned.States
 {
     public class MenuState : State
     {
-        private List<ComponentOld> components;
+        private List<DrawableGameComponent> _components = new List<DrawableGameComponent>();
 
         public MenuState(GameContext gameContext) : base(gameContext)
         {
-            var buttonTexture = gameContext.Content.Load<Texture2D>("Controls/Button");
-            var buttonFont = gameContext.Content.Load<SpriteFont>("Fonts/Font");
-
-            var newGameButton = new Button(buttonTexture, buttonFont)
-            {
-                Text = "New Game",
-            };
-            newGameButton.Click += NewGameButton_Click;
-
-            var loadGameButton = new Button(buttonTexture, buttonFont)
-            {
-                Text = "Load Game",
-            };
-            loadGameButton.Click += LoadGameButton_Click;
-
-            var quitGameButton = new Button(buttonTexture, buttonFont)
-            {
-                Text = "Quit Game",
-            };
-            quitGameButton.Click += QuitGameButton_Click;
-
-            components = new List<ComponentOld>()
-            {
-                newGameButton,
-                loadGameButton,
-                quitGameButton,
-            };
-
-            LoadMusic();
-
             Systems = new SequentialSystem<GameContext>(
                 // systems here
             );
@@ -51,25 +21,70 @@ namespace Marooned.States
 
         private void LoadGameButton_Click(object sender, EventArgs e)
         {
-            Console.WriteLine("Load Game");
         }
 
         private void NewGameButton_Click(object sender, EventArgs e)
         {
-            GameContext.StateManager.ChangeState(InteractiveState.CreateDefaultState(GameContext));
+            GameContext.StateManager.SwapState(InteractiveState.CreateDefaultState(GameContext));
+        }
+
+        public override void LoadContent()
+        {
+            LoadMusic();
+
+            var buttonTexture = GameContext.Content.Load<Texture2D>("Controls/Button");
+            var buttonFont = GameContext.Content.Load<SpriteFont>("Fonts/Font");
+
+            var newGameButton = new Button(GameContext, buttonTexture, buttonFont)
+            {
+                Text = "New Game",
+            };
+            newGameButton.Click += NewGameButton_Click;
+
+            var loadGameButton = new Button(GameContext, buttonTexture, buttonFont)
+            {
+                Text = "Load Game",
+            };
+            loadGameButton.Click += LoadGameButton_Click;
+
+            var quitGameButton = new Button(GameContext, buttonTexture, buttonFont)
+            {
+                Text = "Quit Game",
+            };
+            quitGameButton.Click += QuitGameButton_Click;
+
+            _components.Add(newGameButton);
+            _components.Add(loadGameButton);
+            _components.Add(quitGameButton);
+
+            foreach (var component in _components)
+            {
+                GameContext.Game.Components.Add(component);
+            }
+
+            base.LoadContent();
+        }
+
+        public override void Dispose()
+        {
+            GameContext.Game.Components.Clear();
+            foreach (var component in _components)
+            {
+                component.Dispose();
+            }
+
+            base.Dispose();
         }
 
         public override void Update()
         {
-            for (int i = 0; i < components.Count; i++)
+            for (int i = 0; i < _components.Count; i++)
             {
-                Button button = (Button)components[i];
+                Button button = (Button)_components[i];
                 button.Position = Utils.GetCenterPos(button.Rectangle.Width, button.Rectangle.Height, GameContext.GraphicsDevice.Viewport)
-                                - new Vector2(0, components.Count * button.Rectangle.Height / 2)
+                                - new Vector2(0, _components.Count * button.Rectangle.Height / 2)
                                 + i * new Vector2(0, button.Rectangle.Height);
             }
-            foreach (var component in components)
-                component.Update(GameContext);
         }
 
         private void QuitGameButton_Click(object sender, EventArgs e)
@@ -79,27 +94,13 @@ namespace Marooned.States
 
         private void LoadMusic()
         {
-            Uri uri = new Uri("Content/Sounds/Music/ConcernedApe - Stardew Valley 1.5 Original Soundtrack - 01 Ginger Island.mp3", UriKind.Relative);
-            Song song = Song.FromUri("mySong", uri);
-            MediaPlayer.Play(song);
-            MediaPlayer.ActiveSongChanged += (s, e) => {
-                song.Dispose();
-                System.Diagnostics.Debug.WriteLine("Song ended and disposed");
-            };
+            var _song = GameContext.Content.Load<Song>("Sounds/Music/ConcernedApe - Stardew Valley 1.5 Original Soundtrack - 01 Ginger Island");
+            MediaPlayer.Play(_song);
         }
 
         public override void Draw()
         {
             GameContext.GraphicsDevice.Clear(Color.CornflowerBlue);
-
-            GameContext.SpriteBatch.Begin();
-
-            foreach (var component in components)
-            {
-                component.Draw(GameContext);
-            }
-
-            GameContext.SpriteBatch.End();
         }
     }
 }
