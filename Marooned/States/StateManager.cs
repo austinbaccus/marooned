@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using MonoGame.Extended.Collections;
 
 namespace Marooned
 {
@@ -10,63 +10,97 @@ namespace Marooned
         }
 
         public GameContext GameContext { get; }
-        public Stack<State> States { get; private set; } = new Stack<State>();
-        public State PreviousState { get; private set; }
+        public Deque<State> States { get; private set; } = new Deque<State>();
+        public int Count { get => States.Count; }
+
         public State CurrentState
         {
             get
             {
-                if (IsEmpty()) return null;
-                return States.Peek();
+                State currentState;
+                if (States.GetFront(out currentState))
+                {
+                    return currentState;
+                }
+                return null;
             }
+        }
+        // Note: This represents the state BEFORE the current state inside States.
+        // It is NOT necessarily the state that was running BEFORE the current state.
+        public State PreviousState { get; private set; }
+
+        public bool PopState()
+        {
+            if (Count > 0)
+            {
+                UnloadCurrentState();
+                States.RemoveFromFront();
+                return true;
+            }
+            return false;
+        }
+
+        public bool PopState(out State outState)
+        {
+            if (Count > 0)
+            {
+                UnloadCurrentState();
+                return States.RemoveFromFront(out outState);
+            }
+            outState = null;
+            return false;
         }
 
         public void SwapState(State state)
         {
-            if (!IsEmpty())
-            {
-                UnloadCurrentState();
-                States.Pop();
-            }
-            States.Push(state);
-            LoadState(state);
+            PopState();
+            PushState(state);
         }
 
         public void PushState(State state)
         {
-            if (!IsEmpty())
-            {
-                UnloadCurrentState();
-            }
-            States.Push(state);
+            States.AddToFront(state);
             LoadState(state);
         }
 
-        public void ReturnToPreviousState()
+        public bool ReturnToPreviousState()
         {
-            if (!IsEmpty())
+            if (PopState())
             {
-                UnloadCurrentState();
-                States.Pop();
                 // Need to get previous state before previous
                 // state to get the new previous state
-                State currentState = States.Pop();
-                if (IsEmpty())
+                State currentState;
+                if (PopState(out currentState))
                 {
-                    PreviousState = null;
+                    if (Count <= 0)
+                    {
+                        PreviousState = null;
+                    }
+                    else
+                    {
+                        State previousState;
+                        if (States.GetFront(out previousState))
+                        {
+                            PreviousState = previousState;
+                        }
+                    }
+                    States.AddToFront(currentState);
                 }
                 else
                 {
-                    PreviousState = States.Peek();
+                    PreviousState = null;
                 }
-                PushState(currentState);
-                LoadState(currentState);
+                return true;
             }
+            return false;
         }
 
-        public bool IsEmpty()
+        public void Clear()
         {
-            return States.Count == 0;
+            for (int i = 0; i < Count; i++)
+            {
+                PopState();
+            }
         }
 
         public void Initialize()
@@ -86,12 +120,24 @@ namespace Marooned
 
         public void Update()
         {
-            CurrentState?.Update();
+            foreach (State state in States)
+            {
+                if (state.UpdateEnabled)
+                {
+                    state?.Update();
+                }
+            }
         }
 
         public void Draw()
         {
-            CurrentState?.Draw();
+            foreach (State state in States)
+            {
+                if (state.DrawEnabled)
+                {
+                    state?.Draw();
+                }
+            }
         }
 
         private void UnloadCurrentState()
@@ -100,7 +146,6 @@ namespace Marooned
             {
                 CurrentState.UnloadContent();
                 CurrentState.Dispose();
-                PreviousState = CurrentState;
             }
         }
 

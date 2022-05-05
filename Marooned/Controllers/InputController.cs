@@ -9,12 +9,16 @@ namespace Marooned.Controllers
 
     public class KeyEventArgs : EventArgs
     {
+        public KeyboardState CurrentState { get; set; }
+        public KeyboardState PreviousState { get; set; }
         public Keys Key { get; set; }
         public GameContext GameContext { get; set; }
     }
 
     public class MouseEventArgs : EventArgs
     {
+        public MouseState CurrentState { get; set; }
+        public MouseState PreviousState { get; set; }
         public GameContext GameContext { get; set; }
     }
 
@@ -59,12 +63,15 @@ namespace Marooned.Controllers
         public InputController(State state)
         {
             _state = state;
+
+            CurrentKeyboardState = Keyboard.GetState();
+            CurrentMouseState = Mouse.GetState();
         }
 
-        public KeyboardState CurrentKeyboardState { get; private set; } = new KeyboardState();
-        public KeyboardState PreviousKeyboardState { get; private set; } = new KeyboardState();
-        public MouseState CurrentMouseState { get; private set; } = new MouseState();
-        public MouseState PreviousMouseState { get; private set; } = new MouseState();
+        public KeyboardState CurrentKeyboardState { get; private set; }
+        public KeyboardState PreviousKeyboardState { get; private set; }
+        public MouseState CurrentMouseState { get; private set; }
+        public MouseState PreviousMouseState { get; private set; }
 
         #region Keyboard Event Invokers
 
@@ -72,6 +79,8 @@ namespace Marooned.Controllers
         {
             OnKeyPressEvent?.Invoke(this, new KeyEventArgs()
             {
+                CurrentState = CurrentKeyboardState,
+                PreviousState = PreviousKeyboardState,
                 Key = key,
                 GameContext = gameContext,
             });
@@ -81,6 +90,8 @@ namespace Marooned.Controllers
         {
             OnKeyDownEvent?.Invoke(this, new KeyEventArgs()
             {
+                CurrentState = CurrentKeyboardState,
+                PreviousState = PreviousKeyboardState,
                 Key = key,
                 GameContext = gameContext,
             });
@@ -90,8 +101,10 @@ namespace Marooned.Controllers
         {
             OnKeyUpEvent?.Invoke(this, new KeyEventArgs()
             {
+                CurrentState = CurrentKeyboardState,
+                PreviousState = PreviousKeyboardState,
                 Key = key,
-                GameContext = gameContext,
+                GameContext = gameContext
             });
         }
 
@@ -103,6 +116,8 @@ namespace Marooned.Controllers
         {
             OnMouseButton1PressEvent?.Invoke(this, new MouseEventArgs()
             {
+                CurrentState = CurrentMouseState,
+                PreviousState = PreviousMouseState,
                 GameContext = gameContext,
             });
         }
@@ -111,6 +126,8 @@ namespace Marooned.Controllers
         {
             OnMouseButton1DownEvent?.Invoke(this, new MouseEventArgs()
             {
+                CurrentState = CurrentMouseState,
+                PreviousState = PreviousMouseState,
                 GameContext = gameContext,
             });
         }
@@ -119,6 +136,8 @@ namespace Marooned.Controllers
         {
             OnMouseButton1UpEvent?.Invoke(this, new MouseEventArgs()
             {
+                CurrentState = CurrentMouseState,
+                PreviousState = PreviousMouseState,
                 GameContext = gameContext,
             });
         }
@@ -127,6 +146,8 @@ namespace Marooned.Controllers
         {
             OnMouseButton2PressEvent?.Invoke(this, new MouseEventArgs()
             {
+                CurrentState = CurrentMouseState,
+                PreviousState = PreviousMouseState,
                 GameContext = gameContext,
             });
         }
@@ -135,6 +156,8 @@ namespace Marooned.Controllers
         {
             OnMouseButton2DownEvent?.Invoke(this, new MouseEventArgs()
             {
+                CurrentState = CurrentMouseState,
+                PreviousState = PreviousMouseState,
                 GameContext = gameContext,
             });
         }
@@ -143,6 +166,8 @@ namespace Marooned.Controllers
         {
             OnMouseButton2UpEvent?.Invoke(this, new MouseEventArgs()
             {
+                CurrentState = CurrentMouseState,
+                PreviousState = PreviousMouseState,
                 GameContext = gameContext,
             });
         }
@@ -151,6 +176,8 @@ namespace Marooned.Controllers
 
         public void UpdateKeyboard(GameContext gameContext)
         {
+            CurrentKeyboardState = Keyboard.GetState();
+
             foreach (Keys key in CurrentKeyboardState.GetPressedKeys())
             {
                 if (!PreviousKeyboardState.GetPressedKeys().Contains(key))
@@ -167,51 +194,49 @@ namespace Marooned.Controllers
                     OnKeyUp(key, gameContext);
                 }
             }
+
+            PreviousKeyboardState = CurrentKeyboardState;
         }
 
         public void UpdateMouse(GameContext gameContext)
         {
-            if (CurrentMouseState.LeftButton.HasFlag(ButtonState.Pressed))
+            CurrentMouseState = Mouse.GetState();
+
+            if (CurrentMouseState.LeftButton == ButtonState.Pressed)
             {
-                if (!PreviousMouseState.LeftButton.HasFlag(ButtonState.Released))
+                if (PreviousMouseState.LeftButton == ButtonState.Released)
                 {
                     OnMouseButton1Press(gameContext);
                 }
                 OnMouseButton1Down(gameContext);
             }
 
-            if (CurrentMouseState.LeftButton.HasFlag(ButtonState.Released))
+            if (PreviousMouseState.LeftButton == ButtonState.Released)
             {
-
                 OnMouseButton1Up(gameContext);
             }
 
-            if (CurrentMouseState.RightButton.HasFlag(ButtonState.Pressed))
+            if (CurrentMouseState.RightButton == ButtonState.Pressed)
             {
-                if (!PreviousMouseState.RightButton.HasFlag(ButtonState.Released))
+                if (PreviousMouseState.RightButton == ButtonState.Released)
                 {
                     OnMouseButton2Press(gameContext);
                 }
                 OnMouseButton2Down(gameContext);
             }
 
-            if (CurrentMouseState.RightButton.HasFlag(ButtonState.Released))
+            if (PreviousMouseState.RightButton == ButtonState.Released)
             {
-
                 OnMouseButton2Up(gameContext);
             }
+
+            PreviousMouseState = CurrentMouseState;
         }
 
         public void Update(GameContext gameContext)
         {
-            CurrentKeyboardState = Keyboard.GetState();
-            CurrentMouseState = Mouse.GetState();
-
             UpdateKeyboard(gameContext);
             UpdateMouse(gameContext);
-
-            PreviousKeyboardState = CurrentKeyboardState;
-            PreviousMouseState = CurrentMouseState;
         }
     }
 }

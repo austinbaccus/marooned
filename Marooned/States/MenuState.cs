@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Marooned.Controls;
 using Microsoft.Xna.Framework.Media;
 using DefaultEcs.System;
+using Marooned.Controllers;
 
 namespace Marooned.States
 {
@@ -17,6 +18,8 @@ namespace Marooned.States
             Systems = new SequentialSystem<GameContext>(
                 // systems here
             );
+
+            InputController = new InputController(this);
         }
 
         private void LoadGameButton_Click(object sender, EventArgs e)
@@ -35,19 +38,19 @@ namespace Marooned.States
             var buttonTexture = GameContext.Content.Load<Texture2D>("Controls/Button");
             var buttonFont = GameContext.Content.Load<SpriteFont>("Fonts/Font");
 
-            var newGameButton = new Button(GameContext, buttonTexture, buttonFont)
+            var newGameButton = new Button(this, buttonTexture, buttonFont)
             {
                 Text = "New Game",
             };
             newGameButton.Click += NewGameButton_Click;
 
-            var loadGameButton = new Button(GameContext, buttonTexture, buttonFont)
+            var loadGameButton = new Button(this, buttonTexture, buttonFont)
             {
                 Text = "Load Game",
             };
             loadGameButton.Click += LoadGameButton_Click;
 
-            var quitGameButton = new Button(GameContext, buttonTexture, buttonFont)
+            var quitGameButton = new Button(this, buttonTexture, buttonFont)
             {
                 Text = "Quit Game",
             };
@@ -78,6 +81,7 @@ namespace Marooned.States
 
         public override void Update()
         {
+            InputController.Update(GameContext);
             for (int i = 0; i < _components.Count; i++)
             {
                 Button button = (Button)_components[i];

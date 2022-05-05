@@ -1,5 +1,6 @@
 ﻿using DefaultEcs;
 using DefaultEcs.System;
+using Marooned.Controllers;
 using Microsoft.Xna.Framework.Content;
 
 namespace Marooned
@@ -25,8 +26,11 @@ namespace Marooned
         }
 
         public GameContext GameContext { get; internal set; }
+        public InputController InputController { get; set; }
         public ISystem<GameContext> Systems { get; protected set; }
         public World World { get; protected set; }
+        public bool UpdateEnabled { get; set; } = true;
+        public bool DrawEnabled { get; set; } = true;
 
         public virtual void Initialize() { }
         public virtual void LoadContent() { }

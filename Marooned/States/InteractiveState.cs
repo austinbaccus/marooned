@@ -52,9 +52,9 @@ namespace Marooned.States
         public float LevelTime { get; private set; }
         public bool MiniBossActive { get; private set; }
         public bool BossActive { get; private set; }
-        public InputController InputController { get; }
         public OrthographicCamera Camera { get; private set; }
         public TiledMapRenderer TiledMapRenderer { get; private set; }
+        public bool PlayerAlive { get => Player.Lives > 0; }
 
         public void PostUpdate()
         {
@@ -97,6 +97,8 @@ namespace Marooned.States
             // check player for damage
             foreach (var grunt in Grunts)
             {
+                if (!PlayerAlive) break;
+
                 grunt.Update(GameContext);
 
                 for (int i = 0; i < grunt.BulletList.Count; i++)
@@ -116,6 +118,7 @@ namespace Marooned.States
                             {
                                 // "game over man! game over!"
                                 OnDeath();
+                                break;
                             }
 
                             grunt.BulletList.RemoveAt(i);
@@ -125,27 +128,30 @@ namespace Marooned.States
                 }
             }
 
-            // check enemies for damage
-            for (int i = 0; i < Player.BulletList.Count; i++)
+            if (PlayerAlive)
             {
-                Bullet bullet = Player.BulletList[i];
-                bullet.Update(GameContext);
-
-                for (int j = 0; j < Grunts.Count; j++)
+                // check enemies for damage
+                for (int i = 0; i < Player.BulletList.Count; i++)
                 {
-                    if (Grunts[j].Hitbox.IsTouching(bullet.Hitbox))
-                    {
-                        Grunts[j].isHit = true; // Show red damage on grunt
-                        Grunts[j].Health--;
-                        if (Grunts[j].Health <= 0)
-                        {
-                            Grunts.RemoveAt(j);
-                            j--;
-                        }
+                    Bullet bullet = Player.BulletList[i];
+                    bullet.Update(GameContext);
 
-                        Player.BulletList.RemoveAt(i);
-                        i--;
-                        break;
+                    for (int j = 0; j < Grunts.Count; j++)
+                    {
+                        if (Grunts[j].Hitbox.IsTouching(bullet.Hitbox))
+                        {
+                            Grunts[j].isHit = true; // Show red damage on grunt
+                            Grunts[j].Health--;
+                            if (Grunts[j].Health <= 0)
+                            {
+                                Grunts.RemoveAt(j);
+                                j--;
+                            }
+
+                            Player.BulletList.RemoveAt(i);
+                            i--;
+                            break;
+                        }
                     }
                 }
             }
@@ -325,7 +331,8 @@ namespace Marooned.States
         public void OnDeath()
         {
             _components.Remove(Player);
-            GameContext.StateManager.SwapState(new GameOverState(GameContext));
+            UpdateEnabled = false;
+            GameContext.StateManager.PushState(new GameOverState(GameContext));
         }
 
         // TODO: Use a creational pattern to create an InteractiveState (or states in general?)

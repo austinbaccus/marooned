@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using DefaultEcs.System;
+using Marooned.Controllers;
 using Marooned.Controls;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -18,15 +19,21 @@ namespace Marooned.States
             Systems = new SequentialSystem<GameContext>(
                 // systems here
             );
+
+            InputController = new InputController(this);
         }
 
         private void RetryButton_Click(object sender, EventArgs e)
         {
+            //GameContext.StateManager.SwapState(InteractiveState.CreateDefaultState(GameContext));
+            GameContext.StateManager.ReturnToPreviousState();
+            GameContext.StateManager.ReturnToPreviousState();
             GameContext.StateManager.SwapState(InteractiveState.CreateDefaultState(GameContext));
         }
 
         private void ReturnMenuButton_Click(object sender, EventArgs e)
         {
+            GameContext.StateManager.PopState();
             GameContext.StateManager.SwapState(new MenuState(GameContext));
         }
 
@@ -35,13 +42,13 @@ namespace Marooned.States
             var buttonTexture = GameContext.Content.Load<Texture2D>("Controls/Button");
             var buttonFont = GameContext.Content.Load<SpriteFont>("Fonts/Font");
 
-            _retryButton = new Button(GameContext, buttonTexture, buttonFont)
+            _retryButton = new Button(this, buttonTexture, buttonFont)
             {
                 Text = "Retry",
             };
             _retryButton.Click += RetryButton_Click;
 
-            _returnMenuButton = new Button(GameContext, buttonTexture, buttonFont)
+            _returnMenuButton = new Button(this, buttonTexture, buttonFont)
             {
                 Text = "Return to Menu",
             };
@@ -55,6 +62,7 @@ namespace Marooned.States
 
         public override void Update()
         {
+            InputController.Update(GameContext);
             _retryButton.Position = Utils.GetCenterPos(_retryButton.Rectangle.Width, _retryButton.Rectangle.Height, GameContext.GraphicsDevice.Viewport) - new Vector2(0, _retryButton.Rectangle.Height / 2);
             _returnMenuButton.Position = Utils.GetCenterPos(_returnMenuButton.Rectangle.Width, _returnMenuButton.Rectangle.Height, GameContext.GraphicsDevice.Viewport) + new Vector2(0, _retryButton.Rectangle.Height / 2);
         }
@@ -71,8 +79,6 @@ namespace Marooned.States
             );
 
             GameContext.SpriteBatch.End();
-
-            GameContext.StateManager.PreviousState.Draw();
         }
 
         public override void Dispose()
