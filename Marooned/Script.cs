@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Marooned.Actions;
-using Microsoft.Xna.Framework;
 
 namespace Marooned
 {
@@ -26,20 +25,20 @@ namespace Marooned
             Actions.Enqueue(action);
         }
 
-        public void ExecuteAll(GameTime gameTime)
+        public void ExecuteAll(GameContext gameContext)
         {
             foreach (var action in Actions)
             {
-                action.Execute(gameTime);
+                action.Execute(gameContext);
             }
             Actions.Clear();
         }
 
-        public void ExecuteFirst(GameTime gameTime)
+        public void ExecuteFirst(GameContext gameContext)
         {
             if (Actions.Count > 0)
             {
-                Actions.Dequeue().Execute(gameTime);
+                Actions.Dequeue().Execute(gameContext);
             }
         }
     }

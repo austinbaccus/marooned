@@ -26,17 +26,17 @@ namespace Marooned.Sprites
         public Hitbox Hitbox { get; set; }
 
 #if DEBUG
-        public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        public override void Draw(GameContext gameContext)
         {
-            base.Draw(gameTime, spriteBatch);
-            HitboxSprite.Draw(gameTime, spriteBatch);
+            base.Draw(gameContext);
+            HitboxSprite.Draw(gameContext);
         }
 #endif
 
-        public override void Update(GameTime gameTime)
+        public override void Update(GameContext gameContext)
         {
-            Move(gameTime);
-            CurrentAnimation.Update(gameTime);
+            Move(gameContext);
+            CurrentAnimation.Update(gameContext);
 #if DEBUG
             HitboxSprite.Destination = new Rectangle(
                 (int)(Position.X + Hitbox.Offset.X),
@@ -47,16 +47,16 @@ namespace Marooned.Sprites
 #endif
         }
 
-        public void Move(GameTime gameTime)
+        public void Move(GameContext gameContext)
         {
-            _timer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+            _timer -= (float)gameContext.GameTime.ElapsedGameTime.TotalSeconds;
 
             if (_timer <= 0)
             {
                 IsRemoved = true;
             }
 
-            Position += (_linearVelocity * (float)gameTime.ElapsedGameTime.TotalSeconds);
+            Position += (_linearVelocity * (float)gameContext.GameTime.ElapsedGameTime.TotalSeconds);
         }
     }
 }

@@ -1,25 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
+using DefaultEcs.System;
 using Marooned.Controls;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Extended;
 
 namespace Marooned.States
 {
     public class GameOverState : State
     {
-        public InteractiveState BackgroundState { get; set; }
         public List<ComponentOld> components;
 
         private Button _retryButton;
         private Button _returnMenuButton;
 
-        public GameOverState(Game1 game, GraphicsDevice graphicsDevice, ContentManager content) : base(game, graphicsDevice, content)
+        public GameOverState(GameContext gameContext) : base(gameContext)
         {
-            View = new GameOverView(this);
-            var buttonTexture = content.Load<Texture2D>("Controls/Button");
-            var buttonFont = content.Load<SpriteFont>("Fonts/Font");
+            var buttonTexture = gameContext.Content.Load<Texture2D>("Controls/Button");
+            var buttonFont = gameContext.Content.Load<SpriteFont>("Fonts/Font");
 
             _retryButton = new Button(buttonTexture, buttonFont)
             {
@@ -38,33 +37,42 @@ namespace Marooned.States
                 _retryButton,
                 _returnMenuButton,
             };
+
+            Systems = new SequentialSystem<GameContext>(
+                // systems here
+            );
         }
 
         private void RetryButton_Click(object sender, EventArgs e)
         {
-            game.ChangeState(InteractiveState.CreateDefaultState(game, graphicsDevice, content));
+            GameContext.StateManager.ChangeState(InteractiveState.CreateDefaultState(GameContext));
         }
 
         private void ReturnMenuButton_Click(object sender, EventArgs e)
         {
-            game.ChangeState(new MenuState(game, graphicsDevice, content));
+            GameContext.StateManager.ChangeState(new MenuState(GameContext));
         }
 
-        public override void PostUpdate(GameTime gameTime)
+        public override void Update()
         {
-        }
-
-        public override void Update(GameTime gameTime)
-        {
-            _retryButton.Position = Utils.GetCenterPos(_retryButton.Rectangle.Width, _retryButton.Rectangle.Height, graphicsDevice.Viewport) - new Vector2(0, _retryButton.Rectangle.Height / 2);
-            _returnMenuButton.Position = Utils.GetCenterPos(_returnMenuButton.Rectangle.Width, _returnMenuButton.Rectangle.Height, graphicsDevice.Viewport) + new Vector2(0, _retryButton.Rectangle.Height / 2);
+            _retryButton.Position = Utils.GetCenterPos(_retryButton.Rectangle.Width, _retryButton.Rectangle.Height, GameContext.GraphicsDevice.Viewport) - new Vector2(0, _retryButton.Rectangle.Height / 2);
+            _returnMenuButton.Position = Utils.GetCenterPos(_returnMenuButton.Rectangle.Width, _returnMenuButton.Rectangle.Height, GameContext.GraphicsDevice.Viewport) + new Vector2(0, _retryButton.Rectangle.Height / 2);
             foreach (var component in components)
-                component.Update(gameTime);
+                component.Update(GameContext);
         }
 
-        public override List<ComponentOld> GetComponents()
+        public override void Draw()
         {
-            return components;
+            GameContext.GraphicsDevice.Clear(Color.CornflowerBlue);
+
+            GameContext.SpriteBatch.Begin();
+
+            GameContext.SpriteBatch.FillRectangle(
+                new RectangleF(0f, 0f, GameContext.GraphicsDevice.Viewport.Width, GameContext.GraphicsDevice.Viewport.Height),
+                Color.Black * 0.5f
+            );
+
+            GameContext.SpriteBatch.End();
         }
     }
 }

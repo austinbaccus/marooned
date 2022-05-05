@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using Marooned.Actions;
 using Marooned.Controllers;
 using Marooned.Enums;
-using Marooned.Factories;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 
 namespace Marooned.Sprites
 {
@@ -48,7 +45,6 @@ namespace Marooned.Sprites
         private Stopwatch _invulnerabilityTimer = new Stopwatch();
 
         private InputController _inputController;
-        private Dictionary<Direction, LinearMoveAction> _moveActions;
 
         public Player(Texture2D texture, Texture2D hitboxTexture, InputController inputController) : base(texture)
         {
@@ -205,18 +201,18 @@ namespace Marooned.Sprites
             }
         }
 
-        public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        public override void Draw(GameContext gameContext)
         {
-            base.Draw(gameTime, spriteBatch);
+            base.Draw(gameContext);
             if (_shouldDrawHitbox)
             {
-                _hitboxSprite.Draw(gameTime, spriteBatch);
+                _hitboxSprite.Draw(gameContext);
             }
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update(GameContext gameContext)
         {
-            Script.ExecuteAll(gameTime);
+            Script.ExecuteAll(gameContext);
             UpdateAnimation();
             _hitboxSprite.Destination = new Rectangle(
                 (int)(Position.X + Hitbox.Offset.X),
@@ -227,10 +223,10 @@ namespace Marooned.Sprites
             );
             _shouldDrawHitbox = IsFocused;
 
-            UpdateDamageTimer(gameTime);
-            UpdateInvulnerabilityTimer(gameTime);
+            UpdateDamageTimer(gameContext);
+            UpdateInvulnerabilityTimer(gameContext);
 
-            base.Update(gameTime);
+            base.Update(gameContext);
         }
 
         private Animation GetRelevantAnimation()
@@ -304,9 +300,9 @@ namespace Marooned.Sprites
 
         public void HandleInputShoot(KeyEventArgs e)
         {
-            if (e.GameTime.TotalGameTime.TotalMilliseconds - _lastBulletTimestamp > _bulletFireRate)
+            if (e.GameContext.GameTime.TotalGameTime.TotalMilliseconds - _lastBulletTimestamp > _bulletFireRate)
             {
-                _lastBulletTimestamp = e.GameTime.TotalGameTime.TotalMilliseconds;
+                _lastBulletTimestamp = e.GameContext.GameTime.TotalGameTime.TotalMilliseconds;
 
                 bool shootUpPressed = InputController.SHOOT_UP_KEYS.Contains(e.Key);
                 bool shootDownPressed = InputController.SHOOT_DOWN_KEYS.Contains(e.Key);
@@ -356,7 +352,7 @@ namespace Marooned.Sprites
             }
         }
 
-        public void UpdateDamageTimer(GameTime gameTime)
+        public void UpdateDamageTimer(GameContext gameContext)
         {
             if (isHit)
             {
@@ -379,11 +375,11 @@ namespace Marooned.Sprites
             _invulnerabilityTimer.Start();
         }
 
-        public void UpdateInvulnerabilityTimer(GameTime gameTime)
+        public void UpdateInvulnerabilityTimer(GameContext gameContext)
         {
             if (IsInvulnerable)
             {
-                Color = Color.White * (float)((Math.Sin(_invulnerabilityTimer.ElapsedMilliseconds * gameTime.ElapsedGameTime.TotalSeconds * 5) + 1) / 2);
+                Color = Color.White * (float)((Math.Sin(_invulnerabilityTimer.ElapsedMilliseconds * gameContext.GameTime.ElapsedGameTime.TotalSeconds * 5) + 1) / 2);
             }
 
             if (_invulnerabilityTimer.Elapsed.TotalSeconds >= 2)

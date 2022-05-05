@@ -54,22 +54,22 @@ namespace Marooned.Controls
             PenColour = Color.Black;
         }
 
-        public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        public override void Draw(GameContext gameContext)
         {
             var color = _isHovering ? Color.Gray : Color.White;
 
-            spriteBatch.Draw(_texture, Rectangle, color);
+            gameContext.SpriteBatch.Draw(_texture, Rectangle, color);
 
             if (!string.IsNullOrEmpty(Text))
             {
                 var x = (Rectangle.X + (Rectangle.Width / 2)) - (_font.MeasureString(Text).X / 2);
                 var y = (Rectangle.Y + (Rectangle.Height / 2)) - (_font.MeasureString(Text).Y / 2);
 
-                spriteBatch.DrawString(_font, Text, new Vector2(x, y), PenColour);
+                gameContext.SpriteBatch.DrawString(_font, Text, new Vector2(x, y), PenColour);
             }
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update(GameContext gameContext)
         {
             _previousMouse = _currentMouse;
             _currentMouse = Mouse.GetState();

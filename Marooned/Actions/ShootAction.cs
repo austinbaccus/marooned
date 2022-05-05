@@ -1,9 +1,7 @@
 ﻿using Marooned.Factories;
 using Marooned.Sprites;
 using Microsoft.Xna.Framework;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Marooned.Actions
 {
@@ -16,7 +14,7 @@ namespace Marooned.Actions
             _bulletList = bulletList;
         }
 
-        public void Execute(GameTime gameTime)
+        public void Execute(GameContext gameContext)
         {
             _bulletList.Add(BulletFactory.MakeBullet(LifeSpan, Velocity, Damage, Origin));
         }

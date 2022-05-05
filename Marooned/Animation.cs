@@ -14,10 +14,10 @@ namespace Marooned
     /// then, do <c>anim.Play()</c> at some point.
     /// Then, in your <c>Update()</c> function:
     /// <code>
-    /// void Update(GameTime gameTime)
+    /// void Update(GameContext gameContext)
     /// {
     ///     ...
-    ///     anim.Update(gameTime);
+    ///     anim.Update(gameContext.GameTime);
     ///     ...
     /// }
     /// </code>
@@ -90,11 +90,11 @@ namespace Marooned
             _timer = 0f;
         }
 
-        public virtual void Update(GameTime gameTime)
+        public virtual void Update(GameContext gameContext)
         {
             if (IsPlaying)
             {
-                _timer += gameTime.ElapsedGameTime.TotalSeconds;
+                _timer += gameContext.GameTime.ElapsedGameTime.TotalSeconds;
 
                 if (_timer >= Speed)
                 {

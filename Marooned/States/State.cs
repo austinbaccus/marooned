@@ -1,47 +1,36 @@
-﻿using System.Collections.Generic;
-using Marooned.Controllers;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Graphics;
+﻿using DefaultEcs;
+using DefaultEcs.System;
+using System;
 
-namespace Marooned.States
+namespace Marooned
 {
-    // TODO: Use MonoGame.Extended's Screen Management instead (?)
-    public abstract class State
+    public abstract class State : IDisposable
     {
-        #region Fields
-
-        public View View { get; protected set; }
-
-        public ContentManager content;
-
-        public GraphicsDevice graphicsDevice;
-
-        public Game1 game;
-
-        public InputController inputController;
-
-        #endregion
-
-        #region Methods
-
-        public State(Game1 game, GraphicsDevice graphicsDevice, ContentManager content)
+        public State(GameContext gameContext, ISystem<GameContext> systems = null, int? maxCapacity = null)
         {
-            this.game = game;
+            GameContext = gameContext;
+            Systems = systems;
 
-            this.graphicsDevice = graphicsDevice;
-
-            this.content = content;
-
-            inputController = new InputController(this);
+            if (maxCapacity.HasValue)
+            {
+                World = new World(maxCapacity.Value);
+            }
+            else
+            {
+                World = new World();
+            }
         }
 
-        public abstract void PostUpdate(GameTime gameTime);
+        public GameContext GameContext { get; internal set; }
+        public ISystem<GameContext> Systems { get; protected set; }
+        public World World { get; protected set; }
 
-        public abstract void Update(GameTime gameTime);
+        public virtual void Initialize() { }
+        public virtual void LoadContent() { }
+        public virtual void UnloadContent() { }
+        public virtual void Dispose() { }
 
-        public abstract List<ComponentOld> GetComponents();
-
-        #endregion
+        public abstract void Update();
+        public abstract void Draw();
     }
 }

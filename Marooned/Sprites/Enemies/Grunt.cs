@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
 using System;
 using Marooned.Factories;
@@ -45,13 +44,13 @@ namespace Marooned.Sprites.Enemies
         
         public Hitbox Hitbox { get; set; }
 
-        public override void Update(GameTime gameTime)
+        public override void Update(GameContext gameContext)
         {
-            Move(gameTime);
-            Shoot(gameTime);
-            CurrentAnimation.Update(gameTime);
+            Move(gameContext);
+            Shoot(gameContext);
+            CurrentAnimation.Update(gameContext);
 
-            UpdateDamageTimer(gameTime);
+            UpdateDamageTimer(gameContext);
 
 #if DEBUG
             HitboxSprite.Destination = new Rectangle(
@@ -64,19 +63,19 @@ namespace Marooned.Sprites.Enemies
         }
 
 #if DEBUG
-        public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        public override void Draw(GameContext gameContext)
         {
-            base.Draw(gameTime, spriteBatch);
-            HitboxSprite.Draw(gameTime, spriteBatch);
+            base.Draw(gameContext);
+            HitboxSprite.Draw(gameContext);
         }
 #endif
 
-        protected virtual void Move(GameTime gameTime)
+        protected virtual void Move(GameContext gameContext)
         {
             if (!IsRemoved)
             {
                 // move the grunt
-                Position += _movePattern[_currentMovePattern].Item1 * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                Position += _movePattern[_currentMovePattern].Item1 * (float)gameContext.GameTime.ElapsedGameTime.TotalSeconds;
 
                 // decrement time left for that instruction
                 _currentMovePatternTimeRemaining--;
@@ -98,11 +97,11 @@ namespace Marooned.Sprites.Enemies
             }
         }
 
-        protected virtual void Shoot(GameTime gameTime)
+        protected virtual void Shoot(GameContext gameContext)
         {
-            if (gameTime.TotalGameTime.TotalMilliseconds - _lastBulletTimestamp > _bulletFireRate)
+            if (gameContext.GameTime.TotalGameTime.TotalMilliseconds - _lastBulletTimestamp > _bulletFireRate)
             {
-                _lastBulletTimestamp = gameTime.TotalGameTime.TotalMilliseconds;
+                _lastBulletTimestamp = gameContext.GameTime.TotalGameTime.TotalMilliseconds;
 
                 foreach (double angle in _firePattern)
                 {
@@ -114,7 +113,7 @@ namespace Marooned.Sprites.Enemies
             }
         }
 
-        public void UpdateDamageTimer(GameTime gameTime)
+        public void UpdateDamageTimer(GameContext gameContext)
         {
             if (isHit)
             {

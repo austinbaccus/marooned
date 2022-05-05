@@ -6,13 +6,13 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
-using System.Dynamic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
 namespace Marooned.Factories
 {
+    #nullable enable
+
     public static class EnemyFactory
     {
         // TODO: Remove this
@@ -25,7 +25,7 @@ namespace Marooned.Factories
             public int Health { get; set; } = 0;
 
             [JsonProperty("texture", Required = Required.Always)]
-            public string Texture { get; set; }
+            public string? Texture { get; set; }
 
             [JsonProperty("firing_pattern")]
             [JsonConverter(typeof(StringEnumConverter))]
@@ -39,14 +39,19 @@ namespace Marooned.Factories
             public List<List<int>>? AnimationSources { get; set; } = null;
         }
 
-        public static ContentManager content;
+        public static ContentManager? content;
         public static Grunt MakeGrunt(string enemyType, Vector2 position, int hitboxRadius)
         {
             // load json file
             string json = File.ReadAllText($"./Content/Enemies/{enemyType}.json");
-            EnemyJson enemyJson = JsonConvert.DeserializeObject<EnemyJson>(json);
+            EnemyJson? enemyJson = JsonConvert.DeserializeObject<EnemyJson>(json);
 
-            var texture = content.Load<Texture2D>(enemyJson.Texture);
+            if (enemyJson == null)
+            {
+                throw new Exception($"Could not find enemy: {enemyType}.json");
+            }
+
+            var texture = content!.Load<Texture2D>(enemyJson.Texture);
 
             FiringPattern.Pattern firingPattern = enemyJson.FiringPattern ?? FiringPattern.Pattern.straight;
             MovePattern.Pattern movementPattern = enemyJson.MovementPattern ?? MovePattern.Pattern.down_left;
@@ -75,7 +80,7 @@ namespace Marooned.Factories
             grunt.Hitbox = new Hitbox(grunt) { Radius = hitboxRadius };
             grunt.Position = position;
 #if DEBUG
-            grunt.HitboxSprite = new Sprite(content.Load<Texture2D>("Sprites/PlayerHitbox"));
+            grunt.HitboxSprite = new Sprite(content!.Load<Texture2D>("Sprites/PlayerHitbox"));
 #endif
             return grunt;
         }

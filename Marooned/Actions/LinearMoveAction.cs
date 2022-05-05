@@ -1,5 +1,4 @@
-﻿using Marooned.Enums;
-using Marooned.Sprites;
+﻿using Marooned.Sprites;
 using Microsoft.Xna.Framework;
 
 namespace Marooned.Actions
@@ -13,9 +12,9 @@ namespace Marooned.Actions
             _sprite = sprite;
         }
 
-        public void Execute(GameTime gameTime)
+        public void Execute(GameContext gameContext)
         {
-            _sprite.Position += Direction * Speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            _sprite.Position += Direction * Speed * (float)gameContext.GameTime.ElapsedGameTime.TotalSeconds;
         }
 
         public Vector2 Direction { get; set; }

@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 
 namespace Marooned.Sprites
 {
@@ -37,15 +31,15 @@ namespace Marooned.Sprites
 
         public virtual Color Color { get; set; } = Color.White;
 
-        public override void Update(GameTime gameTime)
+        public override void Update(GameContext gameContext)
         {
         }
 
-        public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        public override void Draw(GameContext gameContext)
         {
             if (Destination is Rectangle destination)
             {
-                spriteBatch.Draw(
+                gameContext.SpriteBatch.Draw(
                     texture: _texture,
                     destinationRectangle: destination,
                     sourceRectangle: null,
@@ -58,7 +52,7 @@ namespace Marooned.Sprites
             }
             else
             {
-                spriteBatch.Draw(
+                gameContext.SpriteBatch.Draw(
                     texture: _texture,
                     position: Position,
                     sourceRectangle: null,

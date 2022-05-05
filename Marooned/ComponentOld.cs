@@ -1,12 +1,9 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-
-namespace Marooned
+﻿namespace Marooned
 {
     public abstract class ComponentOld
     {
-        public abstract void Draw(GameTime gameTime, SpriteBatch spriteBatch);
+        public abstract void Draw(GameContext gameContext);
 
-        public abstract void Update(GameTime gameTime);
+        public abstract void Update(GameContext gameContext);
     }
 }

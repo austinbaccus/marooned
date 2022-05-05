@@ -12,7 +12,7 @@ namespace Marooned.Actions
             _player = player;
         }
 
-        public void Execute(GameTime gameTime)
+        public void Execute(GameContext gameContext)
         {
             _player.IsFocused = false;
         }

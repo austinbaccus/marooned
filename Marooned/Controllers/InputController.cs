@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Marooned.States;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
 namespace Marooned.Controllers
@@ -12,7 +10,7 @@ namespace Marooned.Controllers
     public class KeyEventArgs : EventArgs
     {
         public Keys Key { get; set; }
-        public GameTime GameTime { get; set; }
+        public GameContext GameContext { get; set; }
     }
 
     public class InputController
@@ -31,7 +29,6 @@ namespace Marooned.Controllers
         public event EventHandler<KeyEventArgs> OnKeyDownEvent;
         public event EventHandler<KeyEventArgs> OnKeyUpEvent;
 
-        // TODO: Do we need this?
         private State _state;
 
         public InputController(State state)
@@ -42,34 +39,34 @@ namespace Marooned.Controllers
         public KeyboardState CurrentState { get; private set; } = new KeyboardState();
         public KeyboardState PreviousState { get; private set; } = new KeyboardState();
 
-        public void OnKeyPress(Keys key, GameTime gameTime)
+        public void OnKeyPress(Keys key, GameContext gameContext)
         {
             OnKeyPressEvent?.Invoke(this, new KeyEventArgs()
             {
                 Key = key,
-                GameTime = gameTime,
+                GameContext = gameContext,
             });
         }
 
-        public void OnKeyDown(Keys key, GameTime gameTime)
+        public void OnKeyDown(Keys key, GameContext gameContext)
         {
             OnKeyDownEvent?.Invoke(this, new KeyEventArgs()
             {
                 Key = key,
-                GameTime = gameTime,
+                GameContext = gameContext,
             });
         }
 
-        public void OnKeyUp(Keys key, GameTime gameTime)
+        public void OnKeyUp(Keys key, GameContext gameContext)
         {
             OnKeyUpEvent?.Invoke(this, new KeyEventArgs()
             {
                 Key = key,
-                GameTime = gameTime,
+                GameContext = gameContext,
             });
         }
 
-        public void Update(GameTime gameTime)
+        public void Update(GameContext gameContext)
         {
             CurrentState = Keyboard.GetState();
 
@@ -77,16 +74,16 @@ namespace Marooned.Controllers
             {
                 if (!PreviousState.GetPressedKeys().Contains(key))
                 {
-                    OnKeyPress(key, gameTime);
+                    OnKeyPress(key, gameContext);
                 }
-                OnKeyDown(key, gameTime);
+                OnKeyDown(key, gameContext);
             }
 
             foreach (Keys key in PreviousState.GetPressedKeys())
             {
                 if (!CurrentState.GetPressedKeys().Contains(key))
                 {
-                    OnKeyUp(key, gameTime);
+                    OnKeyUp(key, gameContext);
                 }
             }
 

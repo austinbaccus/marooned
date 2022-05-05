@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Marooned.Controls;
 using Microsoft.Xna.Framework.Media;
+using DefaultEcs.System;
 
 namespace Marooned.States
 {
@@ -12,11 +12,10 @@ namespace Marooned.States
     {
         private List<ComponentOld> components;
 
-        public MenuState(Game1 game, GraphicsDevice graphicsDevice, ContentManager content) : base(game, graphicsDevice, content)
+        public MenuState(GameContext gameContext) : base(gameContext)
         {
-            View = new MenuView(this);
-            var buttonTexture = content.Load<Texture2D>("Controls/Button");
-            var buttonFont = content.Load<SpriteFont>("Fonts/Font");
+            var buttonTexture = gameContext.Content.Load<Texture2D>("Controls/Button");
+            var buttonFont = gameContext.Content.Load<SpriteFont>("Fonts/Font");
 
             var newGameButton = new Button(buttonTexture, buttonFont)
             {
@@ -44,6 +43,10 @@ namespace Marooned.States
             };
 
             LoadMusic();
+
+            Systems = new SequentialSystem<GameContext>(
+                // systems here
+            );
         }
 
         private void LoadGameButton_Click(object sender, EventArgs e)
@@ -53,35 +56,25 @@ namespace Marooned.States
 
         private void NewGameButton_Click(object sender, EventArgs e)
         {
-            game.ChangeState(InteractiveState.CreateDefaultState(game, graphicsDevice, content));
+            GameContext.StateManager.ChangeState(InteractiveState.CreateDefaultState(GameContext));
         }
 
-        public override void PostUpdate(GameTime gameTime)
-        {
-            // remove sprites if they're not needed
-        }
-
-        public override void Update(GameTime gameTime)
+        public override void Update()
         {
             for (int i = 0; i < components.Count; i++)
             {
                 Button button = (Button)components[i];
-                button.Position = Utils.GetCenterPos(button.Rectangle.Width, button.Rectangle.Height, graphicsDevice.Viewport)
+                button.Position = Utils.GetCenterPos(button.Rectangle.Width, button.Rectangle.Height, GameContext.GraphicsDevice.Viewport)
                                 - new Vector2(0, components.Count * button.Rectangle.Height / 2)
                                 + i * new Vector2(0, button.Rectangle.Height);
             }
             foreach (var component in components)
-                component.Update(gameTime);
-        }
-
-        public override List<ComponentOld> GetComponents()
-        {
-            return components;
+                component.Update(GameContext);
         }
 
         private void QuitGameButton_Click(object sender, EventArgs e)
         {
-            game.Exit();
+            GameContext.Game.Exit();
         }
 
         private void LoadMusic()
@@ -93,6 +86,20 @@ namespace Marooned.States
                 song.Dispose();
                 System.Diagnostics.Debug.WriteLine("Song ended and disposed");
             };
+        }
+
+        public override void Draw()
+        {
+            GameContext.GraphicsDevice.Clear(Color.CornflowerBlue);
+
+            GameContext.SpriteBatch.Begin();
+
+            foreach (var component in components)
+            {
+                component.Draw(GameContext);
+            }
+
+            GameContext.SpriteBatch.End();
         }
     }
 }
