@@ -35,7 +35,7 @@ namespace Marooned
         {
             spriteBatch.Begin(sortMode: SpriteSortMode.Deferred, transformMatrix: _camera.GetViewMatrix(), samplerState: SamplerState.PointClamp);
 
-            _tiledMapRenderer.Draw(_camera.GetViewMatrix());
+            _tiledMapRenderer.Draw(Matrix.CreateRotationX(2));
 
             foreach (var component in _state.GetComponents())
             {

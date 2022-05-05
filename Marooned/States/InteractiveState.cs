@@ -190,38 +190,107 @@ namespace Marooned.States
         {
             List<Grunt> wave1 = new List<Grunt>
             {
-                EnemyFactory.MakeGrunt("skeleton", new Vector2(225, 100), 5),
-                EnemyFactory.MakeGrunt("skeleton", new Vector2(250, 100), 5),
-                EnemyFactory.MakeGrunt("skeleton", new Vector2(275, 100), 5)
+                //Left Enemies
+                EnemyFactory.MakeGrunt("skeleton", new Vector2(10, 50), 3, MovePattern.Pattern.fire_down, MovePattern.Pattern.left_spawn),
+                EnemyFactory.MakeGrunt("skeleton", new Vector2(30, 50), 3, MovePattern.Pattern.fire_down, MovePattern.Pattern.left_spawn),
+                EnemyFactory.MakeGrunt("skeleton", new Vector2(50, 50), 3, MovePattern.Pattern.fire_down, MovePattern.Pattern.left_spawn),
+                //Center Enemies
+                EnemyFactory.MakeGrunt("skeleton", new Vector2(200, 50), 3, MovePattern.Pattern.fire_down, MovePattern.Pattern.center_spawn),
+                EnemyFactory.MakeGrunt("skeleton", new Vector2(220, 50), 3, MovePattern.Pattern.fire_down, MovePattern.Pattern.center_spawn),
+                EnemyFactory.MakeGrunt("skeleton", new Vector2(240, 50), 3, MovePattern.Pattern.fire_down, MovePattern.Pattern.center_spawn),
+                EnemyFactory.MakeGrunt("skeleton", new Vector2(260, 50), 3, MovePattern.Pattern.fire_down, MovePattern.Pattern.center_spawn),
+                EnemyFactory.MakeGrunt("skeleton", new Vector2(280, 50), 3, MovePattern.Pattern.fire_down, MovePattern.Pattern.center_spawn),
+                EnemyFactory.MakeGrunt("skeleton", new Vector2(300, 50), 3, MovePattern.Pattern.fire_down, MovePattern.Pattern.center_spawn),
+                //Right Enemies
+                EnemyFactory.MakeGrunt("skeleton", new Vector2(450, 50), 3, MovePattern.Pattern.fire_down, MovePattern.Pattern.right_spawn),
+                EnemyFactory.MakeGrunt("skeleton", new Vector2(470, 50), 3, MovePattern.Pattern.fire_down, MovePattern.Pattern.right_spawn),
+                EnemyFactory.MakeGrunt("skeleton", new Vector2(490, 50), 3, MovePattern.Pattern.fire_down, MovePattern.Pattern.right_spawn),
             };
 
             List<Grunt> wave2 = new List<Grunt>
             {
-                EnemyFactory.MakeGrunt("skeleton", new Vector2(225, 100), 5),
-                EnemyFactory.MakeGrunt("skeleton", new Vector2(275, 100), 5),
-                EnemyFactory.MakeGrunt("skeleton_dangerous", new Vector2(250, 100), 5)
+                //Left Enemies
+                EnemyFactory.MakeGrunt("skeleton", new Vector2(10, 50), 3, MovePattern.Pattern.fire_down, MovePattern.Pattern.left_spawn_across),
+                EnemyFactory.MakeGrunt("skeleton", new Vector2(30, 50), 3, MovePattern.Pattern.fire_down, MovePattern.Pattern.left_spawn_across),
+                EnemyFactory.MakeGrunt("skeleton", new Vector2(50, 50), 3, MovePattern.Pattern.fire_down, MovePattern.Pattern.left_spawn_across),
+                EnemyFactory.MakeGrunt("skeleton", new Vector2(70, 50), 3, MovePattern.Pattern.fire_down, MovePattern.Pattern.left_spawn_across),
+                EnemyFactory.MakeGrunt("skeleton", new Vector2(90, 50), 3, MovePattern.Pattern.fire_down, MovePattern.Pattern.left_spawn_across),
             };
 
             List<Grunt> wave3 = new List<Grunt>
             {
-                EnemyFactory.MakeGrunt("skeleton_mage", new Vector2(250, 100), 5)
+                //Left Enemies
+                EnemyFactory.MakeGrunt("skeleton", new Vector2(480, 50), 3, MovePattern.Pattern.fire_down, MovePattern.Pattern.right_spawn_across),
+                EnemyFactory.MakeGrunt("skeleton", new Vector2(500, 50), 3, MovePattern.Pattern.fire_down, MovePattern.Pattern.right_spawn_across),
+                EnemyFactory.MakeGrunt("skeleton", new Vector2(520, 50), 3, MovePattern.Pattern.fire_down, MovePattern.Pattern.right_spawn_across),
+                EnemyFactory.MakeGrunt("skeleton", new Vector2(540, 50), 3, MovePattern.Pattern.fire_down, MovePattern.Pattern.right_spawn_across),
+                EnemyFactory.MakeGrunt("skeleton", new Vector2(560, 50), 3, MovePattern.Pattern.fire_down, MovePattern.Pattern.right_spawn_across),
             };
 
-            // Boss goes here, replace skeleton_mage with boss assets/props
             List<Grunt> wave4 = new List<Grunt>
             {
-                EnemyFactory.MakeGrunt("miniboss1", new Vector2(250, 300), 10)
+                EnemyFactory.MakeGrunt("skeleton", new Vector2(10, 50), 3, MovePattern.Pattern.fire_down, MovePattern.Pattern.left_spawn_across),
+                EnemyFactory.MakeGrunt("skeleton", new Vector2(30, 50), 3, MovePattern.Pattern.fire_down, MovePattern.Pattern.left_spawn_across),
+                EnemyFactory.MakeGrunt("skeleton", new Vector2(50, 50), 3, MovePattern.Pattern.fire_down, MovePattern.Pattern.left_spawn_across),
+                EnemyFactory.MakeGrunt("skeleton", new Vector2(70, 50), 3, MovePattern.Pattern.fire_down, MovePattern.Pattern.left_spawn_across),
+                EnemyFactory.MakeGrunt("skeleton", new Vector2(90, 50), 3, MovePattern.Pattern.fire_down, MovePattern.Pattern.left_spawn_across),
+                EnemyFactory.MakeGrunt("skeleton_dangerous", new Vector2(10, 0), 5, MovePattern.Pattern.fire_dangerous, MovePattern.Pattern.dangerous_left_spawn)
             };
 
             List<Grunt> wave5 = new List<Grunt>
             {
-                EnemyFactory.MakeGrunt("boss1", new Vector2(250, 300), 30)
+                EnemyFactory.MakeGrunt("skeleton", new Vector2(480, 50), 3, MovePattern.Pattern.fire_down, MovePattern.Pattern.right_spawn_across),
+                EnemyFactory.MakeGrunt("skeleton", new Vector2(500, 50), 3, MovePattern.Pattern.fire_down, MovePattern.Pattern.right_spawn_across),
+                EnemyFactory.MakeGrunt("skeleton", new Vector2(520, 50), 3, MovePattern.Pattern.fire_down, MovePattern.Pattern.right_spawn_across),
+                EnemyFactory.MakeGrunt("skeleton", new Vector2(540, 50), 3, MovePattern.Pattern.fire_down, MovePattern.Pattern.right_spawn_across),
+                EnemyFactory.MakeGrunt("skeleton", new Vector2(560, 50), 3, MovePattern.Pattern.fire_down, MovePattern.Pattern.right_spawn_across),
+                EnemyFactory.MakeGrunt("skeleton_dangerous", new Vector2(480, 0), 5, MovePattern.Pattern.fire_dangerous, MovePattern.Pattern.dangerous_right_spawn)
             };
 
-            waves.Push(wave5);
-            waves.Push(wave4);
-            waves.Push(wave3);
-            waves.Push(wave2);
+            List<Grunt> wave6 = new List<Grunt>
+            {
+                EnemyFactory.MakeGrunt("skeleton", new Vector2(50, 50), 3, MovePattern.Pattern.fire_down, MovePattern.Pattern.straigt_down),
+                EnemyFactory.MakeGrunt("skeleton", new Vector2(70, 50), 3, MovePattern.Pattern.fire_down, MovePattern.Pattern.straigt_down),
+                EnemyFactory.MakeGrunt("skeleton", new Vector2(90, 50), 3, MovePattern.Pattern.fire_down, MovePattern.Pattern.straigt_down),
+                EnemyFactory.MakeGrunt("skeleton", new Vector2(120, 50), 3, MovePattern.Pattern.fire_down, MovePattern.Pattern.straigt_down),
+                EnemyFactory.MakeGrunt("skeleton", new Vector2(150, 50), 3, MovePattern.Pattern.fire_down, MovePattern.Pattern.straigt_down),
+                EnemyFactory.MakeGrunt("skeleton", new Vector2(180, 50), 3, MovePattern.Pattern.fire_down, MovePattern.Pattern.straigt_down),
+                EnemyFactory.MakeGrunt("skeleton", new Vector2(210, 50), 3, MovePattern.Pattern.fire_down, MovePattern.Pattern.straigt_down),
+                EnemyFactory.MakeGrunt("skeleton", new Vector2(250, 50), 3, MovePattern.Pattern.fire_down, MovePattern.Pattern.straigt_down2),
+                EnemyFactory.MakeGrunt("skeleton", new Vector2(280, 50), 3, MovePattern.Pattern.fire_down, MovePattern.Pattern.straigt_down2),
+                EnemyFactory.MakeGrunt("skeleton", new Vector2(310, 50), 3, MovePattern.Pattern.fire_down, MovePattern.Pattern.straigt_down2),
+                EnemyFactory.MakeGrunt("skeleton", new Vector2(340, 50), 3, MovePattern.Pattern.fire_down, MovePattern.Pattern.straigt_down2),
+                EnemyFactory.MakeGrunt("skeleton", new Vector2(370, 50), 3, MovePattern.Pattern.fire_down, MovePattern.Pattern.straigt_down2),
+                EnemyFactory.MakeGrunt("skeleton", new Vector2(400, 50), 3, MovePattern.Pattern.fire_down, MovePattern.Pattern.straigt_down2),
+                EnemyFactory.MakeGrunt("skeleton", new Vector2(430, 50), 3, MovePattern.Pattern.fire_down, MovePattern.Pattern.straigt_down2),
+                EnemyFactory.MakeGrunt("skeleton_mage", new Vector2(250, 0), 7, MovePattern.Pattern.fire_mage, MovePattern.Pattern.mage_spawn),
+                EnemyFactory.MakeGrunt("skeleton_mage", new Vector2(200, 0), 7, MovePattern.Pattern.fire_mage, MovePattern.Pattern.mage_spawn),
+                EnemyFactory.MakeGrunt("skeleton_mage", new Vector2(300, 0), 7, MovePattern.Pattern.fire_mage, MovePattern.Pattern.mage_spawn),
+            };
+            List<Grunt> wave7 = new List<Grunt>
+            {
+                EnemyFactory.MakeGrunt("miniboss1", new Vector2(0, 0), 15, MovePattern.Pattern.fire_mini, MovePattern.Pattern.miniboss)
+            };
+            List<Grunt> wave8 = new List<Grunt>
+            {
+                //EnemyFactory.MakeGrunt("skeleton", new Vector2(10, 50), 3, MovePattern.Pattern.fire_down, MovePattern.Pattern.left_spawn),
+                //EnemyFactory.MakeGrunt("skeleton", new Vector2(30, 50), 3, MovePattern.Pattern.fire_down, MovePattern.Pattern.left_spawn),
+                //EnemyFactory.MakeGrunt("skeleton", new Vector2(50, 50), 3, MovePattern.Pattern.fire_down, MovePattern.Pattern.left_spawn),
+                //EnemyFactory.MakeGrunt("skeleton_dangerous", new Vector2(80, 0), 5, MovePattern.Pattern.fire_dangerous, MovePattern.Pattern.left_spawn),
+                //EnemyFactory.MakeGrunt("skeleton", new Vector2(450, 50), 3, MovePattern.Pattern.fire_down, MovePattern.Pattern.right_spawn),
+                //EnemyFactory.MakeGrunt("skeleton", new Vector2(470, 50), 3, MovePattern.Pattern.fire_down, MovePattern.Pattern.right_spawn),
+                //EnemyFactory.MakeGrunt("skeleton", new Vector2(490, 50), 3, MovePattern.Pattern.fire_down, MovePattern.Pattern.right_spawn),
+                //EnemyFactory.MakeGrunt("skeleton_mage", new Vector2(420, 0), 7, MovePattern.Pattern.fire_mage, MovePattern.Pattern.right_spawn),
+                EnemyFactory.MakeGrunt("boss1", new Vector2(250, 0), 30, MovePattern.Pattern.fire_boss, MovePattern.Pattern.boss)
+            };
+
+            //waves.Push(wave8);
+            //waves.Push(wave7);
+            //waves.Push(wave6);
+            //waves.Push(wave5);
+            //waves.Push(wave4);
+            //waves.Push(wave3);
+            //waves.Push(wave2);
             waves.Push(wave1);
         }
 

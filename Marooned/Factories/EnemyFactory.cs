@@ -40,7 +40,7 @@ namespace Marooned.Factories
         }
 
         public static ContentManager content;
-        public static Grunt MakeGrunt(string enemyType, Vector2 position, int hitboxRadius)
+        public static Grunt MakeGrunt(string enemyType, Vector2 position, int hitboxRadius, MovePattern.Pattern firingPattern, MovePattern.Pattern movementPattern)
         {
             // load json file
             string json = File.ReadAllText($"./Content/Enemies/{enemyType}.json");
@@ -48,8 +48,8 @@ namespace Marooned.Factories
 
             var texture = content.Load<Texture2D>(enemyJson.Texture);
 
-            FiringPattern.Pattern firingPattern = enemyJson.FiringPattern ?? FiringPattern.Pattern.straight;
-            MovePattern.Pattern movementPattern = enemyJson.MovementPattern ?? MovePattern.Pattern.down_left;
+            //FiringPattern.Pattern firingPattern = enemyJson.FiringPattern ?? FiringPattern.Pattern.straight;
+            //MovePattern.Pattern movementPattern = enemyJson.MovementPattern ?? MovePattern.Pattern.down_left;
 
             // TODO: Probably make a Json parser for Rectangle (?)
             Rectangle[] animSources;

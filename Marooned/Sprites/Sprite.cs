@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 
 namespace Marooned.Sprites
 {
@@ -37,9 +31,11 @@ namespace Marooned.Sprites
 
         public virtual Color Color { get; set; } = Color.White;
 
-        public override void Update(GameTime gameTime)
-        {
-        }
+
+
+
+
+        public override void Update(GameTime gameTime) {}
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {

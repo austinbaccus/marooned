@@ -10,7 +10,7 @@ namespace Marooned.Sprites.Enemies
 {
     public class Grunt : AnimatedSprite
     {
-        protected List<double> _firePattern;
+        protected List<Tuple<Vector2, int, (float, float)>> _firePattern;
         protected List<Tuple<Vector2, int>> _movePattern;
         protected int _currentMovePattern = 0;
         protected int _currentMovePatternTimeRemaining = 0;
@@ -33,10 +33,10 @@ namespace Marooned.Sprites.Enemies
         public bool isHit; // Red Damage
         private Stopwatch _damageTimer = new Stopwatch(); // timer for damage
 
-        public Grunt(Texture2D texture, Rectangle[] animSources, FiringPattern.Pattern firingPattern, MovePattern.Pattern movementPattern, int health) : base(texture, animSources)
+        public Grunt(Texture2D texture, Rectangle[] animSources, MovePattern.Pattern firingPattern, MovePattern.Pattern movementPattern, int health) : base(texture, animSources)
         {
             Health = health;
-            _firePattern = FiringPattern.GetPattern(firingPattern);
+            _firePattern = MovePattern.GetFiringPattern(firingPattern);
             _movePattern = MovePattern.GetPattern(movementPattern);
             _currentMovePatternTimeRemaining = _movePattern[0].Item2;
 
@@ -104,12 +104,12 @@ namespace Marooned.Sprites.Enemies
             {
                 _lastBulletTimestamp = gameTime.TotalGameTime.TotalMilliseconds;
 
-                foreach (double angle in _firePattern)
+                foreach (Tuple<Vector2, int, (float, float)> angle in _firePattern)
                 {
-                    float dX = (float)Math.Cos(angle + Math.PI / 2);
-                    float dY = (float)Math.Sin(angle + Math.PI / 2);
-                    Vector2 angleVector = new Vector2(dX, dY);
-                    BulletList.Add(BulletFactory.MakeBullet(_bulletLifespan, angleVector * _bulletVelocity, 2f, new Vector2(this.Position.X, this.Position.Y)));
+                    //float dX = (float)Math.Cos(angle + Math.PI / 2);
+                    //float dY = (float)Math.Sin(angle + Math.PI / 2);
+                    //Vector2 angleVector = new Vector2(dX, dY);
+                    BulletList.Add(BulletFactory.MakeBullet(_bulletLifespan, angle.Item1 * angle.Item2, 2f, new Vector2(this.Position.X + angle.Item3.Item1, this.Position.Y + angle.Item3.Item2)));
                 }
             }
         }
