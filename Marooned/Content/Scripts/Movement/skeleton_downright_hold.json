@@ -26,6 +26,6 @@
     "action": "move",
     "pattern": "linear",
     "velocity": "-40 -100",
-    "duration": 1.5
+    "duration": 2
   }
 ]

@@ -18,7 +18,14 @@ namespace Marooned.Systems
             {
                 entity.Set(new CollisionComponent());
                 entity.Get<HealthComponent>().Health -= 1;
+
+                if (entity.Get<HealthComponent>().Health <= 0)
+                {
+                    entity.Dispose();
+                }
             }
+
+            
         }
     }
 }

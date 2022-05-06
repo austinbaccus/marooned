@@ -19,7 +19,7 @@ namespace Marooned.Systems
             if (bulletPosition.Position.X >= 500 || bulletPosition.Position.Y >= 500 || bulletPosition.Position.X <= 0 || bulletPosition.Position.Y <= 0)
             {
                 entity.Set(new CollisionComponent
-                {
+                { 
                     HasCollided = true,
                 });
             }

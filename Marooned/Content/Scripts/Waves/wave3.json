@@ -2,7 +2,7 @@
   {
     "action": "spawn",
     "entity": "skeleton",
-    "position": "50 0",
+    "position": "260 0",
     "script": [
       {
         "action": "spawn",
@@ -24,14 +24,14 @@
       },
       {
         "action": "script",
-        "script": "skeleton_downright_hold"
+        "script": "dangerous_down_left"
       }
     ]
   },
   {
     "action": "spawn",
     "entity": "skeleton",
-    "position": "70 0",
+    "position": "240 0",
     "script": [
       {
         "action": "spawn",
@@ -53,14 +53,14 @@
       },
       {
         "action": "script",
-        "script": "skeleton_downright_hold"
+        "script": "dangerous_down_left"
       }
     ]
   },
   {
     "action": "spawn",
     "entity": "skeleton",
-    "position": "90 0",
+    "position": "220 0",
     "script": [
       {
         "action": "spawn",
@@ -82,14 +82,14 @@
       },
       {
         "action": "script",
-        "script": "skeleton_downright_hold"
+        "script": "dangerous_down_left"
       }
     ]
   },
   {
     "action": "spawn",
     "entity": "skeleton",
-    "position": "110 0",
+    "position": "210 0",
     "script": [
       {
         "action": "spawn",
@@ -111,14 +111,14 @@
       },
       {
         "action": "script",
-        "script": "skeleton_downright_hold"
+        "script": "dangerous_down_left"
       }
     ]
   },
   {
     "action": "spawn",
     "entity": "skeleton",
-    "position": "130 0",
+    "position": "190 0",
     "script": [
       {
         "action": "spawn",
@@ -140,14 +140,14 @@
       },
       {
         "action": "script",
-        "script": "skeleton_downright_hold"
+        "script": "dangerous_down_left"
       }
     ]
   },
   {
     "action": "spawn",
     "entity": "skeleton",
-    "position": "150 0",
+    "position": "180 0",
     "script": [
       {
         "action": "spawn",
@@ -169,14 +169,14 @@
       },
       {
         "action": "script",
-        "script": "skeleton_downright_hold"
+        "script": "dangerous_down_left"
       }
     ]
   },
   {
     "action": "spawn",
     "entity": "skeleton",
-    "position": "170 0",
+    "position": "250 0",
     "script": [
       {
         "action": "spawn",
@@ -198,7 +198,7 @@
       },
       {
         "action": "script",
-        "script": "skeleton_downright_hold"
+        "script": "dangerous_down_left"
       }
     ]
   }
