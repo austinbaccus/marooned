@@ -3,11 +3,11 @@ using Marooned.Components;
 
 namespace Marooned.Actions
 {
-    public class ClearEnemies
+    public class ClearEnemiesAction : IAction
     {
         private readonly World _world;
 
-        public ClearEnemies(World world)
+        public ClearEnemiesAction(World world)
         {
             _world = world;
         }
