@@ -43,7 +43,6 @@ namespace Marooned.States
                 new BulletBoundarySystem(World),
                 new EnemyBoundarySystem(World),
                 new BulletCollisionRemovalSystem(World),
-                //new BulletRemovalSystem(World),
                 new SpawnActionSystem(World),
                 new SpawnSystem(World),
                 new MoveEntitySystem(World),
