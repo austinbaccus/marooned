@@ -52,7 +52,8 @@ namespace Marooned.Factories
             var texture = gameContext.Content.Load<Texture2D>(enemyJson.Texture);
 
             FiringPattern.Pattern firingPattern = enemyJson.FiringPattern ?? FiringPattern.Pattern.straight;
-            MovePatternOld.Pattern movementPattern = enemyJson.MovementPattern ?? MovePatternOld.Pattern.down_left;
+            MovePatternOld.Pattern movementPattern = MovePatternOld.Pattern.test;
+                //enemyJson.MovementPattern ?? MovePatternOld.Pattern.down_left;
 
             // TODO: Probably make a Json parser for Rectangle (?)
             Rectangle[] animSources;

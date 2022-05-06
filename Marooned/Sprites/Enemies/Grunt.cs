@@ -69,17 +69,22 @@ namespace Marooned.Sprites.Enemies
             HitboxSprite.Draw(gameContext);
         }
 #endif
-
+        float test = 100;
         protected virtual void Move(GameContext gameContext)
         {
+            
             if (!IsRemoved)
             {
+                float dt = (float)gameContext.GameTime.ElapsedGameTime.TotalSeconds;
                 // move the grunt
-                Position += _movePattern[_currentMovePattern].Item1 * (float)gameContext.GameTime.ElapsedGameTime.TotalSeconds;
+                Position = new Vector2(
+                        Position.X + (float)Math.Cos(_currentMovePatternTimeRemaining * dt) * test * (float).01,
+                        Position.Y + (float)Math.Sin(_currentMovePatternTimeRemaining * dt) * test * (float).01
+                    ) ;
 
                 // decrement time left for that instruction
                 _currentMovePatternTimeRemaining--;
-
+                test -= .05f;
                 // if time <= 0, increment curInstruction index
                 if (_currentMovePatternTimeRemaining <= 0)
                 {
@@ -96,6 +101,16 @@ namespace Marooned.Sprites.Enemies
                 }
             }
         }
+
+        //public override Vector2 Transform(GameContext gameContext, Vector2 currentPosition, Vector2 currentVelocity)
+        //{
+        //    float timer = 0;
+        //    float dt = (float)gameContext.GameTime.ElapsedGameTime.TotalSeconds;
+        //    return new Vector2(
+        //        currentPosition.X + (float)Math.Cos(timer * dt),
+        //        currentPosition.Y + (float)Math.Sin(timer * dt)
+        //    );
+        //}
 
         protected virtual void Shoot(GameContext gameContext)
         {
