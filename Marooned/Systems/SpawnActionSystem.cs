@@ -19,7 +19,6 @@ namespace Marooned.Systems
 
             if (spawnComponent.ShouldSpawn)
             {
-                spawnComponent.RateTimer = 0;
                 for (int i = 0; i < spawnComponent.Count; i++)
                 {
                     // TODO: Change to world spawn point?

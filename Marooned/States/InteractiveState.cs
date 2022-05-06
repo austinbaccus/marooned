@@ -292,7 +292,7 @@ namespace Marooned.States
             // TODO: Right now we are manually passing in map parameters when changing state. Later on this will be delegated to the Level Interpreter.
             return new InteractiveState(
                 gameContext,
-                "Maps/tutorial",
+                "level1",
                 new List<string>()
                 {
                     "Sounds/Music/ConcernedApe - Stardew Valley 1.5 Original Soundtrack - 03 Volcano Mines (Molten Jelly)",

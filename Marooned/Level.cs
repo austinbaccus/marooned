@@ -26,7 +26,7 @@ namespace Marooned
         public List<Sprite> Bombs = new List<Sprite>();
         public List<Sprite> Hearts = new List<Sprite>();
 
-        public Level(State state, GameContext gameContext, LevelInfo levelInfo, string mapPath, List<string> songPaths, string playerSpritePath, string playerHitboxSpritePath)
+        public Level(State state, GameContext gameContext, LevelInfo levelInfo, List<string> songPaths, string playerSpritePath, string playerHitboxSpritePath)
         {
             _state = state;
             GameContext = gameContext;
@@ -202,8 +202,6 @@ namespace Marooned
 
         public void Draw()
         {
-            
-
             DrawMap();
 
             GameContext.SpriteBatch.Begin(sortMode: SpriteSortMode.Deferred, samplerState: SamplerState.PointClamp);

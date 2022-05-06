@@ -12,7 +12,14 @@ namespace Marooned.Systems
 
         protected override void Update(GameContext gameContext, ref SpawnComponent spawn)
         {
-            spawn.RateTimer += gameContext.GameTime.ElapsedGameTime.TotalSeconds;
+            if (spawn.ShouldSpawn)
+            {
+                spawn.RateTimer = 0;
+            }
+            else
+            {
+                spawn.RateTimer += gameContext.GameTime.ElapsedGameTime.TotalSeconds;
+            }
             spawn.Timer = spawn.Timer.Add(gameContext.GameTime.ElapsedGameTime);
         }
     }

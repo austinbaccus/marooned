@@ -1,6 +1,7 @@
 ﻿using Marooned.Interpreter;
 using Marooned.Interpreter.Json.Animations;
 using Marooned.Interpreter.Json.Entities;
+using Marooned.Interpreter.Json.Level;
 using Marooned.Interpreter.Json.Scripts;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -23,6 +24,7 @@ namespace Marooned
             AnimationsInterpreter = new JsonAnimationInterpreter(this);
             EntitiesInterpreter = new JsonEntitiesInterpreter(this);
             ScriptsInterpreter = new JsonEntityScriptsInterpreter(this);
+            LevelsInterpreter = new JsonLevelsInterpreter(this);
         }
 
         public Game1 Game { get; }
