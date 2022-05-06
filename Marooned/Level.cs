@@ -23,11 +23,12 @@ namespace Marooned
         private string _playerHitboxSpritePath;
         private InputController _inputController;
         private State _state;
+        private bool _isHard = false;
 
         public List<Sprite> Bombs = new List<Sprite>();
         public List<Sprite> Hearts = new List<Sprite>();
 
-        public Level(State state, GameContext gameContext, LevelInfo levelInfo, List<string> songPaths, string playerSpritePath, string playerHitboxSpritePath)
+        public Level(State state, GameContext gameContext, LevelInfo levelInfo, List<string> songPaths, string playerSpritePath, string playerHitboxSpritePath, bool isHard = false)
         {
             _state = state;
             GameContext = gameContext;
@@ -40,6 +41,20 @@ namespace Marooned
             _inputController = GameContext.StateManager.CurrentState.InputController;
 
             LevelInfo = levelInfo;
+            _isHard = isHard;
+
+            //var viewportadapter = new BoxingViewportAdapter(
+            //    GameContext.Game.Window,
+            //    graphicsDevice,
+            //    graphicsDevice.Viewport.Width,
+            //    graphicsDevice.Viewport.Height
+            //);
+
+            //_camera = GameContext.StateManager.CurrentState.Camera;
+            //_camera = new OrthographicCamera(viewportadapter)
+            //{
+            //    Zoom = 2f,
+            //};
 
             Script = new Script();
         }
@@ -108,6 +123,17 @@ namespace Marooned
                 Radius = 5,
                 Offset = new Vector2(0, 5f),
             };
+
+            if (_isHard)
+            {
+                Player.Bombs = 1;
+                Player.Lives = 2;
+            }
+            else
+            {
+                Player.Bombs = 3;
+                Player.Lives = 5;
+            }
 
             _components.Add(Player);
         }
@@ -253,7 +279,7 @@ namespace Marooned
         private void LoadBombs()
         {
             var texture = GameContext.Content.Load<Texture2D>("Sprites/Bomb");
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < Player.Bombs; i++)
             {
                 Bombs.Add(new Sprite(texture));
                 Bombs[i].Position.X = (i * 40) + 40;
@@ -283,7 +309,7 @@ namespace Marooned
         private void LoadLives()
         {
             var texture = GameContext.Content.Load<Texture2D>("Sprites/Heart");
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < Player.Lives; i++)
             {
                 Hearts.Add(new Sprite(texture));
                 Hearts[i].Position.X = (i * 40) + 40;
