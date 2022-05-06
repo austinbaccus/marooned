@@ -47,7 +47,7 @@ namespace Marooned.Sprites
 
         private InputController _inputController;
 
-        public Player(Texture2D texture, Texture2D hitboxTexture, InputController inputController) : base(texture)
+        public Player(GameContext gameContext, Texture2D texture, Texture2D hitboxTexture, InputController inputController) : base(texture)
         {
             // TODO: Find a better way to handle instantiating player animations
             const int SPRITE_WIDTH = 32;
@@ -133,7 +133,11 @@ namespace Marooned.Sprites
             CurrentAnimation.Speed = _flyAnimationSpeed;
 
             _hitboxSprite = new Sprite(hitboxTexture);
+
+            GameContext = gameContext;
         }
+
+        public GameContext GameContext { get; set; }
 
         public Hitbox Hitbox { get; set; }
         public bool IsFocused

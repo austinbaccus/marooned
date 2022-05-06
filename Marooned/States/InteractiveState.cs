@@ -220,7 +220,7 @@ namespace Marooned.States
             var texture = GameContext.Content.Load<Texture2D>(playerSpritePath);
             var hitboxTexture = GameContext.Content.Load<Texture2D>(playerHitboxSpritePath);
 
-            Player = new Player(texture, hitboxTexture, InputController)
+            Player = new Player(GameContext, texture, hitboxTexture, InputController)
             {
                 Position = _spawnPoint,
                 Speed = 120f,
