@@ -135,5 +135,7 @@
     <Folder Include="Content\Entities\Bosses\" />
     <Folder Include="Content\Entities\Players\" />
     <Folder Include="Content\Entities\Powerups\" />
+    <Folder Include="Interpreter\Json\Level\" />
+    <Folder Include="Level\" />
   </ItemGroup>
 </Project>

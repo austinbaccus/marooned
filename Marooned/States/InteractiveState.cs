@@ -41,6 +41,8 @@ namespace Marooned.States
                 new DamageSystem(World),
                 new RemoveEntitySystem(World),
                 new BulletRemovalSystem(World),
+                new SpawnActionSystem(World),
+                new SpawnSystem(World),
                 new MoveEntitySystem(World),
                 new MoveSystem(World),
                 new ScriptSystem(World),

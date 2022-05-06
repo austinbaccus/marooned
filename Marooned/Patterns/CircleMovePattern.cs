@@ -19,7 +19,6 @@ namespace Marooned.Patterns
 
         public override Vector2 Transform(GameContext gameContext, TimeSpan totalTimeElapsed, TimeSpan duration, Vector2 currentPosition, Vector2 currentVelocity)
         {
-
             //double xParam = Utils.Lerp(totalTimeElapsed.TotalSeconds / currentVelocity.X, Degrees,;
             //float newX = Origin.X + (float)Math.Cos(totalTimeElapsed.TotalSeconds) * (CenterOffset.X - Origin.X);
             //float newY = Origin.Y + (float)Math.Sin(totalTimeElapsed.TotalSeconds / currentVelocity.Y) * (CenterOffset.X - Origin.Y);
