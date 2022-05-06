@@ -36,6 +36,7 @@ namespace Marooned.Controllers
         public static HashSet<Keys> SHOOT_RIGHT_KEYS = new HashSet<Keys>() { Keys.Right };
         public static HashSet<Keys> FOCUS_KEYS = new HashSet<Keys>() { Keys.LeftShift };
         public static HashSet<Keys> CHEAT_KEYS = new HashSet<Keys>() { Keys.OemTilde };
+        public static HashSet<Keys> BOMB_KEYS = new HashSet<Keys>() { Keys.Q };
 
         #endregion
 
