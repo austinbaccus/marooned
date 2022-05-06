@@ -13,26 +13,5 @@
       "radius": 10
     }
   ],
-  "script": [
-    {
-      "action": "script",
-      "script": "test"
-    },
-    {
-      "time": 10,
-      "action": "clear_player_bullets"
-    },
-    {
-      "action": "spawn",
-      "entity": "banana",
-      "override": false,
-      "rate": 5,
-      "duration": 5,
-      "script": "test_movement"
-    },
-    {
-      "time": 5,
-      "action": "die"
-    }
-  ]
+  "script": []
 }

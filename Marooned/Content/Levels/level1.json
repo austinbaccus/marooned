@@ -1,0 +1,10 @@
+{
+  "title": "Level 1",
+  "map": "Maps/tutorial",
+  "script": [
+    {
+      "action": "script",
+      "script": "wave1"
+    }
+  ]
+}

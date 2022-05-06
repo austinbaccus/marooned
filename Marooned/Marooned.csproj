@@ -127,6 +127,9 @@
     <None Update="Content\Entities\Enemies\skeleton.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="Content\Levels\level1.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Content\Scripts\Movement\boss.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -160,6 +163,9 @@
     <None Update="Content\Scripts\Movement\test.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="Content\Scripts\Waves\wave1.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Content\Sprites\Banana.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -169,7 +175,5 @@
     <Folder Include="Content\Entities\Bosses\" />
     <Folder Include="Content\Entities\Players\" />
     <Folder Include="Content\Entities\Powerups\" />
-    <Folder Include="Interpreter\Json\Level\" />
-    <Folder Include="Level\" />
   </ItemGroup>
 </Project>
