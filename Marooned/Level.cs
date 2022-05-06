@@ -6,17 +6,14 @@ using Marooned.States;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
-using MonoGame.Extended;
 using MonoGame.Extended.Tiled;
 using MonoGame.Extended.Tiled.Renderers;
-using MonoGame.Extended.ViewportAdapters;
 using System.Collections.Generic;
 
 namespace Marooned
 {
     public class Level : ILifeCycle
     {
-        private ScriptOld _script;
         private List<ComponentOld> _components; // Might need to remove?
         private Vector2 _spawnPoint = new Vector2(300, 300);
         private string _mapPath;
@@ -24,9 +21,11 @@ namespace Marooned
         private string _playerSpritePath;
         private string _playerHitboxSpritePath;
         private InputController _inputController;
+        private State _state;
 
-        public Level(GameContext gameContext, string mapPath, List<string> songPaths, string playerSpritePath, string playerHitboxSpritePath)
+        public Level(State state, GameContext gameContext, string mapPath, List<string> songPaths, string playerSpritePath, string playerHitboxSpritePath)
         {
+            _state = state;
             GameContext = gameContext;
 
             _components = new List<ComponentOld>();
@@ -51,16 +50,20 @@ namespace Marooned
             //{
             //    Zoom = 2f,
             //};
+
+            Script = new Script();
         }
 
         public TiledMap TiledMap { get; private set; }
         public Player Player { get; private set; }
-        public List<Grunt> Grunts { get; private set; } = new List<Grunt>();
-        public Stack<List<Grunt>> Waves { get; private set; } = new Stack<List<Grunt>>();
+        public List<GruntOld> Grunts { get; private set; } = new List<GruntOld>();
+        public Stack<List<GruntOld>> Waves { get; private set; } = new Stack<List<GruntOld>>();
         public TiledMapRenderer TiledMapRenderer { get; private set; }
 
         public GameContext GameContext { get; set; }
         public bool PlayerAlive { get => Player.Lives > 0; }
+
+        public Script Script { get; }
 
         public void Initialize()
         {
@@ -69,9 +72,6 @@ namespace Marooned
 
         public void LoadContent()
         {
-            // TODO: Load script from JSON using GameContext.Interpreter here!!
-            _script = new ScriptOld();
-
             LoadSprites(_playerSpritePath, _playerHitboxSpritePath);
             LoadEnemies();
             LoadMusic(_songPaths);
@@ -95,15 +95,17 @@ namespace Marooned
 
         private void LoadEnemies()
         {
-            List<Grunt> wave1 = new List<Grunt>
-            {
-                EnemyFactory.MakeGrunt(GameContext, "skeleton", new Vector2(225, 100), 5),
-            };
+            //List<GruntOld> wave1 = new List<GruntOld>
+            //{
+            //    EnemyFactory.MakeGrunt(GameContext, _state.World, "skeleton", new Vector2(225, 100)),
+            //};
 
-            Waves.Push(wave1);
+            EnemyFactory.MakeGrunt(GameContext, _state.World, "skeleton", new Vector2(255, 100));
+
+            //Waves.Push(wave1);
         }
 
-            private void LoadSprites(string playerSpritePath, string playerHitboxSpritePath)
+        private void LoadSprites(string playerSpritePath, string playerHitboxSpritePath)
         {
             var texture = GameContext.Content.Load<Texture2D>(playerSpritePath);
             var hitboxTexture = GameContext.Content.Load<Texture2D>(playerHitboxSpritePath);
@@ -152,59 +154,59 @@ namespace Marooned
 
                 grunt.Update(GameContext);
 
-                for (int i = 0; i < grunt.BulletList.Count; i++)
-                {
-                    Bullet bullet = grunt.BulletList[i];
-                    bullet.Update(GameContext);
+                //for (int i = 0; i < grunt.BulletList.Count; i++)
+                //{
+                //    Bullet bullet = grunt.BulletList[i];
+                //    bullet.Update(GameContext);
 
-                    if (!Player.IsInvulnerable)
-                    {
-                        // did it hit the player?
-                        if (Player.Hitbox.IsTouching(bullet.Hitbox))
-                        {
-                            Player.isHit = true; // Show red damage on grunt
+                //    if (!Player.IsInvulnerable)
+                //    {
+                //        // did it hit the player?
+                //        if (Player.Hitbox.IsTouching(bullet.Hitbox))
+                //        {
+                //            Player.isHit = true; // Show red damage on grunt
 
-                            Player.Lives--;
-                            if (Player.Lives <= 0)
-                            {
-                                // "game over man! game over!"
-                                OnDeath();
-                                break;
-                            }
+                //            Player.Lives--;
+                //            if (Player.Lives <= 0)
+                //            {
+                //                // "game over man! game over!"
+                //                OnDeath();
+                //                break;
+                //            }
 
-                            grunt.BulletList.RemoveAt(i);
-                            i--;
-                        }
-                    }
-                }
+                //            grunt.BulletList.RemoveAt(i);
+                //            i--;
+                //        }
+                //    }
+                //}
             }
 
             if (PlayerAlive)
             {
-                // check enemies for damage
-                for (int i = 0; i < Player.BulletList.Count; i++)
-                {
-                    Bullet bullet = Player.BulletList[i];
-                    bullet.Update(GameContext);
+                //// check enemies for damage
+                //for (int i = 0; i < Player.BulletList.Count; i++)
+                //{
+                //    Bullet bullet = Player.BulletList[i];
+                //    bullet.Update(GameContext);
 
-                    for (int j = 0; j < Grunts.Count; j++)
-                    {
-                        if (Grunts[j].Hitbox.IsTouching(bullet.Hitbox))
-                        {
-                            Grunts[j].isHit = true; // Show red damage on grunt
-                            Grunts[j].Health--;
-                            if (Grunts[j].Health <= 0)
-                            {
-                                Grunts.RemoveAt(j);
-                                j--;
-                            }
+                //    for (int j = 0; j < Grunts.Count; j++)
+                //    {
+                //        if (Grunts[j].Hitbox.IsTouching(bullet.Hitbox))
+                //        {
+                //            Grunts[j].isHit = true; // Show red damage on grunt
+                //            Grunts[j].Health--;
+                //            if (Grunts[j].Health <= 0)
+                //            {
+                //                Grunts.RemoveAt(j);
+                //                j--;
+                //            }
 
-                            Player.BulletList.RemoveAt(i);
-                            i--;
-                            break;
-                        }
-                    }
-                }
+                //            Player.BulletList.RemoveAt(i);
+                //            i--;
+                //            break;
+                //        }
+                //    }
+                //}
             }
 
             PostUpdate();
@@ -219,15 +221,15 @@ namespace Marooned
 
         public void PostUpdate()
         {
-            // remove sprites if they're not needed
-            for (int i = 0; i < Player.BulletList.Count; i++)
-            {
-                if (Player.BulletList[i].IsRemoved)
-                {
-                    Player.BulletList.RemoveAt(i);
-                    i--;
-                }
-            }
+            //// remove sprites if they're not needed
+            //for (int i = 0; i < Player.BulletList.Count; i++)
+            //{
+            //    if (Player.BulletList[i].IsRemoved)
+            //    {
+            //        Player.BulletList.RemoveAt(i);
+            //        i--;
+            //    }
+            //}
             for (int i = 0; i < Grunts.Count; i++)
             {
                 if (Grunts[i].IsRemoved)
@@ -244,16 +246,16 @@ namespace Marooned
 
         private void LoadNextWave()
         {
-            if (Waves.Count > 0)
-            {
-                Grunts.AddRange(Waves.Peek());
-                Waves.Pop();
-            }
-            else
-            {
-                // you won! game over
-                GameContext.StateManager.SwapState(new MenuState(GameContext));
-            }
+            //if (Waves.Count > 0)
+            //{
+            //    Grunts.AddRange(Waves.Peek());
+            //    Waves.Pop();
+            //}
+            //else
+            //{
+            //    // you won! game over
+            //    GameContext.StateManager.SwapState(new MenuState(GameContext));
+            //}
         }
 
         public void Draw()
@@ -275,16 +277,16 @@ namespace Marooned
             foreach (var grunt in Grunts)
             {
                 grunt.Draw(GameContext);
-                foreach (var bullet in grunt.BulletList)
-                {
-                    bullet.Draw(GameContext);
-                }
+                //foreach (var bullet in grunt.BulletList)
+                //{
+                //    bullet.Draw(GameContext);
+                //}
             }
 
-            foreach (var bullet in Player.BulletList)
-            {
-                bullet.Draw(GameContext);
-            }
+            //foreach (var bullet in Player.BulletList)
+            //{
+            //    bullet.Draw(GameContext);
+            //}
 
             GameContext.SpriteBatch.End();
         }

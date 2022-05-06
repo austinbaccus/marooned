@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Marooned.Actions;
 
@@ -13,21 +14,15 @@ namespace Marooned
             Actions = new PriorityQueue<IAction, double>();
         }
 
-        public Script(IEnumerable<Tuple<IAction, double>> actions)
+        public Script(IEnumerable<Tuple<IAction, double>> actions) : this()
         {
-            Actions = new PriorityQueue<IAction, double>();
-            foreach (var actionTime in actions)
-            {
-                Actions.Enqueue(actionTime.Item1, actionTime.Item2);
-            }
+            Enqueue(actions);
         }
 
         public bool ShouldExecute(TimeSpan timeElapsed)
         {
-            IAction action;
             double time;
-            if (!Actions.TryDequeue(out action, out time)) return false;
-            Actions.Enqueue(action, time);
+            if (!Actions.TryPeek(out _, out time)) return false;
             return timeElapsed.Seconds >= time;
         }
 
@@ -46,9 +41,27 @@ namespace Marooned
             Actions.Enqueue(action, time);
         }
 
+        public void Enqueue(IEnumerable<Tuple<IAction, double>> actions)
+        {
+            foreach (var actionTime in actions)
+            {
+                Actions.Enqueue(actionTime.Item1, actionTime.Item2);
+            }
+        }
+
         public IAction Dequeue()
         {
             return Actions.Dequeue();
+        }
+
+        public bool TryDequeue(out IAction action, out double time)
+        {
+            return Actions.TryDequeue(out action, out time);
+        }
+
+        public void Clear()
+        {
+            Actions.Clear();
         }
 
         public void ExecuteAll(GameContext gameContext)

@@ -26,7 +26,7 @@ namespace Marooned.Interpreter.Json.Animations
         public AnimationComponent CreateAnimationComponentFrom(string name)
         {
             // ContentManager does not accept "Content/" in the beginning of the path.
-            string animationJsonPath = FindName(name, false);
+            string animationJsonPath = FindJsonByName(name, false);
             AnimationJson animationInfo = Load<AnimationJson>(animationJsonPath);
             Texture2D texture = GameContext.Content.Load<Texture2D>(animationInfo.TextureAtlas.Texture);
             int numAnimations = animationInfo.Cycles.Count;
@@ -37,7 +37,7 @@ namespace Marooned.Interpreter.Json.Animations
                 builder.AddAnimationInfo(
                     name: entry.Key,
                     frameLocations: entry.Value.Frames.Select(
-                        i => entry.Value.GetFrameLocation(
+                        (_, i) => entry.Value.GetFrameLocation(
                             i,
                             animationInfo.TextureAtlas.RegionWidth,
                             animationInfo.TextureAtlas.RegionHeight,
@@ -57,7 +57,7 @@ namespace Marooned.Interpreter.Json.Animations
         public DrawableComponent CreateDrawableComponentFrom(string name)
         {
             // ContentManager does not accept "Content/" in the beginning of the path.
-            string animationJsonPath = FindName(name, false);
+            string animationJsonPath = FindJsonByName(name, false);
             AnimationJson animationInfo = Load<AnimationJson>(animationJsonPath);
             Texture2D texture = GameContext.Content.Load<Texture2D>(animationInfo.TextureAtlas.Texture);
             return new DrawableComponent

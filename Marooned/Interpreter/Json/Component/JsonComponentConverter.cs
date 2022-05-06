@@ -17,24 +17,31 @@ namespace Marooned.Interpreter.Json.Component
             gameContext.AnimationsInterpreter.CreateAnimationForEntity(entity, valueJson.GetString());
         }
 
+        [JsonProperty("health")]
+        public void ConvertHealth(GameContext gameContext, Entity entity, JsonElement componentJson)
+        {
+            JsonElement valueJson = GetProperty("value", componentJson);
+            entity.Set(new HealthComponent
+            {
+                Health = valueJson.GetInt32(),
+            });
+        }
+
+        [JsonProperty("hitbox")]
+        public void ConvertHitbox(GameContext gameContext, Entity entity, JsonElement componentJson)
+        {
+            JsonElement radiusJson = GetProperty("radius", componentJson);
+            entity.Set(new HitboxComponent
+            {
+                HitboxRadius = radiusJson.GetInt32(),
+            });
+        }
+
         [JsonProperty("script")]
         public void ConvertScript(GameContext gameContext, Entity entity, JsonElement componentJson)
         {
-            Script script;
             var scriptJson = componentJson.GetProperty("script");
-            if (scriptJson.ValueKind == JsonValueKind.String)
-            {
-                script = gameContext.ScriptsInterpreter.CreateScriptFrom(scriptJson.GetString(), entity);
-            }
-            else if (scriptJson.ValueKind == JsonValueKind.Array)
-            {
-                script = ((JsonEntityScriptsInterpreter)gameContext.ScriptsInterpreter).CreateScriptFrom(scriptJson, entity);
-            }
-            else
-            {
-                throw new Exception($"Unknown type for script");
-            }
-
+            Script script = ((JsonEntityScriptsInterpreter)gameContext.ScriptsInterpreter).CreateScriptFromElement(scriptJson, gameContext, entity);
             entity.Set(new ScriptComponent
             {
                 Script = script,

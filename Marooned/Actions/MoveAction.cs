@@ -7,7 +7,7 @@ namespace Marooned.Actions
 {
     public class MoveAction : IAction
     {
-        public MoveAction(MovePattern pattern, Entity entity, float duration)
+        public MoveAction(MovePattern pattern, Entity entity, TimeSpan duration)
         {
             Pattern = pattern;
             Entity = entity;
@@ -16,9 +16,9 @@ namespace Marooned.Actions
 
         public MovePattern Pattern { get; set; }
         public Entity Entity { get; set; }
-        public float Duration { get; set; }
+        public TimeSpan Duration { get; set; }
 
-        public void Execute(GameContext gameContext)
+        public virtual void Execute(GameContext gameContext)
         {
             Entity.Set(new MoveComponent
             {

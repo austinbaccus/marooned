@@ -1,17 +1,15 @@
 ﻿using Marooned.Factories;
-using Marooned.Sprites;
 using Microsoft.Xna.Framework;
-using System.Collections.Generic;
 
 namespace Marooned.Actions
 {
     public class ShootAction : IAction
     {
-        private List<Bullet> _bulletList;
+        //private List<Bullet> _bulletList;
 
-        public ShootAction(List<Bullet> bulletList)
+        public ShootAction()
         {
-            _bulletList = bulletList;
+            //_bulletList = bulletList;
         }
 
         public void Execute(GameContext gameContext)

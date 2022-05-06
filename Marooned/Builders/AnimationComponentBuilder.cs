@@ -1,7 +1,6 @@
 ﻿using Marooned.Animation;
 using Marooned.Components;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 
 namespace Marooned.Builders

@@ -12,5 +12,15 @@ namespace Marooned
                 viewport.Height / 2 - buttonHeight / 2
             );
         }
+
+        public static float Lerp(float start, float goal, float t)
+        {
+            return start + (goal - start) * t;
+        }
+
+        public static double Lerp(double start, double goal, double t)
+        {
+            return start + (goal - start) * t;
+        }
     }
 }

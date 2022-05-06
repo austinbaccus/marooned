@@ -1,5 +1,4 @@
 ﻿using DefaultEcs;
-using Marooned.Components;
 using Marooned.Patterns;
 using Microsoft.Xna.Framework;
 using System;
@@ -20,14 +19,11 @@ namespace Marooned.Interpreter.Json.Patterns
                 switch (patternName)
                 {
                     case "linear":
-
-                        Vector2 initialVelocity = DeserializeVector2(actionJson.GetProperty("velocity"));
-                        actor.Set(new VelocityComponent
-                        {
-                            Value = initialVelocity,
-                        });
-
                         return new LinearMovePattern();
+                    case "circle":                        
+                        int degrees = actionJson.GetProperty("degrees").GetInt32();
+                        Vector2 centerOffset = DeserializeVector2(actionJson.GetProperty("center_offset"));
+                        return new CircleMovePattern(degrees, centerOffset);
                     default:
                         throw new Exception($"Pattern {patternName} does not exist");
                 }

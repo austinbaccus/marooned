@@ -1,23 +1,27 @@
-﻿using Marooned.Sprites;
+﻿using DefaultEcs;
+using Marooned.Components;
+using Marooned.Patterns;
 using Microsoft.Xna.Framework;
+using System;
 
 namespace Marooned.Actions
 {
-    public class LinearMoveAction : IAction
+    public class LinearMoveAction : MoveAction
     {
-        private readonly Sprite _sprite;
-
-        public LinearMoveAction(Sprite sprite)
+        public LinearMoveAction(MovePattern pattern, Entity entity, TimeSpan duration, Vector2 velocity) : base(pattern, entity, duration)
         {
-            _sprite = sprite;
+            Velocity = velocity;
         }
 
-        public void Execute(GameContext gameContext)
-        {
-            _sprite.Position += Direction * Speed * (float)gameContext.GameTime.ElapsedGameTime.TotalSeconds;
-        }
+        public Vector2 Velocity { get; set; }
 
-        public Vector2 Direction { get; set; }
-        public float Speed { get; set; }
+        public override void Execute(GameContext gameContext)
+        {
+            Entity.Set(new VelocityComponent
+            {
+                Value = Velocity,
+            });
+            base.Execute(gameContext);
+        }
     }
 }

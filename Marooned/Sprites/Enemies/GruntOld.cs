@@ -7,7 +7,7 @@ using System.Diagnostics;
 
 namespace Marooned.Sprites.Enemies
 {
-    public class Grunt : AnimatedSprite
+    public class GruntOld : AnimatedSprite
     {
         protected List<double> _firePattern;
         protected List<Tuple<Vector2, int>> _movePattern;
@@ -16,7 +16,6 @@ namespace Marooned.Sprites.Enemies
 
         public int Health = 0;
 
-        public List<Bullet> BulletList = new List<Bullet>(); // List of bullets
         protected double _lastBulletTimestamp = 0;
         protected float _bulletLifespan = 2f;
         protected float _bulletVelocity = 250f;
@@ -32,7 +31,7 @@ namespace Marooned.Sprites.Enemies
         public bool isHit; // Red Damage
         private Stopwatch _damageTimer = new Stopwatch(); // timer for damage
 
-        public Grunt(Texture2D texture, Rectangle[] animSources, FiringPattern.Pattern firingPattern, MovePatternOld.Pattern movementPattern, int health) : base(texture, animSources)
+        public GruntOld(Texture2D texture, Rectangle[] animSources, FiringPattern.Pattern firingPattern, MovePatternOld.Pattern movementPattern, int health) : base(texture, animSources)
         {
             Health = health;
             _firePattern = FiringPattern.GetPattern(firingPattern);

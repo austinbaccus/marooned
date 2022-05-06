@@ -28,6 +28,7 @@ namespace Marooned.Systems
                 {
                     player.Set(new CollisionComponent
                     {
+                        HasCollided = true,
                         CollidedWith = entity
                     });
 

@@ -23,7 +23,6 @@ namespace Marooned.Sprites
         public float FocusSpeedFactor;
         public int Lives = 5;
 
-        public List<Bullet> BulletList = new List<Bullet>(); // List of bullets
         private double _lastBulletTimestamp = 0;
         private float _bulletLifespan = 2f;
         private float _bulletVelocity = 400f;
@@ -265,7 +264,7 @@ namespace Marooned.Sprites
 
             if (upPressed)
             {
-                Script.AddAction(new LinearMoveAction(this)
+                Script.AddAction(new LinearMoveActionOld(this)
                 {
                     Direction = new Vector2(0, -1),
                     Speed = newSpeed,
@@ -275,7 +274,7 @@ namespace Marooned.Sprites
             }
             if (downPressed)
             {
-                Script.AddAction(new LinearMoveAction(this)
+                Script.AddAction(new LinearMoveActionOld(this)
                 {
                     Direction = new Vector2(0, 1),
                     Speed = newSpeed,
@@ -285,7 +284,7 @@ namespace Marooned.Sprites
             }
             if (leftPressed)
             {
-                Script.AddAction(new LinearMoveAction(this)
+                Script.AddAction(new LinearMoveActionOld(this)
                 {
                     Direction = new Vector2(-1, 0),
                     Speed = newSpeed,
@@ -295,7 +294,7 @@ namespace Marooned.Sprites
             }
             if (rightPressed)
             {
-                Script.AddAction(new LinearMoveAction(this)
+                Script.AddAction(new LinearMoveActionOld(this)
                 {
                     Direction = new Vector2(1, 0),
                     Speed = newSpeed,
@@ -318,7 +317,7 @@ namespace Marooned.Sprites
 
                 if (shootRightPressed)
                 {
-                    Script.AddAction(new ShootAction(BulletList)
+                    Script.AddAction(new ShootAction()
                     {
                         LifeSpan = _bulletLifespan,
                         Velocity = new Vector2(_bulletVelocity, 0),
@@ -328,7 +327,7 @@ namespace Marooned.Sprites
                 }
                 else if (shootLeftPressed)
                 {
-                    Script.AddAction(new ShootAction(BulletList)
+                    Script.AddAction(new ShootAction()
                     {
                         LifeSpan = _bulletLifespan,
                         Velocity = new Vector2(-_bulletVelocity, 0),
@@ -338,7 +337,7 @@ namespace Marooned.Sprites
                 }
                 else if (shootDownPressed)
                 {
-                    Script.AddAction(new ShootAction(BulletList)
+                    Script.AddAction(new ShootAction()
                     {
                         LifeSpan = _bulletLifespan,
                         Velocity = new Vector2(0, _bulletVelocity),
@@ -348,7 +347,7 @@ namespace Marooned.Sprites
                 }
                 else if (shootUpPressed)
                 {
-                    Script.AddAction(new ShootAction(BulletList)
+                    Script.AddAction(new ShootAction()
                     {
                         LifeSpan = _bulletLifespan,
                         Velocity = new Vector2(0, -_bulletVelocity),

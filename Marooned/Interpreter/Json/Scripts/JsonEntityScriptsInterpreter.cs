@@ -8,7 +8,7 @@ namespace Marooned.Interpreter.Json.Scripts
 {
     public class JsonEntityScriptsInterpreter : JsonInterpreter, IEntityScriptsInterpreter
     {
-        JsonActionConverter actionConverter = new JsonActionConverter();
+        public JsonActionConverter actionConverter = new JsonActionConverter();
 
         Dictionary<string, JsonDocument> _cache = new Dictionary<string, JsonDocument>();
 
@@ -17,6 +17,24 @@ namespace Marooned.Interpreter.Json.Scripts
         }
 
         public override string Path { get; set; } = "Scripts";
+
+        public Script CreateScriptFromElement(JsonElement jsonElement, GameContext gameContext, Entity entity)
+        {
+            Script script;
+            if (jsonElement.ValueKind == JsonValueKind.String)
+            {
+                script = gameContext.ScriptsInterpreter.CreateScriptFrom(jsonElement.GetString(), entity);
+            }
+            else if (jsonElement.ValueKind == JsonValueKind.Array)
+            {
+                script = ((JsonEntityScriptsInterpreter)gameContext.ScriptsInterpreter).CreateScriptFrom(jsonElement, entity);
+            }
+            else
+            {
+                throw new Exception($"Unknown type for script");
+            }
+            return script;
+        }
 
         public Script CreateScriptFrom(string name, Entity entity)
         {

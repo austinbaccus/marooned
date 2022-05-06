@@ -9,7 +9,7 @@
     {
       "action": "move",
       "pattern": "linear",
-      "velocity": "0 50",
+      "velocity": "0 75",
       "duration": 1
     }
   ]

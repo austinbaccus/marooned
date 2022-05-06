@@ -28,6 +28,7 @@ namespace Marooned.Systems
                 {
                     bullet.Set(new CollisionComponent
                     {
+                        HasCollided = true,
                         CollidedWith = entity
                     });
                 }

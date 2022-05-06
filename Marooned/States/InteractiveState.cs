@@ -1,14 +1,10 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Media;
 using Marooned.Sprites;
-using MonoGame.Extended.Tiled;
-using MonoGame.Extended.Tiled.Renderers;
 using MonoGame.Extended;
 using MonoGame.Extended.ViewportAdapters;
 using Marooned.Sprites.Enemies;
-using Marooned.Factories;
 using Marooned.Controllers;
 using DefaultEcs.System;
 using Marooned.Systems;
@@ -19,7 +15,6 @@ namespace Marooned.States
     {
         private List<ComponentOld> _components;
         private Vector2 _spawnPoint = new Vector2(300, 300);
-        private Level _level;
 
         //private string _mapPath;
         //private List<string> _songPaths;
@@ -36,9 +31,16 @@ namespace Marooned.States
             _playerHitboxSpritePath = playerHitboxSpritePath;
 
             InputController = new InputController(this);
-            _level = new Level(gameContext, mapPath, songPaths, playerSpritePath, playerHitboxSpritePath);
+            CurrentLevel = new Level(this, gameContext, mapPath, songPaths, playerSpritePath, playerHitboxSpritePath);
 
             Systems = new SequentialSystem<GameContext>(
+                new PlayerBulletCollisionSystem(World),
+                new EnemyBulletCollisionSystem(World),
+                new PlayerCollisionSystem(World),
+                new EnemyCollisionSystem(World),
+                new DamageSystem(World),
+                new RemoveEntitySystem(World),
+                new BulletRemovalSystem(World),
                 new MoveEntitySystem(World),
                 new MoveSystem(World),
                 new ScriptSystem(World),
@@ -53,11 +55,13 @@ namespace Marooned.States
         //public TiledMap TiledMap { get; private set; }
         public Player Player { get; private set; }
         public OrthographicCamera _camera { get; private set; }
-        public List<Grunt> Grunts { get; private set; } = new List<Grunt>();
+        public List<GruntOld> Grunts { get; private set; } = new List<GruntOld>();
         //public Stack<List<Grunt>> Waves { get; private set; } = new Stack<List<Grunt>>();
 
 
         public List<Sprite> Hearts = new List<Sprite>();
+
+        public Level CurrentLevel { get; private set; }
 
 
         //public float LevelTime { get; private set; }
@@ -101,7 +105,7 @@ namespace Marooned.States
         public override void Update()
         {
 
-            _level.Update();
+            CurrentLevel.Update();
 
             //InputController.Update(GameContext);
 
@@ -202,7 +206,7 @@ namespace Marooned.States
             //LoadMusic(_songPaths);
             //LoadMap(_mapPath);
 
-            _level.LoadContent();
+            CurrentLevel.LoadContent();
 
             LoadLives();
         }
@@ -340,13 +344,6 @@ namespace Marooned.States
                 // respawn player
                 Player.Position = _spawnPoint;
                 Player.StartInvulnerableState();
-
-                // despawn existing bullets
-                foreach (var grunt in Grunts)
-                {
-                    grunt.BulletList.Clear();
-                }
-                Player.BulletList.Clear();
             }
         }
 
@@ -419,7 +416,7 @@ namespace Marooned.States
             GameContext.GraphicsDevice.Clear(Color.CornflowerBlue);
             //DrawMap();
 
-            _level.Draw();
+            CurrentLevel.Draw();
 
             DrawHUD();
             Systems.Update(GameContext);

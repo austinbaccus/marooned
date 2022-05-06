@@ -16,6 +16,12 @@ namespace Marooned.Factories
                     Position = at,
                 });
             }
+            entity.Set<IsPlayerBulletComponent>();
+            entity.Set(new HitboxComponent
+            {
+                HitboxRadius = 10,
+            });
+            entity.Set(new CollisionComponent());
             entity.Get<AnimationComponent>().Play("spin");
             return entity;
 

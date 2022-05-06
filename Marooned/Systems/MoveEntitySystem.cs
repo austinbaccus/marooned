@@ -20,7 +20,7 @@ namespace Marooned.Systems
 
             Vector2 currentPosition = transform.Position;
             Vector2 currentVelocity = velocity.Value;
-            Vector2 newPosition = move.Pattern.Transform(gameContext, currentPosition, currentVelocity);
+            Vector2 newPosition = move.Pattern.Transform(gameContext, move.Timer, move.Duration, currentPosition, currentVelocity);
 
             entity.Set(new TransformComponent
             {

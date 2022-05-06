@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using System.Text.Json;
 
 namespace Marooned.Interpreter.Json
 {
@@ -18,25 +17,6 @@ namespace Marooned.Interpreter.Json
             get => $"{GameContext.Content.RootDirectory}\\{Path}";
         }
 
-        static void DirSearch(string sDir)
-        {
-            try
-            {
-                foreach (string d in Directory.GetDirectories(sDir))
-                {
-                    foreach (string f in Directory.GetFiles(d, "*.json"))
-                    {
-                        System.Diagnostics.Debug.WriteLine(f);
-                    }
-                    DirSearch(d);
-                }
-            }
-            catch (System.Exception excpt)
-            {
-                System.Diagnostics.Debug.WriteLine(excpt.Message);
-            }
-        }
-
         public static string RemoveExtension(string path)
         {
             return System.IO.Path.ChangeExtension(path, null);
@@ -47,10 +27,8 @@ namespace Marooned.Interpreter.Json
             return GameContext.Content.Load<T>(RemoveExtension(path));
         }
 
-        public virtual string FindName(string name, bool fullPath)
+        public virtual string FindJsonByName(string name, bool fullPath)
         {
-            DirSearch(ContentPath);
-
             string foundJsonPath = Directory.EnumerateFiles(ContentPath, "*.json", SearchOption.AllDirectories)
                     .Where(f => System.IO.Path.GetFileNameWithoutExtension(f) == name)
                     .First();
@@ -64,7 +42,7 @@ namespace Marooned.Interpreter.Json
         public string GetFileContents(string name)
         {
             // Need the full path to manually parse JSON
-            string path = FindName(name, true);
+            string path = FindJsonByName(name, true);
             using (Stream stream = new FileStream(path, FileMode.Open, FileAccess.Read))
             {
                 if (File.Exists(path) && stream.Length > 0)

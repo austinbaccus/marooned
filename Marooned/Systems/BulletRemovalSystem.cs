@@ -8,13 +8,13 @@ namespace Marooned.Systems
     [WithEither(typeof(IsEnemyBulletComponent), typeof(IsPlayerBulletComponent))]
     public class BulletRemovalSystem : AEntitySetSystem<GameContext>
     {
-        public BulletRemovalSystem(World world) : base(world)
+        public BulletRemovalSystem(World world) : base(world, true)
         {
         }
 
         protected override void Update(GameContext gameContext, in Entity entity)
         {
-           if (entity.Get<CollisionComponent>().CollidedWith != null)
+           if (entity.Get<CollisionComponent>().HasCollided)
            {
                 entity.Dispose();
            }

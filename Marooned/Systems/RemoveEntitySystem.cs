@@ -4,10 +4,10 @@ using Marooned.Components;
 
 namespace Marooned.Systems
 {
-    [With(typeof(TransformComponent), typeof(CollisionComponent), typeof(HitboxComponent), typeof(IsEnemyComponent))] // all enemies
-    public class RemoveEnemySystem : AEntitySetSystem<GameContext>
+    [With(typeof(HealthComponent))] // all enemies
+    public class RemoveEntitySystem : AEntitySetSystem<GameContext>
     {
-        public RemoveEnemySystem(World world) : base(world)
+        public RemoveEntitySystem(World world) : base(world)
         {
         }
 

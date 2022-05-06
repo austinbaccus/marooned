@@ -22,6 +22,12 @@
 /processorParam:ContentType=Marooned.Interpreter.Json.Animations.AnimationJsonReader, Marooned
 /build:Animations/Bullets/banana_animations.json
 
+#begin Animations/Enemies/skeleton_animations.json
+/importer:JsonContentImporter
+/processor:JsonContentProcessor
+/processorParam:ContentType=Marooned.Interpreter.Json.Animations.AnimationJsonReader, Marooned
+/build:Animations/Enemies/skeleton_animations.json
+
 #begin Controls/button.png
 /importer:TextureImporter
 /processor:TextureProcessor

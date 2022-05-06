@@ -14,12 +14,9 @@ namespace Marooned.Systems
 
         protected override void Update(GameContext gameContext, in Entity entity)
         {
-            if (entity.Get<CollisionComponent>().CollidedWith != null)
+            if (entity.Get<CollisionComponent>().HasCollided)
             {
-                entity.Set(new CollisionComponent
-                {
-                    CollidedWith = null
-                });
+                entity.Set(new CollisionComponent());
                 entity.Get<HealthComponent>().Health -= 1;
             }
         }

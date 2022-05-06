@@ -114,7 +114,16 @@
     <None Update="Content\Animations\Bullets\banana_animations.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="Content\Animations\Enemies\skeleton_animations.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Content\Entities\Bullets\banana.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Entities\Enemies\skeleton.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Scripts\Movement\test_movement.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Content\Sprites\Banana.png">
@@ -124,9 +133,7 @@
   <ItemGroup>
     <Folder Include="Content\Bullets\" />
     <Folder Include="Content\Entities\Bosses\" />
-    <Folder Include="Content\Entities\Enemies\" />
     <Folder Include="Content\Entities\Players\" />
     <Folder Include="Content\Entities\Powerups\" />
-    <Folder Include="Content\Scripts\" />
   </ItemGroup>
 </Project>

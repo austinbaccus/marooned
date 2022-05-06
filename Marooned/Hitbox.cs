@@ -12,20 +12,11 @@ namespace Marooned
         // This is the sprite using hitbox, not the actual sprite of hitbox itself.
         private Sprite _parentSprite;
 
-        private Bullet _bullet;
-
         public Vector2 Position
         {
             get
             {
-                if (_parentSprite != null)
-                {
-                    return _parentSprite.Position + Offset;
-                }
-                else
-                {
-                    return _bullet.Position + Offset;
-                }
+                return _parentSprite.Position + Offset;
             }
         }
         public Vector2 Offset { get; set; } = Vector2.Zero;
@@ -35,11 +26,6 @@ namespace Marooned
         public Hitbox(Sprite sprite)
         {
             _parentSprite = sprite;
-        }
-
-        public Hitbox(Bullet bullet)
-        {
-            _bullet = bullet;
         }
 
         // TODO: Come up with a better way of detecting collision. Specifically:

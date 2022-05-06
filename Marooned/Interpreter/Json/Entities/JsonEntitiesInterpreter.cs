@@ -8,8 +8,9 @@ namespace Marooned.Interpreter.Json.Entities
 {
     public class JsonEntitiesInterpreter : JsonInterpreter, IEntitiesInterpreter
     {
-        JsonComponentConverter _componentConverter = new JsonComponentConverter();
         Dictionary<string, JsonDocument> _cache = new Dictionary<string, JsonDocument>();
+
+        public JsonComponentConverter _componentConverter = new JsonComponentConverter();
 
         public JsonEntitiesInterpreter(GameContext gameContext) : base(gameContext)
         {

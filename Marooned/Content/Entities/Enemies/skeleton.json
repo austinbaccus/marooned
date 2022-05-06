@@ -1,0 +1,26 @@
+{
+  "components": [
+    {
+      "type": "animation",
+      "value": "skeleton_animations"
+    },
+    {
+      "type": "health",
+      "value": 10
+    },
+    {
+      "type": "hitbox",
+      "radius": 10
+    }
+  ],
+  "script": [
+    {
+      "action": "script",
+      "script": "test_movement"
+    },
+    {
+      "time": 10,
+      "action": "clear_player_bullets"
+    }
+  ]
+}
