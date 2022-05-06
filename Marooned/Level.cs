@@ -1,4 +1,5 @@
 ﻿using DefaultEcs;
+using Marooned.Components;
 using Marooned.Controllers;
 using Marooned.Factories;
 using Marooned.Levels;
@@ -141,6 +142,7 @@ namespace Marooned
         private void LoadPlayer()
         {
             Entity player = World.CreateEntity();
+            player.Set(new IsPlayerComponent());
         }
 
         public void UnloadContent()

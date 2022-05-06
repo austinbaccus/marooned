@@ -11,6 +11,15 @@
     {
       "type": "hitbox",
       "radius": 10
+    },
+    {
+      "type": "transform"
+    },
+    {
+      "type": "is_enemy"
+    },
+    {
+      "type": "collision"
     }
   ],
   "script": []

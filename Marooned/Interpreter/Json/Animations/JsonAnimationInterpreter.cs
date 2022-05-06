@@ -15,9 +15,13 @@ namespace Marooned.Interpreter.Json.Animations
 
         public override string Path { get; set; } = "Animations";
 
-        public void CreateAnimationForEntity(Entity entity, string name)
+        public void CreateAnimationForEntity(Entity entity, string name, string currentAnimation = null)
         {
             AnimationComponent animationComponent = CreateAnimationComponentFrom(name);
+            if (currentAnimation != null)
+            {
+                animationComponent.Play(currentAnimation);
+            }
             DrawableComponent drawableComponent = CreateDrawableComponentFrom(name);
             entity.Set(animationComponent);
             entity.Set(drawableComponent);

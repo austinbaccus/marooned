@@ -15,6 +15,14 @@ namespace Marooned.Interpreter.Json.Component
         public void ConvertAnimation(GameContext gameContext, World world, Entity entity, JsonElement componentJson)
         {
             JsonElement valueJson = GetProperty("value", componentJson);
+
+            string currentAnimation = null;
+            JsonElement? currentAnimationJson;
+            if (TryGetProperty("current_animation", componentJson, out currentAnimationJson))
+            {
+                currentAnimation = currentAnimationJson.Value.GetString();
+            }
+
             gameContext.AnimationsInterpreter.CreateAnimationForEntity(entity, valueJson.GetString());
         }
 
@@ -63,6 +71,36 @@ namespace Marooned.Interpreter.Json.Component
             {
                 Position = position
             });
+        }
+
+        [JsonProperty("is_enemy")]
+        public void ConvertIsEnemy(GameContext gameContext, World world, Entity entity, JsonElement componentJson)
+        {
+            entity.Set(new IsEnemyComponent());
+        }
+
+        [JsonProperty("is_enemy_bullet")]
+        public void ConvertIsEnemyBullet(GameContext gameContext, World world, Entity entity, JsonElement componentJson)
+        {
+            entity.Set(new IsEnemyBulletComponent());
+        }
+
+        [JsonProperty("is_player")]
+        public void ConvertIsPlayer(GameContext gameContext, World world, Entity entity, JsonElement componentJson)
+        {
+            entity.Set(new IsPlayerComponent());
+        }
+
+        [JsonProperty("is_player_bullet")]
+        public void ConvertIsPlayerBullet(GameContext gameContext, World world, Entity entity, JsonElement componentJson)
+        {
+            entity.Set(new IsPlayerBulletComponent());
+        }
+
+        [JsonProperty("collision")]
+        public void ConvertCollision(GameContext gameContext, World world, Entity entity, JsonElement componentJson)
+        {
+            entity.Set(new CollisionComponent());
         }
     }
 }
