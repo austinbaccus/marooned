@@ -27,7 +27,7 @@ namespace Marooned
         public List<Sprite> Bombs = new List<Sprite>();
         public List<Sprite> Hearts = new List<Sprite>();
 
-        public Level(State state, GameContext gameContext, LevelInfo levelInfo, List<string> songPaths, string playerSpritePath, string playerHitboxSpritePath)
+        public Level(State state, GameContext gameContext, LevelInfo levelInfo, List<string> songPaths, string playerSpritePath, string playerHitboxSpritePath, bool isHard = false)
         {
             _state = state;
             GameContext = gameContext;
@@ -40,6 +40,7 @@ namespace Marooned
             _inputController = GameContext.StateManager.CurrentState.InputController;
 
             LevelInfo = levelInfo;
+            _isHard = isHard;
 
             //var viewportadapter = new BoxingViewportAdapter(
             //    GameContext.Game.Window,

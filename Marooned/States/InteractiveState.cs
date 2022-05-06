@@ -21,7 +21,7 @@ namespace Marooned.States
         private string _playerSpritePath;
         private string _playerHitboxSpritePath;
 
-        public InteractiveState(GameContext gameContext, string levelName, List<string> songPaths, string playerSpritePath, string playerHitboxSpritePath) : base(gameContext)
+        public InteractiveState(GameContext gameContext, string levelName, List<string> songPaths, string playerSpritePath, string playerHitboxSpritePath, bool isHard = false) : base(gameContext)
         {
             _components = new List<ComponentOld>();
 
@@ -33,7 +33,7 @@ namespace Marooned.States
             Entity levelEntity = gameContext.LevelsInterpreter.GetLevelEntity(levelName, World);
             LevelInfo levelInfo = levelEntity.Get<LevelInfo>();
 
-            CurrentLevel = new Level(this, gameContext, levelInfo, songPaths, playerSpritePath, playerHitboxSpritePath);
+            CurrentLevel = new Level(this, gameContext, levelInfo, songPaths, playerSpritePath, playerHitboxSpritePath, isHard);
 
             Systems = new SequentialSystem<GameContext>(
                 new PlayerBulletCollisionSystem(World),
@@ -299,7 +299,8 @@ namespace Marooned.States
                     "Sounds/Music/ConcernedApe - Stardew Valley 1.5 Original Soundtrack - 01 Ginger Island"
                 },
                 "Sprites/IslandParrot",
-                "Sprites/PlayerHitbox"
+                "Sprites/PlayerHitbox",
+                isHard: true
             );
         }
 
