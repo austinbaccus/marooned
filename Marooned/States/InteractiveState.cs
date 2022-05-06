@@ -39,6 +39,9 @@ namespace Marooned.States
 
             Systems = new SequentialSystem<GameContext>(
                 new MoveEntitySystem(World),
+                new MoveSystem(World),
+                new ScriptSystem(World),
+                new ScriptEntitySystem(World),
                 new AnimationSystem(World),
                 new DrawSystem(World),
                 new DrawAnimationSystem(World)

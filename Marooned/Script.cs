@@ -4,21 +4,36 @@ using Marooned.Actions;
 
 namespace Marooned
 {
-    public class Script
+    public struct Script
     {
-        public PriorityQueue<IAction, float> Actions { get; set; }
+        public PriorityQueue<IAction, double> Actions { get; set; }
 
         public Script()
         {
-            Actions = new PriorityQueue<IAction, float>();
+            Actions = new PriorityQueue<IAction, double>();
         }
 
-        public Script(IEnumerable<Tuple<IAction, float>> actions)
+        public Script(IEnumerable<Tuple<IAction, double>> actions)
         {
+            Actions = new PriorityQueue<IAction, double>();
             foreach (var actionTime in actions)
             {
-                Enqueue(actionTime.Item1, actionTime.Item2);
+                Actions.Enqueue(actionTime.Item1, actionTime.Item2);
             }
+        }
+
+        public bool ShouldExecute(TimeSpan timeElapsed)
+        {
+            IAction action;
+            double time;
+            if (!Actions.TryDequeue(out action, out time)) return false;
+            Actions.Enqueue(action, time);
+            return timeElapsed.Seconds >= time;
+        }
+
+        public bool Empty()
+        {
+            return Actions.Count == 0;
         }
 
         public IAction Peek()
@@ -26,7 +41,7 @@ namespace Marooned
             return Actions.Peek();
         }
 
-        public void Enqueue(IAction action, float time)
+        public void Enqueue(IAction action, double time)
         {
             Actions.Enqueue(action, time);
         }

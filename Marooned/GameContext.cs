@@ -22,7 +22,7 @@ namespace Marooned
             StateManager = new StateManager(this);
             AnimationsInterpreter = new JsonAnimationInterpreter(this);
             EntitiesInterpreter = new JsonEntitiesInterpreter(this);
-            ScriptsInterpreter = new JsonScriptsInterpreter(this);
+            ScriptsInterpreter = new JsonEntityScriptsInterpreter(this);
         }
 
         public Game1 Game { get; }
@@ -35,6 +35,6 @@ namespace Marooned
         public GameTime GameTime { get; internal set; }
         public IAnimationsInterpreter AnimationsInterpreter { get; }
         public IEntitiesInterpreter EntitiesInterpreter { get; }
-        public IScriptsInterpreter ScriptsInterpreter { get; }
+        public IEntityScriptsInterpreter ScriptsInterpreter { get; }
     }
 }

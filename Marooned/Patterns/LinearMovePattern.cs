@@ -1,5 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
-using System.Timers;
+using System;
 
 namespace Marooned.Patterns
 {

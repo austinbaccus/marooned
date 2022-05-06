@@ -12,7 +12,7 @@ namespace Marooned.Systems
 
         protected override void Update(GameContext gameContext, ref MoveComponent move)
         {
-            move.Timer.Add(gameContext.GameTime.ElapsedGameTime);
+            move.Timer = move.Timer.Add(gameContext.GameTime.ElapsedGameTime);
         }
     }
 }
