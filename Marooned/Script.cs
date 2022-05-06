@@ -1,46 +1,86 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Marooned.Actions;
-using Microsoft.Xna.Framework;
 
 namespace Marooned
 {
-    public class Script
+    public struct Script
     {
-        public Queue<IAction> Actions { get; set; }
+        public PriorityQueue<IAction, double> Actions { get; set; }
 
         public Script()
         {
-            Actions = new Queue<IAction>();
+            Actions = new PriorityQueue<IAction, double>();
         }
 
-        public Script(IEnumerable<IAction> actions)
+        public PriorityQueue<IAction, double>.UnorderedItemsCollection UnorderedItemsCollection { get => Actions.UnorderedItems; }
+
+        public bool ShouldExecute(TimeSpan timeElapsed)
         {
-            foreach (var action in actions)
+            double time;
+            if (!Actions.TryPeek(out _, out time)) return false;
+            return timeElapsed.Seconds >= time;
+        }
+
+        public bool Empty()
+        {
+            return Actions.Count == 0;
+        }
+
+        public IAction Peek()
+        {
+            return Actions.Peek();
+        }
+
+        public void Enqueue(IAction action, double time)
+        {
+            Actions.Enqueue(action, time);
+        }
+
+        public void Enqueue(Script other)
+        {
+            foreach ((IAction action, double time) in other.UnorderedItemsCollection)
             {
-                Actions.Enqueue(action);
+                Enqueue(action, time);
             }
         }
 
-        public void AddAction(IAction action)
+        public IAction Dequeue()
         {
-            Actions.Enqueue(action);
+            return Actions.Dequeue();
         }
 
-        public void ExecuteAll(GameTime gameTime)
+        public bool TryDequeue(out IAction action, out double time)
         {
-            foreach (var action in Actions)
-            {
-                action.Execute(gameTime);
-            }
+            return Actions.TryDequeue(out action, out time);
+        }
+
+        public void Clear()
+        {
             Actions.Clear();
         }
 
-        public void ExecuteFirst(GameTime gameTime)
+        public void ExecuteAll(GameContext gameContext)
+        {
+            while (Actions.Count > 0)
+            {
+                Dequeue().Execute(gameContext);
+            }
+        }
+
+        public void ExecuteFirst(GameContext gameContext)
         {
             if (Actions.Count > 0)
             {
-                Actions.Dequeue().Execute(gameTime);
+                Peek().Execute(gameContext);
             }
+        }
+
+        public IAction Execute(GameContext gameContext)
+        {
+            IAction action = Dequeue();
+            action.Execute(gameContext);
+            return action;
         }
     }
 }

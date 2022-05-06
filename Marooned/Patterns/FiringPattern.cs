@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace Marooned.Sprites.Enemies
 {
@@ -16,7 +14,7 @@ namespace Marooned.Sprites.Enemies
         {
             switch(pattern)
             {
-                case (Pattern.straight): { return new List<double>() { 0 }; }
+                case (Pattern.straight): { return new List<double>() { }; }
                 case (Pattern.trident): { return new List<double>() { 0, 20, 160 }; }
                 case (Pattern.circle): { return new List<double>() { 0, 45, 90, 135, 180, 225, 270, 315 }; }
                 default: { return new List<double>() { 0 }; }

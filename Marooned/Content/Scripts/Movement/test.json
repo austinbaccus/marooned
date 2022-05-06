@@ -1,0 +1,14 @@
+[
+  {
+    "time": 0,
+    "action": "play_animation",
+    "animation": "walkRight"
+  },
+  {
+    "time": 0,
+    "action": "move",
+    "pattern": "linear",
+    "velocity": "100 0",
+    "duration": 20
+  }
+]

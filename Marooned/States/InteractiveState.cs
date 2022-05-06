@@ -1,337 +1,363 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Media;
 using Marooned.Sprites;
-using MonoGame.Extended.Tiled;
-using MonoGame.Extended.Tiled.Renderers;
 using MonoGame.Extended;
 using MonoGame.Extended.ViewportAdapters;
 using Marooned.Sprites.Enemies;
-using Marooned.Factories;
 using Marooned.Controllers;
+using DefaultEcs.System;
+using Marooned.Systems;
+using DefaultEcs;
+using Marooned.Levels;
 
 namespace Marooned.States
 {
     public class InteractiveState : State
     {
-        public Player player;
-        public List<Grunt> grunts = new List<Grunt>();
-        public Stack<List<Grunt>> waves = new Stack<List<Grunt>>();
-        public List<Sprite> hearts = new List<Sprite>();
-        public OrthographicCamera camera;
-
-        private List<Component> components;
-
-        // Tiled
-        public TiledMap tiledMap;
-        public TiledMapRenderer tiledMapRenderer;
-
+        private List<ComponentOld> _components;
         private Vector2 _spawnPoint = new Vector2(300, 300);
 
-        public InteractiveState(Game1 game, GraphicsDevice graphicsDevice, ContentManager content, string mapPath, List<string> songPaths, string playerSpritePath, string playerHitboxSpritePath) : base(game, graphicsDevice, content)
+        private string _playerSpritePath;
+        private string _playerHitboxSpritePath;
+
+        public InteractiveState(GameContext gameContext, string levelName, List<string> songPaths, string playerSpritePath, string playerHitboxSpritePath, bool isHard = false) : base(gameContext)
         {
-            components = new List<Component>();
-            LoadContent();
-            LoadSprites(playerSpritePath, playerHitboxSpritePath);
-            LoadEnemies();
-            LoadMusic(songPaths);
-            LoadMap(mapPath);
-            LoadLives();
-            View = new InteractiveView(this, tiledMapRenderer, camera, hearts);
+            _components = new List<ComponentOld>();
+
+            _playerSpritePath = playerSpritePath;
+            _playerHitboxSpritePath = playerHitboxSpritePath;
+
+            InputController = new InputController(this);
+
+            Entity levelEntity = gameContext.LevelsInterpreter.GetLevelEntity(levelName, World);
+            LevelInfo levelInfo = levelEntity.Get<LevelInfo>();
+
+            CurrentLevel = new Level(this, gameContext, levelInfo, songPaths, playerSpritePath, playerHitboxSpritePath, isHard);
+
+            Systems = new SequentialSystem<GameContext>(
+                new PlayerBulletCollisionSystem(World),
+                new EnemyBulletCollisionSystem(World),
+                new PlayerCollisionSystem(World),
+                new EnemyCollisionSystem(World),
+                new DamageSystem(World),
+                new RemoveEntitySystem(World),
+                new BulletBoundarySystem(World),
+                new EnemyBoundarySystem(World),
+                new BulletCollisionRemovalSystem(World),
+                new SpawnActionSystem(World),
+                new SpawnSystem(World),
+                new MoveEntitySystem(World),
+                new MoveSystem(World),
+                new ScriptSystem(World),
+                new ScriptEntitySystem(World),
+                new AnimationSystem(World),
+                new DrawSystem(World),
+                new DrawAnimationSystem(World)
+            );
         }
 
-        public float LevelTime { get; private set; }
-        public bool MiniBossActive { get; private set; }
-        public bool BossActive { get; private set; }
+        public Player Player { get; private set; }
+        public OrthographicCamera _camera { get; private set; }
+        public List<GruntOld> Grunts { get; private set; } = new List<GruntOld>();
 
-        public override void PostUpdate(GameTime gameTime)
+        public List<Sprite> Hearts = new List<Sprite>();
+        public List<Sprite> Bombs = new List<Sprite>();
+
+        public Level CurrentLevel { get; private set; }
+
+        public override void Dispose()
         {
-            // remove sprites if they're not needed
-            for (int i = 0; i < player.BulletList.Count; i++)
-            {
-                if (player.BulletList[i].IsRemoved)
-                {
-                    player.BulletList.RemoveAt(i);
-                    i--;
-                }
-            }
-            for (int i = 0; i < grunts.Count; i++)
-            {
-                if (grunts[i].IsRemoved)
-                {
-                    grunts.RemoveAt(i);
-                    i--;
-                }
-            }
-            if (grunts.Count <= 0)
-            {
-                LoadNextWave();
-            }
+            Systems.Dispose();
+
+            base.Dispose();
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update()
         {
-            inputController.Update(gameTime);
-
-            tiledMapRenderer.Update(gameTime);
-            // 4 is a magic number to get the player nearly center to the screen
-            camera.LookAt(player.Position + player.Hitbox.Offset * 4);
-
-            foreach (var component in components)
-            {
-                component.Update(gameTime);
-            }
-
-            // check player for damage
-            foreach (var grunt in grunts)
-            {
-                grunt.Update(gameTime);
-
-                for (int i = 0; i < grunt.BulletList.Count; i++)
-                {
-                    Bullet bullet = grunt.BulletList[i];
-                    bullet.Update(gameTime);
-
-                    if (!player.IsInvulnerable)
-                    {
-                        // did it hit the player?
-                        if (player.Hitbox.IsTouching(bullet.Hitbox))
-                        {
-                            player.isHit = true; // Show red damage on grunt
-
-                            player.Lives--;
-                            if (player.Lives <= 0)
-                            {
-                                // "game over man! game over!"
-                                OnDeath();
-                            }
-
-                            grunt.BulletList.RemoveAt(i);
-                            i--;
-                        }
-                    }
-                }
-            }
-
-            // check enemies for damage
-            for (int i = 0; i < player.BulletList.Count; i++)
-            {
-                Bullet bullet = player.BulletList[i];
-                bullet.Update(gameTime);
-
-                for (int j = 0; j < grunts.Count; j++)
-                {
-
-                    if (grunts[j].Hitbox.IsTouching(bullet.Hitbox))
-                    {
-                        grunts[j].isHit = true; // Show red damage on grunt
-                        grunts[j].Health--;
-                        if (grunts[j].Health <= 0)
-                        {
-                            grunts.RemoveAt(j);
-                        }
-
-                        player.BulletList.RemoveAt(i);
-                        i--;
-                        break;
-                    }
-                }
-            }
+            CurrentLevel.Update();
 
             // update lives
-            UpdateLives();
-        }
-        public override List<Component> GetComponents()
-        {
-            List<Component> componentAggregation = new List<Component>();
-            componentAggregation.AddRange(components);
-            componentAggregation.AddRange(player.BulletList);
-            componentAggregation.AddRange(grunts);
-            foreach (var grunt in grunts)
-            {
-                componentAggregation.AddRange(grunt.BulletList);
-            }
-            return componentAggregation;
+            //UpdateLives();
+            //UpdateBombs();
+
+            //PostUpdate();
         }
 
-        private void LoadContent()
+        public override void LoadContent()
         {
-            var viewportadapter = new BoxingViewportAdapter(game.Window, graphicsDevice, graphicsDevice.Viewport.Width, graphicsDevice.Viewport.Height);
-            camera = new OrthographicCamera(viewportadapter)
+            GraphicsDevice graphicsDevice = GameContext.GraphicsDevice;
+            var viewportadapter = new BoxingViewportAdapter(
+                GameContext.Game.Window,
+                graphicsDevice,
+                graphicsDevice.Viewport.Width,
+                graphicsDevice.Viewport.Height
+            );
+            Camera = new OrthographicCamera(viewportadapter)
             {
                 Zoom = 2f,
             };
+
+            LoadSprites(_playerSpritePath, _playerHitboxSpritePath);
+            //LoadEnemies();
+            //LoadMusic(_songPaths);
+            //LoadMap(_mapPath);
+
+            CurrentLevel.LoadContent();
+
+            //LoadLives();
+            //LoadBombs();
         }
 
         private void LoadSprites(string playerSpritePath, string playerHitboxSpritePath)
         {
-            var texture = content.Load<Texture2D>(playerSpritePath);
-            var hitboxTexture = content.Load<Texture2D>(playerHitboxSpritePath);
+            var texture = GameContext.Content.Load<Texture2D>(playerSpritePath);
+            var hitboxTexture = GameContext.Content.Load<Texture2D>(playerHitboxSpritePath);
 
-            player = new Player(texture, hitboxTexture, inputController)
+            Player = new Player(GameContext, texture, hitboxTexture, InputController)
             {
                 Position = _spawnPoint,
                 Speed = 120f,
                 FocusSpeedFactor = 0.5f,
             };
-            player.Hitbox = new Hitbox(player)
+            Player.Hitbox = new Hitbox(Player)
             {
                 Radius = 5,
                 Offset = new Vector2(0, 5f),
             };
 
-            components.Add(player);
+            _components.Add(Player);
         }
 
-        private void LoadEnemies()
-        {
-            List<Grunt> wave1 = new List<Grunt>
-            {
-                EnemyFactory.MakeGrunt("skeleton", new Vector2(225, 100), 5),
-                EnemyFactory.MakeGrunt("skeleton", new Vector2(250, 100), 5),
-                EnemyFactory.MakeGrunt("skeleton", new Vector2(275, 100), 5)
-            };
+        //private void LoadEnemies()
+        //{
+        //    List<Grunt> wave1 = new List<Grunt>
+        //    {
+        //        EnemyFactory.MakeGrunt(GameContext, "skeleton", new Vector2(225, 100), 5),
+        //    };
 
-            List<Grunt> wave2 = new List<Grunt>
-            {
-                EnemyFactory.MakeGrunt("skeleton", new Vector2(225, 100), 5),
-                EnemyFactory.MakeGrunt("skeleton", new Vector2(275, 100), 5),
-                EnemyFactory.MakeGrunt("skeleton_dangerous", new Vector2(250, 100), 5)
-            };
+        //    List<Grunt> wave2 = new List<Grunt>
+        //    {
+        //        EnemyFactory.MakeGrunt(GameContext, "skeleton", new Vector2(225, 100), 5),
+        //        EnemyFactory.MakeGrunt(GameContext, "skeleton", new Vector2(275, 100), 5),
+        //        EnemyFactory.MakeGrunt(GameContext, "skeleton_dangerous", new Vector2(250, 100), 5)
+        //    };
 
-            List<Grunt> wave3 = new List<Grunt>
-            {
-                EnemyFactory.MakeGrunt("skeleton_mage", new Vector2(250, 100), 5)
-            };
+        //    List<Grunt> wave3 = new List<Grunt>
+        //    {
+        //        EnemyFactory.MakeGrunt(GameContext, "skeleton_mage", new Vector2(250, 100), 5)
+        //    };
 
-            // Boss goes here, replace skeleton_mage with boss assets/props
-            List<Grunt> wave4 = new List<Grunt>
-            {
-                EnemyFactory.MakeGrunt("miniboss1", new Vector2(250, 300), 10)
-            };
+        //    // Boss goes here, replace skeleton_mage with boss assets/props
+        //    List<Grunt> wave4 = new List<Grunt>
+        //    {
+        //        EnemyFactory.MakeGrunt(GameContext, "miniboss1", new Vector2(250, 300), 10)
+        //    };
 
-            List<Grunt> wave5 = new List<Grunt>
-            {
-                EnemyFactory.MakeGrunt("boss1", new Vector2(250, 300), 30)
-            };
+        //    List<Grunt> wave5 = new List<Grunt>
+        //    {
+        //        EnemyFactory.MakeGrunt(GameContext, "boss1", new Vector2(250, 300), 30)
+        //    };
 
-            waves.Push(wave5);
-            waves.Push(wave4);
-            waves.Push(wave3);
-            waves.Push(wave2);
-            waves.Push(wave1);
-        }
+        //    //Waves.Push(wave5);
+        //    //Waves.Push(wave4);
+        //    //Waves.Push(wave3);
+        //    //Waves.Push(wave2);
+        //    Waves.Push(wave1);
+        //}
 
-        private void LoadMusic(List<string> songPaths)
-        {
-            int songIdx = 0;
+        //private void LoadMusic(List<string> songPaths)
+        //{
+        //    int songIdx = 0;
 
-            // load first song
-            Uri uri = new Uri(songPaths[songIdx], UriKind.Relative);
-            Song song = Song.FromUri("track", uri);
-            MediaPlayer.Play(song);
+        //    // load first song
+        //    Song song = GameContext.Content.Load<Song>(songPaths[songIdx]);
+        //    MediaPlayer.Play(song);
 
-            MediaPlayer.ActiveSongChanged += (s, e) => {
-                // dispose of current song
-                song.Dispose();
-                songIdx = (songIdx + 1) % songPaths.Count;
-                System.Diagnostics.Debug.WriteLine("Song ended and disposed");
+        //    // TODO: Find a better way to handle multiple songs, since it
+        //    // doesn't work with the new handling of content loading/unloading.
+        //    // (Maybe a PlaylistManager or SongManager class?).
+        //    // Note: with the current handling of content loading/unloading, you
+        //    // do NOT need to manually call `Dispose()`; that will automatically be
+        //    // called when a state is unloaded. That might be why this doesn't work.
+        //    //MediaPlayer.ActiveSongChanged += (s, e) =>
+        //    //{
+        //    //    // dispose of current song
+        //    //    song.Dispose();
+        //    //    songIdx = (songIdx + 1) % songPaths.Count;
+        //    //    System.Diagnostics.Debug.WriteLine("Song ended and disposed");
 
-                // play next song
-                uri = new Uri(songPaths[songIdx], UriKind.Relative);
-                song = Song.FromUri("track", uri);
-                MediaPlayer.Play(song);
-            };
-        }
+        //    //    // play next song
+        //    //    song = GameContext.Content.Load<Song>(songPaths[songIdx]);
+        //    //    MediaPlayer.Play(song);
+        //    //};
+        //}
 
-        private void LoadMap(string mapPath)
-        {
-            tiledMap = content.Load<TiledMap>(mapPath);
-            tiledMapRenderer = new TiledMapRenderer(graphicsDevice, tiledMap);
-        }
+        //private void LoadMap(string mapPath)
+        //{
+        //    TiledMap = GameContext.Content.Load<TiledMap>(mapPath);
+        //    TiledMapRenderer = new TiledMapRenderer(GameContext.GraphicsDevice, TiledMap);
+        //}
 
         private void LoadLives()
         {
-            var texture = content.Load<Texture2D>("Sprites/Heart");
+            var texture = GameContext.Content.Load<Texture2D>("Sprites/Heart");
             for (int i = 0; i < 5; i++)
             {
-                hearts.Add(new Sprite(texture));
-                hearts[i].Position.X = (i * 40) + 40;
-                hearts[i].Position.Y = 40;
-                hearts[i].Scale = 4f;
+                Hearts.Add(new Sprite(texture));
+                Hearts[i].Position.X = (i * 40) + 40;
+                Hearts[i].Position.Y = 40;
+                Hearts[i].Scale = 4f;
+            }
+        }
+        private void LoadBombs()
+        {
+            var texture = GameContext.Content.Load<Texture2D>("Sprites/Bomb");
+            for (int i = 0; i < 3; i++)
+            {
+                Bombs.Add(new Sprite(texture));
+                Bombs[i].Position.X = (i * 40) + 40;
+                Bombs[i].Position.Y = 80;
+                Bombs[i].Scale = 1f;
             }
         }
 
-        private void LoadNextWave()
-        {
-            if (waves.Count > 0)
-            {
-                grunts.AddRange(waves.Peek());
-                waves.Pop();
-            }
-            else
-            {
-                // you won! game over
-                game.ChangeState(new MenuState(game, graphicsDevice, content));
-            }
-        }
+        //private void LoadNextWave()
+        //{
+        //    if (Waves.Count > 0)
+        //    {
+        //        Grunts.AddRange(Waves.Peek());
+        //        Waves.Pop();
+        //    }
+        //    else
+        //    {
+        //        // you won! game over
+        //        GameContext.StateManager.SwapState(new MenuState(GameContext));
+        //    }
+        //}
 
         private void UpdateLives()
         {
-            while (hearts.Count != player.Lives)
+            while (Hearts.Count != Player.Lives)
             {
-                hearts.RemoveAt(hearts.Count - 1);
+                Hearts.RemoveAt(Hearts.Count - 1);
 
                 // update HUD
-                for (int i = 0; i < player.Lives; i++)
+                for (int i = 0; i < Player.Lives; i++)
                 {
-                    hearts[i].Position.X = (i * 40) + 40;
-                    hearts[i].Position.Y = 40;
-                    hearts[i].Scale = 4f;
+                    Hearts[i].Position.X = (i * 40) + 40;
+                    Hearts[i].Position.Y = 40;
+                    Hearts[i].Scale = 4f;
                 }
 
                 // respawn player
-                player.Position = _spawnPoint;
-                player.StartInvulnerableState();
-
-                // despawn existing bullets
-                foreach (var grunt in grunts)
-                {
-                    grunt.BulletList.Clear();
-                }
-                player.BulletList.Clear();
+                Player.Position = _spawnPoint;
+                Player.StartInvulnerableState();
+            }
+        }
+        private void UpdateBombs()
+        {
+            while (Player.Bombs < Bombs.Count)
+            {
+                Bombs.RemoveAt(Bombs.Count - 1);
             }
         }
 
-        public void OnDeath()
-        {
-            components.Remove(player);
-            game.ChangeState(new GameOverState(game, graphicsDevice, content)
-            {
-                BackgroundState = this,
-            });
-        }
+        //public void OnDeath()
+        //{
+        //    _components.Remove(Player);
+        //    UpdateEnabled = false;
+        //    GameContext.StateManager.PushState(new GameOverState(GameContext));
+        //}
 
         // TODO: Use a creational pattern to create an InteractiveState (or states in general?)
-        public static InteractiveState CreateDefaultState(Game1 game, GraphicsDevice graphicsDevice, ContentManager content)
+        public static InteractiveState CreateDefaultState(GameContext gameContext)
         {
             // TODO: Right now we are manually passing in map parameters when changing state. Later on this will be delegated to the Level Interpreter.
             return new InteractiveState(
-                game,
-                graphicsDevice,
-                content,
-                "Maps/tutorial",
+                gameContext,
+                "level1",
                 new List<string>()
                 {
-                    "Content/Sounds/Music/ConcernedApe - Stardew Valley 1.5 Original Soundtrack - 03 Volcano Mines (Molten Jelly).mp3",
-                    "Content/Sounds/Music/ConcernedApe - Stardew Valley 1.5 Original Soundtrack - 01 Ginger Island.mp3"
+                    "Sounds/Music/ConcernedApe - Stardew Valley 1.5 Original Soundtrack - 03 Volcano Mines (Molten Jelly)",
+                    "Sounds/Music/ConcernedApe - Stardew Valley 1.5 Original Soundtrack - 01 Ginger Island"
                 },
                 "Sprites/IslandParrot",
                 "Sprites/PlayerHitbox"
             );
+        }
+
+        public static InteractiveState CreateHardModeState(GameContext gameContext)
+        {
+            // TODO: Right now we are manually passing in map parameters when changing state. Later on this will be delegated to the Level Interpreter.
+            return new InteractiveState(
+                gameContext,
+                "level1",
+                new List<string>()
+                {
+                    "Sounds/Music/ConcernedApe - Stardew Valley 1.5 Original Soundtrack - 03 Volcano Mines (Molten Jelly)",
+                    "Sounds/Music/ConcernedApe - Stardew Valley 1.5 Original Soundtrack - 01 Ginger Island"
+                },
+                "Sprites/IslandParrot",
+                "Sprites/PlayerHitbox",
+                isHard: true
+            );
+        }
+
+        //public void DrawMap()
+        //{
+        //    GameContext.SpriteBatch.Begin(sortMode: SpriteSortMode.Deferred, transformMatrix: Camera.GetViewMatrix(), samplerState: SamplerState.PointClamp);
+
+        //    TiledMapRenderer.Draw(Camera.GetViewMatrix());
+
+        //    foreach (var component in _components)
+        //    {
+        //        component.Draw(GameContext);
+        //    }
+
+        //    foreach (var grunt in Grunts)
+        //    {
+        //        grunt.Draw(GameContext);
+        //        foreach (var bullet in grunt.BulletList)
+        //        {
+        //            bullet.Draw(GameContext);
+        //        }
+        //    }
+
+        //    foreach (var bullet in Player.BulletList)
+        //    {
+        //        bullet.Draw(GameContext);
+        //    }
+
+        //    GameContext.SpriteBatch.End();
+        //}
+
+        public void DrawHUD()
+        {
+            GameContext.SpriteBatch.Begin(sortMode: SpriteSortMode.Deferred, samplerState: SamplerState.PointClamp);
+
+            foreach (Sprite heart in Hearts)
+            {
+                heart.Draw(GameContext);
+            }
+            foreach (Sprite heart in Bombs)
+            {
+                heart.Draw(GameContext);
+            }
+
+            GameContext.SpriteBatch.End();
+        }
+
+        public override void Draw()
+        {
+            GameContext.GraphicsDevice.Clear(Color.CornflowerBlue);
+            //DrawMap();
+
+            CurrentLevel.Draw();
+
+            DrawHUD();
+            Systems.Update(GameContext);
+
         }
     }
 }

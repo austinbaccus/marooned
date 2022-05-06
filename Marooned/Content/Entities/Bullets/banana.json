@@ -1,0 +1,9 @@
+{
+  "components": [
+    {
+      "type": "animation",
+      "value": "banana_animations"
+    }
+  ],
+  "script": []
+}

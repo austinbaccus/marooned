@@ -1,0 +1,27 @@
+[
+  {
+    "action": "spawn",
+    "entity": "skeleton",
+    "position": "200 200",
+    "script": [
+      {
+        "action": "spawn",
+        "entity": "banana",
+        "rate": 0.5,
+        "duration": 5,
+        "script": [
+          {
+            "action": "move",
+            "pattern": "linear",
+            "velocity": "0 100",
+            "duration": 5
+          },
+          {
+            "time": 5,
+            "action": "die"
+          }
+        ]
+      }
+    ]
+  }
+]

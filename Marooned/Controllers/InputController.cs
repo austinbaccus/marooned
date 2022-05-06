@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Marooned.States;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
 namespace Marooned.Controllers
@@ -11,12 +9,23 @@ namespace Marooned.Controllers
 
     public class KeyEventArgs : EventArgs
     {
+        public KeyboardState CurrentState { get; set; }
+        public KeyboardState PreviousState { get; set; }
         public Keys Key { get; set; }
-        public GameTime GameTime { get; set; }
+        public GameContext GameContext { get; set; }
+    }
+
+    public class MouseEventArgs : EventArgs
+    {
+        public MouseState CurrentState { get; set; }
+        public MouseState PreviousState { get; set; }
+        public GameContext GameContext { get; set; }
     }
 
     public class InputController
     {
+        #region Static Keys
+
         public static HashSet<Keys> UP_KEYS = new HashSet<Keys>() { Keys.W };
         public static HashSet<Keys> LEFT_KEYS = new HashSet<Keys>() { Keys.A };
         public static HashSet<Keys> DOWN_KEYS = new HashSet<Keys>() { Keys.S };
@@ -27,71 +36,208 @@ namespace Marooned.Controllers
         public static HashSet<Keys> SHOOT_RIGHT_KEYS = new HashSet<Keys>() { Keys.Right };
         public static HashSet<Keys> FOCUS_KEYS = new HashSet<Keys>() { Keys.LeftShift };
         public static HashSet<Keys> CHEAT_KEYS = new HashSet<Keys>() { Keys.OemTilde };
+        public static HashSet<Keys> BOMB_KEYS = new HashSet<Keys>() { Keys.Q };
+
+        #endregion
+
+        #region Keyboard Events
 
         public event EventHandler<KeyEventArgs> OnKeyPressEvent;
         public event EventHandler<KeyEventArgs> OnKeyDownEvent;
         public event EventHandler<KeyEventArgs> OnKeyUpEvent;
 
-        // TODO: Do we need this?
+        #endregion
+
+        #region Mouse Events
+
+        public event EventHandler<MouseEventArgs> OnMouseButton1PressEvent;
+        public event EventHandler<MouseEventArgs> OnMouseButton1DownEvent;
+        public event EventHandler<MouseEventArgs> OnMouseButton1UpEvent;
+        public event EventHandler<MouseEventArgs> OnMouseButton2PressEvent;
+        public event EventHandler<MouseEventArgs> OnMouseButton2DownEvent;
+        public event EventHandler<MouseEventArgs> OnMouseButton2UpEvent;
+
+        #endregion
+
         private State _state;
 
         public InputController(State state)
         {
             _state = state;
+
+            CurrentKeyboardState = Keyboard.GetState();
+            CurrentMouseState = Mouse.GetState();
         }
 
-        public KeyboardState CurrentState { get; private set; } = new KeyboardState();
-        public KeyboardState PreviousState { get; private set; } = new KeyboardState();
+        public KeyboardState CurrentKeyboardState { get; private set; }
+        public KeyboardState PreviousKeyboardState { get; private set; }
+        public MouseState CurrentMouseState { get; private set; }
+        public MouseState PreviousMouseState { get; private set; }
 
-        public void OnKeyPress(Keys key, GameTime gameTime)
+        #region Keyboard Event Invokers
+
+        public void OnKeyPress(Keys key, GameContext gameContext)
         {
             OnKeyPressEvent?.Invoke(this, new KeyEventArgs()
             {
+                CurrentState = CurrentKeyboardState,
+                PreviousState = PreviousKeyboardState,
                 Key = key,
-                GameTime = gameTime,
+                GameContext = gameContext,
             });
         }
 
-        public void OnKeyDown(Keys key, GameTime gameTime)
+        public void OnKeyDown(Keys key, GameContext gameContext)
         {
             OnKeyDownEvent?.Invoke(this, new KeyEventArgs()
             {
+                CurrentState = CurrentKeyboardState,
+                PreviousState = PreviousKeyboardState,
                 Key = key,
-                GameTime = gameTime,
+                GameContext = gameContext,
             });
         }
 
-        public void OnKeyUp(Keys key, GameTime gameTime)
+        public void OnKeyUp(Keys key, GameContext gameContext)
         {
             OnKeyUpEvent?.Invoke(this, new KeyEventArgs()
             {
+                CurrentState = CurrentKeyboardState,
+                PreviousState = PreviousKeyboardState,
                 Key = key,
-                GameTime = gameTime,
+                GameContext = gameContext
             });
         }
 
-        public void Update(GameTime gameTime)
+        #endregion
+
+        #region Mouse Event Invokers
+
+        public void OnMouseButton1Press(GameContext gameContext)
         {
-            CurrentState = Keyboard.GetState();
-
-            foreach (Keys key in CurrentState.GetPressedKeys())
+            OnMouseButton1PressEvent?.Invoke(this, new MouseEventArgs()
             {
-                if (!PreviousState.GetPressedKeys().Contains(key))
+                CurrentState = CurrentMouseState,
+                PreviousState = PreviousMouseState,
+                GameContext = gameContext,
+            });
+        }
+
+        public void OnMouseButton1Down(GameContext gameContext)
+        {
+            OnMouseButton1DownEvent?.Invoke(this, new MouseEventArgs()
+            {
+                CurrentState = CurrentMouseState,
+                PreviousState = PreviousMouseState,
+                GameContext = gameContext,
+            });
+        }
+
+        public void OnMouseButton1Up(GameContext gameContext)
+        {
+            OnMouseButton1UpEvent?.Invoke(this, new MouseEventArgs()
+            {
+                CurrentState = CurrentMouseState,
+                PreviousState = PreviousMouseState,
+                GameContext = gameContext,
+            });
+        }
+
+        public void OnMouseButton2Press(GameContext gameContext)
+        {
+            OnMouseButton2PressEvent?.Invoke(this, new MouseEventArgs()
+            {
+                CurrentState = CurrentMouseState,
+                PreviousState = PreviousMouseState,
+                GameContext = gameContext,
+            });
+        }
+
+        public void OnMouseButton2Down(GameContext gameContext)
+        {
+            OnMouseButton2DownEvent?.Invoke(this, new MouseEventArgs()
+            {
+                CurrentState = CurrentMouseState,
+                PreviousState = PreviousMouseState,
+                GameContext = gameContext,
+            });
+        }
+
+        public void OnMouseButton2Up(GameContext gameContext)
+        {
+            OnMouseButton2UpEvent?.Invoke(this, new MouseEventArgs()
+            {
+                CurrentState = CurrentMouseState,
+                PreviousState = PreviousMouseState,
+                GameContext = gameContext,
+            });
+        }
+
+        #endregion
+
+        public void UpdateKeyboard(GameContext gameContext)
+        {
+            CurrentKeyboardState = Keyboard.GetState();
+
+            foreach (Keys key in CurrentKeyboardState.GetPressedKeys())
+            {
+                if (!PreviousKeyboardState.GetPressedKeys().Contains(key))
                 {
-                    OnKeyPress(key, gameTime);
+                    OnKeyPress(key, gameContext);
                 }
-                OnKeyDown(key, gameTime);
+                OnKeyDown(key, gameContext);
             }
 
-            foreach (Keys key in PreviousState.GetPressedKeys())
+            foreach (Keys key in PreviousKeyboardState.GetPressedKeys())
             {
-                if (!CurrentState.GetPressedKeys().Contains(key))
+                if (!CurrentKeyboardState.GetPressedKeys().Contains(key))
                 {
-                    OnKeyUp(key, gameTime);
+                    OnKeyUp(key, gameContext);
                 }
             }
 
-            PreviousState = CurrentState;
+            PreviousKeyboardState = CurrentKeyboardState;
+        }
+
+        public void UpdateMouse(GameContext gameContext)
+        {
+            CurrentMouseState = Mouse.GetState();
+
+            if (CurrentMouseState.LeftButton == ButtonState.Pressed)
+            {
+                if (PreviousMouseState.LeftButton == ButtonState.Released)
+                {
+                    OnMouseButton1Press(gameContext);
+                }
+                OnMouseButton1Down(gameContext);
+            }
+
+            if (PreviousMouseState.LeftButton == ButtonState.Released)
+            {
+                OnMouseButton1Up(gameContext);
+            }
+
+            if (CurrentMouseState.RightButton == ButtonState.Pressed)
+            {
+                if (PreviousMouseState.RightButton == ButtonState.Released)
+                {
+                    OnMouseButton2Press(gameContext);
+                }
+                OnMouseButton2Down(gameContext);
+            }
+
+            if (PreviousMouseState.RightButton == ButtonState.Released)
+            {
+                OnMouseButton2Up(gameContext);
+            }
+
+            PreviousMouseState = CurrentMouseState;
+        }
+
+        public void Update(GameContext gameContext)
+        {
+            UpdateKeyboard(gameContext);
+            UpdateMouse(gameContext);
         }
     }
 }

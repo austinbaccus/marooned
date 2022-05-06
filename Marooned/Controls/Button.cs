@@ -1,21 +1,17 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Marooned.Controllers;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using System;
 
 namespace Marooned.Controls
 {
-    public class Button : Component
+    public class Button : DrawableGameComponent
     {
         #region Fields
-
-        private MouseState _currentMouse;
 
         private SpriteFont _font;
 
         private bool _isHovering;
-
-        private MouseState _previousMouse;
 
         private Texture2D _texture;
 
@@ -31,6 +27,8 @@ namespace Marooned.Controls
 
         public Vector2 Position { get; set; }
 
+        public State State { get; set; }
+
         public Rectangle Rectangle
         {
             get
@@ -45,48 +43,66 @@ namespace Marooned.Controls
 
         #region Methods
 
-        public Button(Texture2D texture, SpriteFont font)
+        public Button(State state, Texture2D texture, SpriteFont font) : base(state.GameContext.Game)
         {
+            State = state;
+
             _texture = texture;
 
             _font = font;
 
             PenColour = Color.Black;
+
+            State.InputController.OnMouseButton1PressEvent += OnMouseButton1Press;
         }
 
-        public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        public override void Draw(GameTime gameTime)
         {
+            State.GameContext.SpriteBatch.Begin();
+
             var color = _isHovering ? Color.Gray : Color.White;
 
-            spriteBatch.Draw(_texture, Rectangle, color);
+            State.GameContext.SpriteBatch.Draw(_texture, Rectangle, color);
 
             if (!string.IsNullOrEmpty(Text))
             {
                 var x = (Rectangle.X + (Rectangle.Width / 2)) - (_font.MeasureString(Text).X / 2);
                 var y = (Rectangle.Y + (Rectangle.Height / 2)) - (_font.MeasureString(Text).Y / 2);
 
-                spriteBatch.DrawString(_font, Text, new Vector2(x, y), PenColour);
+                State.GameContext.SpriteBatch.DrawString(_font, Text, new Vector2(x, y), PenColour);
             }
+
+            State.GameContext.SpriteBatch.End();
+
+            base.Draw(gameTime);
+        }
+
+        public bool IsMouseIntersecting()
+        {
+            var currentMouse = State.InputController.CurrentMouseState;
+            var mouseRectangle = new Rectangle(currentMouse.Position.X, currentMouse.Position.Y, 1, 1);
+            return mouseRectangle.Intersects(Rectangle);
         }
 
         public override void Update(GameTime gameTime)
         {
-            _previousMouse = _currentMouse;
-            _currentMouse = Mouse.GetState();
+            _isHovering = IsMouseIntersecting();
+            base.Update(gameTime);
+        }
 
-            var mouseRectangle = new Rectangle(_currentMouse.Position.X, _currentMouse.Position.Y, 1, 1);
-
-            _isHovering = false;
-
-            if (mouseRectangle.Intersects(Rectangle))
+        public void OnMouseButton1Press(object sender, MouseEventArgs mouseEventArgs)
+        {
+            if (IsMouseIntersecting())
             {
-                _isHovering = true;
-
-                if (_currentMouse.LeftButton == ButtonState.Released && _previousMouse.LeftButton == ButtonState.Pressed)
-                {
-                    Click?.Invoke(this, new EventArgs());
-                }
+                Click?.Invoke(this, new EventArgs());
             }
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            State.InputController.OnMouseButton1PressEvent -= OnMouseButton1Press;
+
+            base.Dispose(disposing);
         }
 
         #endregion
