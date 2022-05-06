@@ -1,0 +1,16 @@
+{
+  "components": [
+    {
+      "type": "animation",
+      "value": "banana_animations"
+    }
+  ],
+  "script": [
+    {
+      "action": "move",
+      "pattern": "linear",
+      "velocity": "0 10",
+      "duration": 5
+    }
+  ]
+}

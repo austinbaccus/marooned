@@ -1,7 +1,6 @@
 ﻿using Marooned.Sprites;
 using Marooned.Sprites.Enemies;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -33,7 +32,7 @@ namespace Marooned.Factories
 
             [JsonProperty("movement_pattern")]
             [JsonConverter(typeof(StringEnumConverter))]
-            public MovePattern.Pattern? MovementPattern { get; set; } = null;
+            public MovePatternOld.Pattern? MovementPattern { get; set; } = null;
 
             [JsonProperty("animation_sources")]
             public List<List<int>>? AnimationSources { get; set; } = null;
@@ -53,7 +52,7 @@ namespace Marooned.Factories
             var texture = gameContext.Content.Load<Texture2D>(enemyJson.Texture);
 
             FiringPattern.Pattern firingPattern = enemyJson.FiringPattern ?? FiringPattern.Pattern.straight;
-            MovePattern.Pattern movementPattern = enemyJson.MovementPattern ?? MovePattern.Pattern.down_left;
+            MovePatternOld.Pattern movementPattern = enemyJson.MovementPattern ?? MovePatternOld.Pattern.down_left;
 
             // TODO: Probably make a Json parser for Rectangle (?)
             Rectangle[] animSources;

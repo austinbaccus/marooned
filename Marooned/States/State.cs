@@ -2,6 +2,7 @@
 using DefaultEcs.System;
 using Marooned.Controllers;
 using Microsoft.Xna.Framework.Content;
+using MonoGame.Extended;
 
 namespace Marooned
 {
@@ -26,6 +27,7 @@ namespace Marooned
         }
 
         public GameContext GameContext { get; internal set; }
+        public OrthographicCamera Camera { get; set; }
         public InputController InputController { get; set; }
         public ISystem<GameContext> Systems { get; protected set; }
         public World World { get; protected set; }

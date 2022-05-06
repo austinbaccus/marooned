@@ -32,11 +32,11 @@ namespace Marooned.Sprites.Enemies
         public bool isHit; // Red Damage
         private Stopwatch _damageTimer = new Stopwatch(); // timer for damage
 
-        public Grunt(Texture2D texture, Rectangle[] animSources, FiringPattern.Pattern firingPattern, MovePattern.Pattern movementPattern, int health) : base(texture, animSources)
+        public Grunt(Texture2D texture, Rectangle[] animSources, FiringPattern.Pattern firingPattern, MovePatternOld.Pattern movementPattern, int health) : base(texture, animSources)
         {
             Health = health;
             _firePattern = FiringPattern.GetPattern(firingPattern);
-            _movePattern = MovePattern.GetPattern(movementPattern);
+            _movePattern = MovePatternOld.GetPattern(movementPattern);
             _currentMovePatternTimeRemaining = _movePattern[0].Item2;
 
             CurrentAnimation.Play();
@@ -108,7 +108,8 @@ namespace Marooned.Sprites.Enemies
                     float dX = (float)Math.Cos(angle + Math.PI / 2);
                     float dY = (float)Math.Sin(angle + Math.PI / 2);
                     Vector2 angleVector = new Vector2(dX, dY);
-                    BulletList.Add(BulletFactory.MakeBullet(gameContext, _bulletLifespan, angleVector * _bulletVelocity, 2f, new Vector2(this.Position.X, this.Position.Y)));
+                    //BulletList.Add(BulletFactory.MakeBullet(gameContext, _bulletLifespan, angleVector * _bulletVelocity, 2f, new Vector2(this.Position.X, this.Position.Y)));
+                    BulletFactory.MakeBullet(gameContext, gameContext.StateManager.CurrentState.World, "banana", Position);
                 }
             }
         }

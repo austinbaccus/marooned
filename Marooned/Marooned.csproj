@@ -1,10 +1,10 @@
-<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net6.0-windows</TargetFramework>
     <PublishReadyToRun>false</PublishReadyToRun>
     <TieredCompilation>false</TieredCompilation>
-    <UseWindowsForms>true</UseWindowsForms>
+    <UseWindowsForms>False</UseWindowsForms>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
@@ -111,12 +111,22 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <None Update="Content\Animations\Bullets\banana_animations.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Entities\Bullets\banana.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Content\Sprites\Banana.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Components\" />
-    <Folder Include="Systems\" />
+    <Folder Include="Content\Bullets\" />
+    <Folder Include="Content\Entities\Bosses\" />
+    <Folder Include="Content\Entities\Enemies\" />
+    <Folder Include="Content\Entities\Players\" />
+    <Folder Include="Content\Entities\Powerups\" />
+    <Folder Include="Content\Scripts\" />
   </ItemGroup>
 </Project>

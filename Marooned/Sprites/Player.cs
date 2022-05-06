@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using Marooned.Actions;
+using Marooned.Animation;
 using Marooned.Controllers;
 using Marooned.Enums;
 using Microsoft.Xna.Framework;
@@ -13,8 +14,8 @@ namespace Marooned.Sprites
     {
         // TODO: Maybe have a control class for handling multiple animations?
         //       (That way, other sprites like Grunt can reuse the same principle of grouped animations).
-        private Dictionary<Direction, Animation> _flyAnimations;
-        private Dictionary<Direction, Animation> _idleAnimations;
+        private Dictionary<Direction, AnimationOld> _flyAnimations;
+        private Dictionary<Direction, AnimationOld> _idleAnimations;
         private readonly double _flyAnimationSpeed = 0.07d;
         private readonly double _focusAnimationSpeedFactor = 2d;
 
@@ -51,9 +52,9 @@ namespace Marooned.Sprites
             // TODO: Find a better way to handle instantiating player animations
             const int SPRITE_WIDTH = 32;
             const int SPRITE_HEIGHT = 32;
-            _flyAnimations = new Dictionary<Direction, Animation>()
+            _flyAnimations = new Dictionary<Direction, AnimationOld>()
             {
-                [Direction.UP] = new Animation(
+                [Direction.UP] = new AnimationOld(
                     texture,
                     new Rectangle[]
                     {
@@ -62,7 +63,7 @@ namespace Marooned.Sprites
                         new Rectangle(32 * 3, 32 * 2, SPRITE_WIDTH, SPRITE_HEIGHT),
                     }
                 ),
-                [Direction.LEFT] = new Animation(
+                [Direction.LEFT] = new AnimationOld(
                     texture,
                     new Rectangle[]
                     {
@@ -71,7 +72,7 @@ namespace Marooned.Sprites
                         new Rectangle(32 * 3, 32 * 3, SPRITE_WIDTH, SPRITE_HEIGHT),
                     }
                 ),
-                [Direction.DOWN] = new Animation(
+                [Direction.DOWN] = new AnimationOld(
                     texture,
                     new Rectangle[]
                     {
@@ -80,7 +81,7 @@ namespace Marooned.Sprites
                         new Rectangle(32 * 3, 32 * 0, SPRITE_WIDTH, SPRITE_HEIGHT),
                     }
                 ),
-                [Direction.RIGHT] = new Animation(
+                [Direction.RIGHT] = new AnimationOld(
                     texture,
                     new Rectangle[]
                     {
@@ -90,30 +91,30 @@ namespace Marooned.Sprites
                     }
                 ),
             };
-            _idleAnimations = new Dictionary<Direction, Animation>()
+            _idleAnimations = new Dictionary<Direction, AnimationOld>()
             {
-                [Direction.UP] = new Animation(
+                [Direction.UP] = new AnimationOld(
                     texture,
                     new Rectangle[]
                     {
                         new Rectangle(32 * 0, 32 * 2, SPRITE_WIDTH, SPRITE_HEIGHT),
                     }
                 ),
-                [Direction.LEFT] = new Animation(
+                [Direction.LEFT] = new AnimationOld(
                     texture,
                     new Rectangle[]
                     {
                         new Rectangle(32 * 0, 32 * 3, SPRITE_WIDTH, SPRITE_HEIGHT),
                     }
                 ),
-                [Direction.DOWN] = new Animation(
+                [Direction.DOWN] = new AnimationOld(
                     texture,
                     new Rectangle[]
                     {
                         new Rectangle(32 * 0, 32 * 0, SPRITE_WIDTH, SPRITE_HEIGHT),
                     }
                 ),
-                [Direction.RIGHT] = new Animation(
+                [Direction.RIGHT] = new AnimationOld(
                     texture,
                     new Rectangle[]
                     {
@@ -166,7 +167,7 @@ namespace Marooned.Sprites
                                        || _prevDirection != _currentDirection
                                        || _prevIsFocused != _isFocused; }
         public bool IsInvulnerable { get; set; } = false;
-        public Script Script { get; private set; } = new Script();
+        public ScriptOld Script { get; private set; } = new ScriptOld();
 
         public void HandleKeyDown(object sender, KeyEventArgs e)
         {
@@ -235,9 +236,9 @@ namespace Marooned.Sprites
             base.Update(gameContext);
         }
 
-        private Animation GetRelevantAnimation()
+        private AnimationOld GetRelevantAnimation()
         {
-            Dictionary<Direction, Animation> _sourceAnimation = IsMoving ? _flyAnimations : _idleAnimations;
+            Dictionary<Direction, AnimationOld> _sourceAnimation = IsMoving ? _flyAnimations : _idleAnimations;
             return _sourceAnimation[CurrentDirection];
         }
 
@@ -245,7 +246,7 @@ namespace Marooned.Sprites
         {
             if (ChangedState)
             {
-                Animation animation = GetRelevantAnimation();
+                AnimationOld animation = GetRelevantAnimation();
                 CurrentAnimation.Stop();
                 CurrentAnimation = animation;
                 CurrentAnimation.Speed = IsFocused ? (_flyAnimationSpeed * _focusAnimationSpeedFactor) : _flyAnimationSpeed;

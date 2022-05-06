@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Marooned
+namespace Marooned.Animation
 {
     /// <summary>
     /// Does not actually handle the drawing of sprites, but rather their animation.
@@ -31,7 +31,7 @@ namespace Marooned
     /// }
     /// </code>
     /// </summary>
-    public class Animation
+    public class AnimationOld
     {
         private double _timer;
 
@@ -42,14 +42,14 @@ namespace Marooned
         public int FrameHeight { get; private set; }
         // Lower is faster, higher is slower
         public double Speed { get; set; } = 0.1f;
-        public bool IsLoop { get; set; } = true;
+        public bool IsLooping { get; set; } = true;
         public bool IsPlaying { get; private set; } = false;
 
         public Rectangle[] SourceRectangles { get; }
         public Rectangle CurrentSourceRectangle { get { return SourceRectangles[CurrentFrame]; } }
 
         // The length of sourceRectangles should be the number of frames (i.e., frameCount)
-        public Animation(Texture2D texture, Rectangle[] sourceRectangles)
+        public AnimationOld(Texture2D texture, Rectangle[] sourceRectangles)
         {
             Texture = texture;
             SourceRectangles = sourceRectangles;
@@ -103,7 +103,7 @@ namespace Marooned
 
                     if (CurrentFrame >= FrameCount)
                     {
-                        if (IsLoop)
+                        if (IsLooping)
                         {
                             CurrentFrame = 0;
                         }

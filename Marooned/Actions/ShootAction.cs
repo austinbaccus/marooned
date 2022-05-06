@@ -16,7 +16,8 @@ namespace Marooned.Actions
 
         public void Execute(GameContext gameContext)
         {
-            _bulletList.Add(BulletFactory.MakeBullet(gameContext, LifeSpan, Velocity, Damage, Origin));
+            //_bulletList.Add(BulletFactory.MakeBullet(gameContext, LifeSpan, Velocity, Damage, Origin));
+            BulletFactory.MakeBullet(gameContext, gameContext.StateManager.CurrentState.World, "banana", Origin);
         }
 
         public float LifeSpan { get; set; }

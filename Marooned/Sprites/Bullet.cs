@@ -1,26 +1,35 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Extended.Sprites;
 
 namespace Marooned.Sprites
 {
-    public class Bullet : AnimatedSprite
+    public class Bullet : ComponentOld
     {
         private float _timer;
         private Vector2 _linearVelocity;
         private float _damage;
+        private MonoGame.Extended.Sprites.AnimatedSprite _sprite;
 #if DEBUG
         public Sprite HitboxSprite;
 #endif
 
+        public Vector2 Position;
         public bool IsRemoved = false; // Bullet should be removed from list
-        public Bullet(Texture2D texture, Rectangle[] animSources, float lifeSpan, Vector2 linearVelocity, float damage, Vector2 origin) : base(texture, animSources)
+
+        public Bullet(MonoGame.Extended.Sprites.AnimatedSprite animatedSprite, float lifeSpan, Vector2 linearVelocity, float damage, Vector2 origin)
         {
             _timer = lifeSpan; // Life span of bullet
             _linearVelocity = linearVelocity; // Speed of bullet
             _damage = damage; // Amount of damage
             Position = origin; // Starting position of bullet
+            _sprite = animatedSprite;
+        }
 
-            CurrentAnimation.Play();
+        // The origin of all sprites should be the center, rather than top-left, so that position calculation is much more simple and does
+        // not have to take into account the sprite width and height.
+        public virtual Vector2 Origin
+        {
+            get { return new Vector2(_sprite.TextureRegion.Width / 2f, _sprite.TextureRegion.Height / 2f); }
         }
 
         public Hitbox Hitbox { get; set; }
@@ -28,7 +37,10 @@ namespace Marooned.Sprites
 #if DEBUG
         public override void Draw(GameContext gameContext)
         {
-            base.Draw(gameContext);
+            gameContext.SpriteBatch.Draw(
+                _sprite,
+                Position
+            );
             HitboxSprite.Draw(gameContext);
         }
 #endif
@@ -36,7 +48,7 @@ namespace Marooned.Sprites
         public override void Update(GameContext gameContext)
         {
             Move(gameContext);
-            CurrentAnimation.Update(gameContext);
+            _sprite.Update((float)gameContext.GameTime.ElapsedGameTime.TotalSeconds);
 #if DEBUG
             HitboxSprite.Destination = new Rectangle(
                 (int)(Position.X + Hitbox.Offset.X),

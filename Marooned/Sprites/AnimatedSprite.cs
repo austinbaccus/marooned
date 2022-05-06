@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Marooned.Animation;
 
 namespace Marooned.Sprites
 {
@@ -7,7 +8,7 @@ namespace Marooned.Sprites
 
     public class AnimatedSprite : Sprite
     {
-        public Animation? CurrentAnimation { get; set; }
+        public AnimationOld? CurrentAnimation { get; set; }
         public override Rectangle Rectangle
         {
             get
@@ -38,7 +39,7 @@ namespace Marooned.Sprites
         // if you do want to have the animation play upon creation.
         public AnimatedSprite(Texture2D texture, Rectangle[] animSources) : base(texture)
         {
-            CurrentAnimation = new Animation(texture, animSources);
+            CurrentAnimation = new AnimationOld(texture, animSources);
         }
 
         public override void Update(GameContext gameContext)

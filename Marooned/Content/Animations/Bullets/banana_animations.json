@@ -1,0 +1,14 @@
+{
+  "textureAtlas": {
+    "texture": "Sprites\\Banana",
+    "regionWidth": 17,
+    "regionHeight": 17
+  },
+  "cycles": {
+    "spin": {
+      "frames": [0,1,2,3],
+      "isLooping": true,
+      "frameDuration": 0.05
+    }
+  }
+}

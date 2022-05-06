@@ -1,45 +1,62 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Marooned.Actions;
 
 namespace Marooned
 {
     public class Script
     {
-        public Queue<IAction> Actions { get; set; }
+        public PriorityQueue<IAction, float> Actions { get; set; }
 
         public Script()
         {
-            Actions = new Queue<IAction>();
+            Actions = new PriorityQueue<IAction, float>();
         }
 
-        public Script(IEnumerable<IAction> actions)
+        public Script(IEnumerable<Tuple<IAction, float>> actions)
         {
-            foreach (var action in actions)
+            foreach (var actionTime in actions)
             {
-                Actions.Enqueue(action);
+                Enqueue(actionTime.Item1, actionTime.Item2);
             }
         }
 
-        public void AddAction(IAction action)
+        public IAction Peek()
         {
-            Actions.Enqueue(action);
+            return Actions.Peek();
+        }
+
+        public void Enqueue(IAction action, float time)
+        {
+            Actions.Enqueue(action, time);
+        }
+
+        public IAction Dequeue()
+        {
+            return Actions.Dequeue();
         }
 
         public void ExecuteAll(GameContext gameContext)
         {
-            foreach (var action in Actions)
+            while (Actions.Count > 0)
             {
-                action.Execute(gameContext);
+                Dequeue().Execute(gameContext);
             }
-            Actions.Clear();
         }
 
         public void ExecuteFirst(GameContext gameContext)
         {
             if (Actions.Count > 0)
             {
-                Actions.Dequeue().Execute(gameContext);
+                Peek().Execute(gameContext);
             }
+        }
+
+        public IAction Execute(GameContext gameContext)
+        {
+            IAction action = Dequeue();
+            action.Execute(gameContext);
+            return action;
         }
     }
 }

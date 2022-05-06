@@ -2,7 +2,7 @@
 {
     public class Level : ILifeCycle
     {
-        private Script _script;
+        private ScriptOld _script;
 
         public Level(GameContext gameContext)
         {
@@ -18,7 +18,7 @@
         public void LoadContent()
         {
             // TODO: Load script from JSON using GameContext.Interpreter here!!
-            _script = new Script();
+            _script = new ScriptOld();
         }
 
         public void UnloadContent()

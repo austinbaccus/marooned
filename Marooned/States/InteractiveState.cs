@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
@@ -12,6 +11,7 @@ using Marooned.Sprites.Enemies;
 using Marooned.Factories;
 using Marooned.Controllers;
 using DefaultEcs.System;
+using Marooned.Systems;
 
 namespace Marooned.States
 {
@@ -38,7 +38,10 @@ namespace Marooned.States
             InputController = new InputController(this);
 
             Systems = new SequentialSystem<GameContext>(
-                // systems here
+                new MoveEntitySystem(World),
+                new AnimationSystem(World),
+                new DrawSystem(World),
+                new DrawAnimationSystem(World)
             );
         }
 
@@ -52,9 +55,15 @@ namespace Marooned.States
         public float LevelTime { get; private set; }
         public bool MiniBossActive { get; private set; }
         public bool BossActive { get; private set; }
-        public OrthographicCamera Camera { get; private set; }
         public TiledMapRenderer TiledMapRenderer { get; private set; }
         public bool PlayerAlive { get => Player.Lives > 0; }
+
+        public override void Dispose()
+        {
+            Systems.Dispose();
+
+            base.Dispose();
+        }
 
         public void PostUpdate()
         {
@@ -86,6 +95,7 @@ namespace Marooned.States
             InputController.Update(GameContext);
 
             TiledMapRenderer.Update(GameContext.GameTime);
+
             // 4 is a magic number to get the player nearly center to the screen
             Camera.LookAt(Player.Position + Player.Hitbox.Offset * 4);
 
@@ -397,6 +407,8 @@ namespace Marooned.States
             GameContext.GraphicsDevice.Clear(Color.CornflowerBlue);
             DrawMap();
             DrawHUD();
+            Systems.Update(GameContext);
+
         }
     }
 }
