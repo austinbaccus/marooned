@@ -24,11 +24,12 @@ namespace Marooned.States
 
         private void LoadGameButton_Click(object sender, EventArgs e)
         {
+            GameContext.StateManager.SwapState(InteractiveState.CreateDefaultState(GameContext));
         }
 
         private void NewGameButton_Click(object sender, EventArgs e)
         {
-            GameContext.StateManager.SwapState(InteractiveState.CreateDefaultState(GameContext));
+            GameContext.StateManager.SwapState(InteractiveState.CreateHardModeState(GameContext));
         }
 
         public override void LoadContent()
@@ -46,7 +47,7 @@ namespace Marooned.States
 
             var loadGameButton = new Button(this, buttonTexture, buttonFont)
             {
-                Text = "Load Game",
+                Text = "Hard Game",
             };
             loadGameButton.Click += LoadGameButton_Click;
 

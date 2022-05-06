@@ -396,6 +396,22 @@ namespace Marooned.States
             );
         }
 
+        public static InteractiveState CreateHardModeState(GameContext gameContext)
+        {
+            // TODO: Right now we are manually passing in map parameters when changing state. Later on this will be delegated to the Level Interpreter.
+            return new InteractiveState(
+                gameContext,
+                "Maps/tutorial",
+                new List<string>()
+                {
+                    "Sounds/Music/ConcernedApe - Stardew Valley 1.5 Original Soundtrack - 03 Volcano Mines (Molten Jelly)",
+                    "Sounds/Music/ConcernedApe - Stardew Valley 1.5 Original Soundtrack - 01 Ginger Island"
+                },
+                "Sprites/IslandParrot",
+                "Sprites/PlayerHitbox"
+            );
+        }
+
         //public void DrawMap()
         //{
         //    GameContext.SpriteBatch.Begin(sortMode: SpriteSortMode.Deferred, transformMatrix: Camera.GetViewMatrix(), samplerState: SamplerState.PointClamp);
