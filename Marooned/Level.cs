@@ -1,4 +1,5 @@
-﻿using Marooned.Controllers;
+﻿using DefaultEcs;
+using Marooned.Controllers;
 using Marooned.Factories;
 using Marooned.Levels;
 using Marooned.Sprites;
@@ -49,6 +50,7 @@ namespace Marooned
         public Stack<List<GruntOld>> Waves { get; private set; } = new Stack<List<GruntOld>>();
         public TiledMapRenderer TiledMapRenderer { get; private set; }
         public LevelInfo LevelInfo { get; set; }
+        public World World { get => GameContext.StateManager.CurrentState.World; }
 
         public GameContext GameContext { get; set; }
         public bool PlayerAlive { get => Player.Lives > 0; }
@@ -108,6 +110,11 @@ namespace Marooned
             };
 
             _components.Add(Player);
+        }
+
+        private void LoadPlayer()
+        {
+            Entity player = World.CreateEntity();
         }
 
         public void UnloadContent()
