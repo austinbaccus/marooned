@@ -64,6 +64,7 @@ namespace Marooned.States
 
 
         public List<Sprite> Hearts = new List<Sprite>();
+        public List<Sprite> Bombs = new List<Sprite>();
 
         public Level CurrentLevel { get; private set; }
 
@@ -186,7 +187,8 @@ namespace Marooned.States
             //}
 
             // update lives
-            UpdateLives();
+            //UpdateLives();
+            //UpdateBombs();
 
             //PostUpdate();
         }
@@ -212,7 +214,8 @@ namespace Marooned.States
 
             CurrentLevel.LoadContent();
 
-            LoadLives();
+            //LoadLives();
+            //LoadBombs();
         }
 
         private void LoadSprites(string playerSpritePath, string playerHitboxSpritePath)
@@ -316,6 +319,17 @@ namespace Marooned.States
                 Hearts[i].Scale = 4f;
             }
         }
+        private void LoadBombs()
+        {
+            var texture = GameContext.Content.Load<Texture2D>("Sprites/Bomb");
+            for (int i = 0; i < 3; i++)
+            {
+                Bombs.Add(new Sprite(texture));
+                Bombs[i].Position.X = (i * 40) + 40;
+                Bombs[i].Position.Y = 80;
+                Bombs[i].Scale = 1f;
+            }
+        }
 
         //private void LoadNextWave()
         //{
@@ -348,6 +362,13 @@ namespace Marooned.States
                 // respawn player
                 Player.Position = _spawnPoint;
                 Player.StartInvulnerableState();
+            }
+        }
+        private void UpdateBombs()
+        {
+            while (Player.Bombs < Bombs.Count)
+            {
+                Bombs.RemoveAt(Bombs.Count - 1);
             }
         }
 
@@ -408,6 +429,10 @@ namespace Marooned.States
             GameContext.SpriteBatch.Begin(sortMode: SpriteSortMode.Deferred, samplerState: SamplerState.PointClamp);
 
             foreach (Sprite heart in Hearts)
+            {
+                heart.Draw(GameContext);
+            }
+            foreach (Sprite heart in Bombs)
             {
                 heart.Draw(GameContext);
             }

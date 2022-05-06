@@ -22,6 +22,7 @@
     <None Remove="Content\Sounds\Music\ConcernedApe - Stardew Valley 1.5 Original Soundtrack - 03 Volcano Mines %28Molten Jelly%29.mp3" />
     <None Remove="Content\spring_island_tilesheet_1.png" />
     <None Remove="Content\spring_outdoorsTileSheet.png" />
+    <None Remove="Content\Sprites\Bomb.png" />
     <None Remove="Content\Sprites\heart.png" />
     <None Remove="Content\Sprites\IslandParrot.png" />
     <None Remove="Content\Terrain\blank-tile.png" />
@@ -54,6 +55,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Sounds\Music\ConcernedApe - Stardew Valley 1.5 Original Soundtrack - 03 Volcano Mines (Molten Jelly).mp3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Sprites\Bomb.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Sprites\heart.png">

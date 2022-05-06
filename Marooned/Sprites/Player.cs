@@ -213,11 +213,12 @@ namespace Marooned.Sprites
             }
 
             // bomb
-            if (InputController.CHEAT_KEYS.Contains(e.Key) && Bombs > 0)
+            if (InputController.BOMB_KEYS.Contains(e.Key) && Bombs > 0)
             {
                 // explode the bomb
                 // remove all enemies
-                //Script.AddAction();
+                Script.AddAction(new ClearEnemiesAction(GameContext.StateManager.CurrentState.World));
+                Bombs--;
             }
         }
 
