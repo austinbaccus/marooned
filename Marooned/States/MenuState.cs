@@ -24,12 +24,12 @@ namespace Marooned.States
 
         private void LoadGameButton_Click(object sender, EventArgs e)
         {
-            GameContext.StateManager.SwapState(InteractiveState.CreateDefaultState(GameContext));
+            GameContext.StateManager.SwapState(InteractiveState.CreateHardModeState(GameContext));
         }
 
         private void NewGameButton_Click(object sender, EventArgs e)
         {
-            GameContext.StateManager.SwapState(InteractiveState.CreateHardModeState(GameContext));
+            GameContext.StateManager.SwapState(InteractiveState.CreateDefaultState(GameContext));
         }
 
         public override void LoadContent()

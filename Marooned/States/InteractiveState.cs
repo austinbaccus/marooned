@@ -21,7 +21,7 @@ namespace Marooned.States
         private string _playerSpritePath;
         private string _playerHitboxSpritePath;
 
-        public InteractiveState(GameContext gameContext, string mapPath, List<string> songPaths, string playerSpritePath, string playerHitboxSpritePath) : base(gameContext)
+        public InteractiveState(GameContext gameContext, string mapPath, List<string> songPaths, string playerSpritePath, string playerHitboxSpritePath, bool isHard = false) : base(gameContext)
         {
             _components = new List<ComponentOld>();
 
@@ -31,7 +31,7 @@ namespace Marooned.States
             _playerHitboxSpritePath = playerHitboxSpritePath;
 
             InputController = new InputController(this);
-            CurrentLevel = new Level(this, gameContext, mapPath, songPaths, playerSpritePath, playerHitboxSpritePath);
+            CurrentLevel = new Level(this, gameContext, mapPath, songPaths, playerSpritePath, playerHitboxSpritePath, isHard: isHard);
 
             Systems = new SequentialSystem<GameContext>(
                 new PlayerBulletCollisionSystem(World),
@@ -58,6 +58,7 @@ namespace Marooned.States
         // Tiled
         //public TiledMap TiledMap { get; private set; }
         public Player Player { get; private set; }
+        public bool IsHard = false;
         public OrthographicCamera _camera { get; private set; }
         public List<GruntOld> Grunts { get; private set; } = new List<GruntOld>();
         //public Stack<List<Grunt>> Waves { get; private set; } = new Stack<List<Grunt>>();
@@ -392,14 +393,14 @@ namespace Marooned.States
                     "Sounds/Music/ConcernedApe - Stardew Valley 1.5 Original Soundtrack - 01 Ginger Island"
                 },
                 "Sprites/IslandParrot",
-                "Sprites/PlayerHitbox"
+                "Sprites/PlayerHitbox",
+                isHard: false
             );
         }
 
         public static InteractiveState CreateHardModeState(GameContext gameContext)
         {
-            // TODO: Right now we are manually passing in map parameters when changing state. Later on this will be delegated to the Level Interpreter.
-            return new InteractiveState(
+            var state = new InteractiveState(
                 gameContext,
                 "Maps/tutorial",
                 new List<string>()
@@ -408,8 +409,11 @@ namespace Marooned.States
                     "Sounds/Music/ConcernedApe - Stardew Valley 1.5 Original Soundtrack - 01 Ginger Island"
                 },
                 "Sprites/IslandParrot",
-                "Sprites/PlayerHitbox"
+                "Sprites/PlayerHitbox",
+                isHard: true
             );
+            state.IsHard = true;
+            return state;
         }
 
         //public void DrawMap()
