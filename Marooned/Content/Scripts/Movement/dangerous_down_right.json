@@ -1,0 +1,38 @@
+[
+  {
+    "time": 0,
+    "action": "play_animation",
+    "animation": "walkDown"
+  },
+  {
+    "time": 0,
+    "action": "move",
+    "pattern": "linear",
+    "velocity": "0 100",
+    "duration": 0.75
+  },
+  {
+    "time": 0.75,
+    "action": "play_animation",
+    "animation": "standDown"
+  },
+  {
+    "time": 0.75,
+    "action": "move",
+    "pattern": "linear",
+    "velocity": "0 0",
+    "duration": 0.50
+  },
+  {
+    "time": 1.25,
+    "action": "play_animation",
+    "animation": "walkRight"
+  },
+  {
+    "time": 1.25,
+    "action": "move",
+    "pattern": "linear",
+    "velocity": "50 5",
+    "duration": 10
+  }
+]

@@ -16,7 +16,7 @@
   "script": [
     {
       "action": "script",
-      "script": "test_movement"
+      "script": "boss"
     },
     {
       "time": 10,

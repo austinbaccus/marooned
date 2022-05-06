@@ -1,0 +1,265 @@
+[
+  {
+    "time": 0,
+    "action": "play_animation",
+    "animation": "walkRight"
+  },
+  {
+    "time": 0,
+    "action": "move",
+    "pattern": "linear",
+    "velocity": "250 50",
+    "duration": 1
+  },
+  {
+    "time": 1.5,
+    "action": "play_animation",
+    "animation": "standDown"
+  },
+  {
+    "time": 1.5,
+    "action": "move",
+    "pattern": "linear",
+    "velocity": "0 0",
+    "duration": 2
+  },
+
+  {
+    "time": 3.5,
+    "action": "play_animation",
+    "animation": "walkRight"
+  },
+  {
+    "time": 3.5,
+    "action": "move",
+    "pattern": "linear",
+    "velocity": "100 -50",
+    "duration": 1
+  },
+  {
+    "time": 4.5,
+    "action": "play_animation",
+    "animation": "standDown"
+  },
+  {
+    "time": 4.5,
+    "action": "move",
+    "pattern": "linear",
+    "velocity": "0 0",
+    "duration": 2
+  },
+
+  {
+    "time": 6.5,
+    "action": "play_animation",
+    "animation": "walkLeft"
+  },
+  {
+    "time": 6.5,
+    "action": "move",
+    "pattern": "linear",
+    "velocity": "-100 -50",
+    "duration": 1
+  },
+  {
+    "time": 7.5,
+    "action": "play_animation",
+    "animation": "standDown"
+  },
+  {
+    "time": 7.5,
+    "action": "move",
+    "pattern": "linear",
+    "velocity": "0 0",
+    "duration": 2
+  },
+
+  {
+    "time": 9.5,
+    "action": "play_animation",
+    "animation": "walkDown"
+  },
+  {
+    "time": 9.5,
+    "action": "move",
+    "pattern": "linear",
+    "velocity": "10 100",
+    "duration": 1
+  },
+  {
+    "time": 10.5,
+    "action": "play_animation",
+    "animation": "standDown"
+  },
+  {
+    "time": 10.5,
+    "action": "move",
+    "pattern": "linear",
+    "velocity": "0 0",
+    "duration": 2
+  },
+
+  {
+    "time": 12.5,
+    "action": "play_animation",
+    "animation": "walkUp"
+  },
+  {
+    "time": 12.5,
+    "action": "move",
+    "pattern": "linear",
+    "velocity": "-10 -100",
+    "duration": 1
+  },
+  {
+    "time": 13.5,
+    "action": "play_animation",
+    "animation": "standDown"
+  },
+  {
+    "time": 13.5,
+    "action": "move",
+    "pattern": "linear",
+    "velocity": "0 0",
+    "duration": 2
+  },
+
+  {
+    "time": 15.5,
+    "action": "play_animation",
+    "animation": "walkDown"
+  },
+  {
+    "time": 15.5,
+    "action": "move",
+    "pattern": "linear",
+    "velocity": "10 100",
+    "duration": 1
+  },
+  {
+    "time": 16.5,
+    "action": "move",
+    "pattern": "linear",
+    "velocity": "-10 100",
+    "duration": 1
+  },
+  {
+    "time": 17.5,
+    "action": "play_animation",
+    "animation": "standDown"
+  },
+  {
+    "time": 17.5,
+    "action": "move",
+    "pattern": "linear",
+    "velocity": "0 0",
+    "duration": 2
+  },
+
+  {
+    "time": 19.5,
+    "action": "play_animation",
+    "animation": "walkUp"
+  },
+  {
+    "time": 19.5,
+    "action": "move",
+    "pattern": "linear",
+    "velocity": "-10 -100",
+    "duration": 1
+  },
+  {
+    "time": 20.5,
+    "action": "play_animation",
+    "animation": "standDown"
+  },
+  {
+    "time": 20.5,
+    "action": "move",
+    "pattern": "linear",
+    "velocity": "0 0",
+    "duration": 2
+  },
+
+  {
+    "time": 22.5,
+    "action": "play_animation",
+    "animation": "walkLeft"
+  },
+  {
+    "time": 22.5,
+    "action": "move",
+    "pattern": "linear",
+    "velocity": "-100 0",
+    "duration": 1
+  },
+  {
+    "time": 23.5,
+    "action": "play_animation",
+    "animation": "standDown"
+  },
+  {
+    "time": 23.5,
+    "action": "move",
+    "pattern": "linear",
+    "velocity": "0 0",
+    "duration": 2
+  },
+
+  {
+    "time": 25.5,
+    "action": "play_animation",
+    "animation": "walkDown"
+  },
+  {
+    "time": 25.5,
+    "action": "move",
+    "pattern": "linear",
+    "velocity": "10 100",
+    "duration": 1
+  },
+  {
+    "time": 26.5,
+    "action": "move",
+    "pattern": "linear",
+    "velocity": "-10 100",
+    "duration": 1
+  },
+  {
+    "time": 27.5,
+    "action": "play_animation",
+    "animation": "standDown"
+  },
+  {
+    "time": 27.5,
+    "action": "move",
+    "pattern": "linear",
+    "velocity": "0 0",
+    "duration": 2
+  },
+
+  {
+    "time": 29.5,
+    "action": "play_animation",
+    "animation": "walkRight"
+  },
+  {
+    "time": 29.5,
+    "action": "move",
+    "pattern": "linear",
+    "velocity": "100 0",
+    "duration": 1
+  },
+  {
+    "time": 30.5,
+    "action": "play_animation",
+    "animation": "standDown"
+  },
+  {
+    "time": 30.5,
+    "action": "move",
+    "pattern": "linear",
+    "velocity": "0 0",
+    "duration": 10
+  }
+]
