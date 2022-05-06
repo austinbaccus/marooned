@@ -8,6 +8,8 @@ using Marooned.Sprites.Enemies;
 using Marooned.Controllers;
 using DefaultEcs.System;
 using Marooned.Systems;
+using DefaultEcs;
+using Marooned.Levels;
 
 namespace Marooned.States
 {
@@ -16,22 +18,22 @@ namespace Marooned.States
         private List<ComponentOld> _components;
         private Vector2 _spawnPoint = new Vector2(300, 300);
 
-        //private string _mapPath;
-        //private List<string> _songPaths;
         private string _playerSpritePath;
         private string _playerHitboxSpritePath;
 
-        public InteractiveState(GameContext gameContext, string mapPath, List<string> songPaths, string playerSpritePath, string playerHitboxSpritePath) : base(gameContext)
+        public InteractiveState(GameContext gameContext, string levelName, List<string> songPaths, string playerSpritePath, string playerHitboxSpritePath) : base(gameContext)
         {
             _components = new List<ComponentOld>();
 
-            //_mapPath = mapPath;
-            //_songPaths = songPaths;
             _playerSpritePath = playerSpritePath;
             _playerHitboxSpritePath = playerHitboxSpritePath;
 
             InputController = new InputController(this);
-            CurrentLevel = new Level(this, gameContext, mapPath, songPaths, playerSpritePath, playerHitboxSpritePath);
+
+            Entity levelEntity = gameContext.LevelsInterpreter.GetLevelEntity(levelName, World);
+            LevelInfo levelInfo = levelEntity.Get<LevelInfo>();
+
+            CurrentLevel = new Level(this, gameContext, levelInfo, songPaths, playerSpritePath, playerHitboxSpritePath);
 
             Systems = new SequentialSystem<GameContext>(
                 new PlayerBulletCollisionSystem(World),
@@ -55,24 +57,13 @@ namespace Marooned.States
             );
         }
 
-        // Tiled
-        //public TiledMap TiledMap { get; private set; }
         public Player Player { get; private set; }
         public OrthographicCamera _camera { get; private set; }
         public List<GruntOld> Grunts { get; private set; } = new List<GruntOld>();
-        //public Stack<List<Grunt>> Waves { get; private set; } = new Stack<List<Grunt>>();
-
 
         public List<Sprite> Hearts = new List<Sprite>();
 
         public Level CurrentLevel { get; private set; }
-
-
-        //public float LevelTime { get; private set; }
-        //public bool MiniBossActive { get; private set; }
-        //public bool BossActive { get; private set; }
-        //public TiledMapRenderer TiledMapRenderer { get; private set; }
-        //public bool PlayerAlive { get => Player.Lives > 0; }
 
         public override void Dispose()
         {
@@ -81,114 +72,12 @@ namespace Marooned.States
             base.Dispose();
         }
 
-        //public void PostUpdate()
-        //{
-        //    // remove sprites if they're not needed
-        //    for (int i = 0; i < Player.BulletList.Count; i++)
-        //    {
-        //        if (Player.BulletList[i].IsRemoved)
-        //        {
-        //            Player.BulletList.RemoveAt(i);
-        //            i--;
-        //        }
-        //    }
-        //    for (int i = 0; i < Grunts.Count; i++)
-        //    {
-        //        if (Grunts[i].IsRemoved)
-        //        {
-        //            Grunts.RemoveAt(i);
-        //            i--;
-        //        }
-        //    }
-        //    if (Grunts.Count <= 0)
-        //    {
-        //        LoadNextWave();
-        //    }
-        //}
-
         public override void Update()
         {
-
             CurrentLevel.Update();
-
-            //InputController.Update(GameContext);
-
-            //TiledMapRenderer.Update(GameContext.GameTime);
-
-            //// 4 is a magic number to get the player nearly center to the screen
-            //Camera.LookAt(Player.Position + Player.Hitbox.Offset * 4);
-
-            //foreach (var component in _components)
-            //{
-            //    component.Update(GameContext);
-            //}
-
-            //// check player for damage
-            //foreach (var grunt in Grunts)
-            //{
-            //    if (!PlayerAlive) break;
-
-            //    grunt.Update(GameContext);
-
-            //    for (int i = 0; i < grunt.BulletList.Count; i++)
-            //    {
-            //        Bullet bullet = grunt.BulletList[i];
-            //        bullet.Update(GameContext);
-
-            //        if (!Player.IsInvulnerable)
-            //        {
-            //            // did it hit the player?
-            //            if (Player.Hitbox.IsTouching(bullet.Hitbox))
-            //            {
-            //                Player.isHit = true; // Show red damage on grunt
-
-            //                Player.Lives--;
-            //                if (Player.Lives <= 0)
-            //                {
-            //                    // "game over man! game over!"
-            //                    OnDeath();
-            //                    break;
-            //                }
-
-            //                grunt.BulletList.RemoveAt(i);
-            //                i--;
-            //            }
-            //        }
-            //    }
-            //}
-
-            //if (PlayerAlive)
-            //{
-            //    // check enemies for damage
-            //    for (int i = 0; i < Player.BulletList.Count; i++)
-            //    {
-            //        Bullet bullet = Player.BulletList[i];
-            //        bullet.Update(GameContext);
-
-            //        for (int j = 0; j < Grunts.Count; j++)
-            //        {
-            //            if (Grunts[j].Hitbox.IsTouching(bullet.Hitbox))
-            //            {
-            //                Grunts[j].isHit = true; // Show red damage on grunt
-            //                Grunts[j].Health--;
-            //                if (Grunts[j].Health <= 0)
-            //                {
-            //                    Grunts.RemoveAt(j);
-            //                    j--;
-            //                }
-
-            //                Player.BulletList.RemoveAt(i);
-            //                i--;
-            //                break;
-            //            }
-            //        }
-            //    }
-            //}
 
             // update lives
             UpdateLives();
-
-            //PostUpdate();
         }
 
         public override void LoadContent()
@@ -364,7 +253,7 @@ namespace Marooned.States
             // TODO: Right now we are manually passing in map parameters when changing state. Later on this will be delegated to the Level Interpreter.
             return new InteractiveState(
                 gameContext,
-                "Maps/tutorial",
+                "level1",
                 new List<string>()
                 {
                     "Sounds/Music/ConcernedApe - Stardew Valley 1.5 Original Soundtrack - 03 Volcano Mines (Molten Jelly)",

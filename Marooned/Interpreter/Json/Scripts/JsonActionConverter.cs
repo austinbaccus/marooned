@@ -8,17 +8,17 @@ using System.Text.Json;
 
 namespace Marooned.Interpreter.Json.Scripts
 {
-    public delegate IAction ConvertFunction(GameContext gameContext, World world, Entity actor, JsonElement actionJson);
+    public delegate IAction ConvertFunction(GameContext gameContext, World world, Entity entity, JsonElement actionJson);
 
     public class JsonActionConverter : JsonConverter<ConvertFunction>
     {
         public JsonPatternConverter _patternConverter = new JsonPatternConverter();
 
         [JsonProperty("move")]
-        public IAction ConvertMove(GameContext gameContext, World world, Entity actor, JsonElement actionJson)
+        public IAction ConvertMove(GameContext gameContext, World world, Entity entity, JsonElement actionJson)
         {
             JsonElement patternJson = GetProperty("pattern", actionJson);
-            MovePattern pattern = _patternConverter.ConvertMove(gameContext, actor, actionJson, patternJson);
+            MovePattern pattern = _patternConverter.ConvertMove(gameContext, entity, actionJson, patternJson);
             JsonElement durationJson = GetProperty("duration", actionJson);
             TimeSpan duration = TimeSpan.FromSeconds(durationJson.GetDouble());
 
@@ -27,10 +27,10 @@ namespace Marooned.Interpreter.Json.Scripts
             {
                 case LinearMovePattern linearMovePattern:
                     Vector2 velocity = DeserializeVector2(actionJson.GetProperty("velocity"));
-                    moveAction = new LinearMoveAction(linearMovePattern, actor, duration, velocity);
+                    moveAction = new LinearMoveAction(linearMovePattern, entity, duration, velocity);
                     break;
                 default:
-                    moveAction = new MoveAction(pattern, actor, duration);
+                    moveAction = new MoveAction(pattern, entity, duration);
                     break;
             }
 
@@ -38,33 +38,33 @@ namespace Marooned.Interpreter.Json.Scripts
         }
 
         [JsonProperty("script")]
-        public IAction ConvertScript(GameContext gameContext, World world, Entity actor, JsonElement actionJson)
+        public IAction ConvertScript(GameContext gameContext, World world, Entity entity, JsonElement actionJson)
         {
             JsonElement scriptJson = GetProperty("script", actionJson);
-            Script script = ((JsonEntityScriptsInterpreter)gameContext.ScriptsInterpreter).CreateScriptFromElement(scriptJson, world, actor);
-            return new ScriptAction(script, actor);
+            Script script = ((JsonEntityScriptsInterpreter)gameContext.ScriptsInterpreter).CreateScriptFromElement(scriptJson, world, entity);
+            return new ScriptAction(script, entity);
         }
 
         [JsonProperty("clear_enemy_bullets")]
-        public IAction ConvertClearEnemyBullets(GameContext gameContext, World world, Entity actor, JsonElement actionJson)
+        public IAction ConvertClearEnemyBullets(GameContext gameContext, World world, Entity entity, JsonElement actionJson)
         {
             return new ClearEnemyBulletsAction(gameContext.StateManager.CurrentState.World);
         }
 
         [JsonProperty("clear_player_bullets")]
-        public IAction ConvertClearPlayerBullets(GameContext gameContext, World world, Entity actor, JsonElement actionJson)
+        public IAction ConvertClearPlayerBullets(GameContext gameContext, World world, Entity entity, JsonElement actionJson)
         {
             return new ClearPlayerBulletsAction(gameContext.StateManager.CurrentState.World);
         }
 
         [JsonProperty("die")]
-        public IAction ConvertDie(GameContext gameContext, World world, Entity actor, JsonElement actionJson)
+        public IAction ConvertDie(GameContext gameContext, World world, Entity entity, JsonElement actionJson)
         {
-            return new DieAction(actor);
+            return new DieAction(entity);
         }
 
         [JsonProperty("play_animation")]
-        public IAction ConvertPlayAnimation(GameContext gameContext, World world, Entity actor, JsonElement actionJson)
+        public IAction ConvertPlayAnimation(GameContext gameContext, World world, Entity entity, JsonElement actionJson)
         {
             JsonElement animationNameJson = GetProperty("animation", actionJson);
             string animationName = animationNameJson.GetString();
@@ -72,11 +72,11 @@ namespace Marooned.Interpreter.Json.Scripts
             {
                 throw new Exception($"Invalid animation name: {animationNameJson}");
             }
-            return new PlayAnimationAction(actor, animationName);
+            return new PlayAnimationAction(entity, animationName);
         }
 
         [JsonProperty("spawn")]
-        public IAction ConvertSpawn(GameContext gameContext, World world, Entity actor, JsonElement actionJson)
+        public IAction ConvertSpawn(GameContext gameContext, World world, Entity entity, JsonElement actionJson)
         {
             JsonElement entityNameJson = GetProperty("entity", actionJson);
             string entityName = entityNameJson.GetString();
@@ -127,7 +127,7 @@ namespace Marooned.Interpreter.Json.Scripts
                 duration = durationJson.Value.GetDouble();
             }
 
-            return new SpawnAction(world, actor, entityName, position, count, rate, duration, getScriptFunction, overrideScript);
+            return new SpawnAction(world, entity, entityName, position, count, rate, duration, getScriptFunction, overrideScript);
         }
     }
 }

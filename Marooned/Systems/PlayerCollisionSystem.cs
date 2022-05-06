@@ -14,25 +14,16 @@ namespace Marooned.Systems
 
         protected override void Update(GameContext gameContext, in Entity entity)
         {
-            TransformComponent bulletPosition = entity.Get<TransformComponent>();
-            float BulletX = bulletPosition.Position.X;
-            float BulletY = bulletPosition.Position.Y;
-            HitboxComponent bulletHitbox = entity.Get<HitboxComponent>();
+            EntitySet others = World.GetEntities().With<IsPlayerComponent>().With<TransformComponent>().AsSet();
 
-            foreach (Entity player in World.GetEntities().With<IsPlayerComponent>().With<TransformComponent>().AsSet().GetEntities())
+            Entity? collidedWith;
+            if (Utils.CheckCollision(entity, others.GetEntities(), out collidedWith))
             {
-                float PlayerX = player.Get<TransformComponent>().Position.X;
-                float PlayerY = player.Get<TransformComponent>().Position.Y;
-
-                if (Vector2.Distance(new Vector2(PlayerX, PlayerY), new Vector2(BulletX, BulletY)) <= player.Get<HitboxComponent>().HitboxRadius + bulletHitbox.HitboxRadius) 
+                collidedWith.Value.Set(new CollisionComponent
                 {
-                    player.Set(new CollisionComponent
-                    {
-                        HasCollided = true,
-                        CollidedWith = entity
-                    });
-
-                }
+                    HasCollided = true,
+                    CollidedWith = entity,
+                });
             }
         }
     }

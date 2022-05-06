@@ -36,5 +36,6 @@ namespace Marooned
         public IAnimationsInterpreter AnimationsInterpreter { get; }
         public IEntitiesInterpreter EntitiesInterpreter { get; }
         public IEntityScriptsInterpreter ScriptsInterpreter { get; }
+        public ILevelsInterpreter LevelsInterpreter { get; }
     }
 }
