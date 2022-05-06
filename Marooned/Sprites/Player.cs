@@ -22,6 +22,7 @@ namespace Marooned.Sprites
         public float Speed;
         public float FocusSpeedFactor;
         public int Lives = 5;
+        public int Bombs = 3;
 
         private double _lastBulletTimestamp = 0;
         private float _bulletLifespan = 2f;
@@ -192,6 +193,7 @@ namespace Marooned.Sprites
             bool downReleased = InputController.DOWN_KEYS.Contains(e.Key);
             bool leftReleased = InputController.LEFT_KEYS.Contains(e.Key);
             bool rightReleased = InputController.RIGHT_KEYS.Contains(e.Key);
+            bool bombReleased = InputController.BOMB_KEYS.Contains(e.Key);
             if (upReleased || downReleased || leftReleased || rightReleased)
             {
                 IsMoving = false;
@@ -208,6 +210,15 @@ namespace Marooned.Sprites
             if (InputController.CHEAT_KEYS.Contains(e.Key))
             {
                 IsInvulnerable = !IsInvulnerable;
+            }
+
+            // bomb
+            if (InputController.BOMB_KEYS.Contains(e.Key) && Bombs > 0)
+            {
+                // explode the bomb
+                // remove all enemies
+                Script.AddAction(new ClearEnemiesAction(GameContext.StateManager.CurrentState.World));
+                Bombs--;
             }
         }
 

@@ -23,6 +23,9 @@ namespace Marooned
         private InputController _inputController;
         private State _state;
 
+        public List<Sprite> Bombs = new List<Sprite>();
+        public List<Sprite> Hearts = new List<Sprite>();
+
         public Level(State state, GameContext gameContext, LevelInfo levelInfo, string mapPath, List<string> songPaths, string playerSpritePath, string playerHitboxSpritePath)
         {
             _state = state;
@@ -63,6 +66,8 @@ namespace Marooned
             LoadEnemies();
             LoadMusic(_songPaths);
             LoadMap();
+            LoadBombs();
+            LoadLives();
         }
 
         private void LoadMusic(List<string> songPaths)
@@ -162,6 +167,8 @@ namespace Marooned
                 //    }
                 //}
             }
+            UpdateLives();
+            UpdateBombs();
 
             PostUpdate();
         }
@@ -195,7 +202,20 @@ namespace Marooned
 
         public void Draw()
         {
+            
+
             DrawMap();
+
+            GameContext.SpriteBatch.Begin(sortMode: SpriteSortMode.Deferred, samplerState: SamplerState.PointClamp);
+            foreach (Sprite heart in Hearts)
+            {
+                heart.Draw(GameContext);
+            }
+            foreach (Sprite bomb in Bombs)
+            {
+                bomb.Draw(GameContext);
+            }
+            GameContext.SpriteBatch.End();
         }
 
         public void DrawMap()
@@ -215,6 +235,56 @@ namespace Marooned
             }
             
             GameContext.SpriteBatch.End();
+        }
+
+
+        private void UpdateBombs()
+        {
+            while (Player.Bombs < Bombs.Count)
+            {
+                Bombs.RemoveAt(Bombs.Count - 1);
+            }
+        }
+        private void LoadBombs()
+        {
+            var texture = GameContext.Content.Load<Texture2D>("Sprites/Bomb");
+            for (int i = 0; i < 3; i++)
+            {
+                Bombs.Add(new Sprite(texture));
+                Bombs[i].Position.X = (i * 40) + 40;
+                Bombs[i].Position.Y = 80;
+                Bombs[i].Scale = 0.8f;
+            }
+        }
+        private void UpdateLives()
+        {
+            while (Hearts.Count != Player.Lives)
+            {
+                Hearts.RemoveAt(Hearts.Count - 1);
+
+                // update HUD
+                for (int i = 0; i < Player.Lives; i++)
+                {
+                    Hearts[i].Position.X = (i * 40) + 40;
+                    Hearts[i].Position.Y = 40;
+                    Hearts[i].Scale = 4f;
+                }
+
+                // respawn player
+                Player.Position = _spawnPoint;
+                Player.StartInvulnerableState();
+            }
+        }
+        private void LoadLives()
+        {
+            var texture = GameContext.Content.Load<Texture2D>("Sprites/Heart");
+            for (int i = 0; i < 5; i++)
+            {
+                Hearts.Add(new Sprite(texture));
+                Hearts[i].Position.X = (i * 40) + 40;
+                Hearts[i].Position.Y = 40;
+                Hearts[i].Scale = 4f;
+            }
         }
     }
 }

@@ -62,6 +62,7 @@ namespace Marooned.States
         public List<GruntOld> Grunts { get; private set; } = new List<GruntOld>();
 
         public List<Sprite> Hearts = new List<Sprite>();
+        public List<Sprite> Bombs = new List<Sprite>();
 
         public Level CurrentLevel { get; private set; }
 
@@ -77,7 +78,10 @@ namespace Marooned.States
             CurrentLevel.Update();
 
             // update lives
-            UpdateLives();
+            //UpdateLives();
+            //UpdateBombs();
+
+            //PostUpdate();
         }
 
         public override void LoadContent()
@@ -101,7 +105,8 @@ namespace Marooned.States
 
             CurrentLevel.LoadContent();
 
-            LoadLives();
+            //LoadLives();
+            //LoadBombs();
         }
 
         private void LoadSprites(string playerSpritePath, string playerHitboxSpritePath)
@@ -205,6 +210,17 @@ namespace Marooned.States
                 Hearts[i].Scale = 4f;
             }
         }
+        private void LoadBombs()
+        {
+            var texture = GameContext.Content.Load<Texture2D>("Sprites/Bomb");
+            for (int i = 0; i < 3; i++)
+            {
+                Bombs.Add(new Sprite(texture));
+                Bombs[i].Position.X = (i * 40) + 40;
+                Bombs[i].Position.Y = 80;
+                Bombs[i].Scale = 1f;
+            }
+        }
 
         //private void LoadNextWave()
         //{
@@ -239,6 +255,13 @@ namespace Marooned.States
                 Player.StartInvulnerableState();
             }
         }
+        private void UpdateBombs()
+        {
+            while (Player.Bombs < Bombs.Count)
+            {
+                Bombs.RemoveAt(Bombs.Count - 1);
+            }
+        }
 
         //public void OnDeath()
         //{
@@ -254,6 +277,22 @@ namespace Marooned.States
             return new InteractiveState(
                 gameContext,
                 "level1",
+                new List<string>()
+                {
+                    "Sounds/Music/ConcernedApe - Stardew Valley 1.5 Original Soundtrack - 03 Volcano Mines (Molten Jelly)",
+                    "Sounds/Music/ConcernedApe - Stardew Valley 1.5 Original Soundtrack - 01 Ginger Island"
+                },
+                "Sprites/IslandParrot",
+                "Sprites/PlayerHitbox"
+            );
+        }
+
+        public static InteractiveState CreateHardModeState(GameContext gameContext)
+        {
+            // TODO: Right now we are manually passing in map parameters when changing state. Later on this will be delegated to the Level Interpreter.
+            return new InteractiveState(
+                gameContext,
+                "Maps/tutorial",
                 new List<string>()
                 {
                     "Sounds/Music/ConcernedApe - Stardew Valley 1.5 Original Soundtrack - 03 Volcano Mines (Molten Jelly)",
@@ -297,6 +336,10 @@ namespace Marooned.States
             GameContext.SpriteBatch.Begin(sortMode: SpriteSortMode.Deferred, samplerState: SamplerState.PointClamp);
 
             foreach (Sprite heart in Hearts)
+            {
+                heart.Draw(GameContext);
+            }
+            foreach (Sprite heart in Bombs)
             {
                 heart.Draw(GameContext);
             }
