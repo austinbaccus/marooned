@@ -13,10 +13,7 @@ namespace Marooned
             Actions = new PriorityQueue<IAction, double>();
         }
 
-        public Script(IEnumerable<Tuple<IAction, double>> actions) : this()
-        {
-            Enqueue(actions);
-        }
+        public PriorityQueue<IAction, double>.UnorderedItemsCollection UnorderedItemsCollection { get => Actions.UnorderedItems; }
 
         public bool ShouldExecute(TimeSpan timeElapsed)
         {
@@ -40,11 +37,11 @@ namespace Marooned
             Actions.Enqueue(action, time);
         }
 
-        public void Enqueue(IEnumerable<Tuple<IAction, double>> actions)
+        public void Enqueue(Script other)
         {
-            foreach (var actionTime in actions)
+            foreach ((IAction action, double time) in other.UnorderedItemsCollection)
             {
-                Actions.Enqueue(actionTime.Item1, actionTime.Item2);
+                Enqueue(action, time);
             }
         }
 

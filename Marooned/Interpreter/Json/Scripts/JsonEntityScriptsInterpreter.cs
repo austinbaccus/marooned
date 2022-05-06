@@ -8,9 +8,9 @@ namespace Marooned.Interpreter.Json.Scripts
 {
     public class JsonEntityScriptsInterpreter : JsonInterpreter, IEntityScriptsInterpreter
     {
-        public JsonActionConverter actionConverter = new JsonActionConverter();
+        Dictionary<string, JsonElement> _cache = new Dictionary<string, JsonElement>();
 
-        Dictionary<string, JsonDocument> _cache = new Dictionary<string, JsonDocument>();
+        public JsonActionConverter actionConverter = new JsonActionConverter();
 
         public JsonEntityScriptsInterpreter(GameContext gameContext) : base(gameContext)
         {
@@ -18,16 +18,16 @@ namespace Marooned.Interpreter.Json.Scripts
 
         public override string Path { get; set; } = "Scripts";
 
-        public Script CreateScriptFromElement(JsonElement jsonElement, GameContext gameContext, Entity entity)
+        public Script CreateScriptFromElement(JsonElement jsonElement, World world, Entity entity)
         {
             Script script;
             if (jsonElement.ValueKind == JsonValueKind.String)
             {
-                script = gameContext.ScriptsInterpreter.CreateScriptFrom(jsonElement.GetString(), entity);
+                script = CreateScriptFrom(jsonElement.GetString(), world, entity);
             }
             else if (jsonElement.ValueKind == JsonValueKind.Array)
             {
-                script = ((JsonEntityScriptsInterpreter)gameContext.ScriptsInterpreter).CreateScriptFrom(jsonElement, entity);
+                script = CreateScriptFrom(jsonElement, world, entity);
             }
             else
             {
@@ -36,18 +36,16 @@ namespace Marooned.Interpreter.Json.Scripts
             return script;
         }
 
-        public Script CreateScriptFrom(string name, Entity entity)
+        public Script CreateScriptFrom(string name, World world, Entity entity)
         {
-            if (_cache.ContainsKey(name))
-            {
-                return CreateScriptFrom(_cache[name].RootElement, entity);
-            }
+            if (_cache.ContainsKey(name)) return CreateScriptFrom(_cache[name], world, entity);
 
             using (JsonDocument jsonDoc = JsonDocument.Parse(GetFileContents(name)))
             {
+                _cache.Add(name, jsonDoc.RootElement.Clone());
                 try
                 {
-                    return CreateScriptFrom(jsonDoc.RootElement, entity);
+                    return CreateScriptFrom(jsonDoc.RootElement, world, entity);
                 }
                 catch (Exception ex)
                 {
@@ -56,7 +54,7 @@ namespace Marooned.Interpreter.Json.Scripts
             }
         }
 
-        public Script CreateScriptFrom(JsonElement jsonArray, Entity entity)
+        public Script CreateScriptFrom(JsonElement jsonArray, World world, Entity entity)
         {
             if (jsonArray.ValueKind != JsonValueKind.Array)
             {
@@ -76,7 +74,7 @@ namespace Marooned.Interpreter.Json.Scripts
                         time = timeJson.GetDouble();
                     }
 
-                    IAction action = actionConverter.Registry[actionType](GameContext, entity, actionJson);
+                    IAction action = actionConverter.Registry[actionType](GameContext, world, entity, actionJson);
                     script.Enqueue(action, time);
                 }
                 else

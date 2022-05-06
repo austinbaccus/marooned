@@ -8,7 +8,7 @@ namespace Marooned.Interpreter.Json.Entities
 {
     public class JsonEntitiesInterpreter : JsonInterpreter, IEntitiesInterpreter
     {
-        Dictionary<string, JsonDocument> _cache = new Dictionary<string, JsonDocument>();
+        Dictionary<string, JsonElement> _cache = new Dictionary<string, JsonElement>();
 
         public JsonComponentConverter _componentConverter = new JsonComponentConverter();
 
@@ -20,20 +20,18 @@ namespace Marooned.Interpreter.Json.Entities
 
         public Entity CreateEntityFrom(World world, string name)
         {
-            if (_cache.ContainsKey(name))
-            {
-                return CreateEntityFrom(world, _cache[name].RootElement);
-            }
+            if (_cache.ContainsKey(name)) return CreateEntityFrom(world, _cache[name]);
 
             using (JsonDocument jsonDoc = JsonDocument.Parse(GetFileContents(name)))
             {
+                _cache.Add(name, jsonDoc.RootElement.Clone());
                 try
                 {
                     return CreateEntityFrom(world, jsonDoc.RootElement);
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception($"({name}.json) {ex.Message}");
+                    throw new Exception($"({name}.json) {ex.Message}\n{ex.StackTrace}");
                 }
             }
         }
@@ -51,11 +49,11 @@ namespace Marooned.Interpreter.Json.Entities
                 {
                     // Call on the json component registry to create
                     // and set components to the entities
-                    _componentConverter.Registry[type](GameContext, entity, component);
+                    _componentConverter.Registry[type](GameContext, world, entity, component);
                 }
             }
 
-            _componentConverter.Registry["script"](GameContext, entity, rootElement);
+            _componentConverter.Registry["script"](GameContext, world, entity, rootElement);
 
             return entity;
         }

@@ -20,13 +20,7 @@ namespace Marooned.Actions
             if (Entity.Has<ScriptComponent>())
             {
                 Script entityScript = Entity.Get<ScriptComponent>().Script;
-                while (!Script.Empty())
-                {
-                    IAction action;
-                    double time;
-                    Script.TryDequeue(out action, out time);
-                    entityScript.Enqueue(action, time);
-                }
+                entityScript.Enqueue(Script);
             }
             else
             {
