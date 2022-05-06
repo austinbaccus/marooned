@@ -328,7 +328,7 @@ namespace Marooned
                 Bombs.Add(new Sprite(texture));
                 Bombs[i].Position.X = (i * 40) + 40;
                 Bombs[i].Position.Y = 80;
-                Bombs[i].Scale = 1f;
+                Bombs[i].Scale = 0.8f;
             }
         }
         private void UpdateLives()
