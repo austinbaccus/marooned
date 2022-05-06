@@ -6,9 +6,9 @@ namespace Marooned.Systems
 {
     [With(typeof(TransformComponent), typeof(CollisionComponent), typeof(HitboxComponent))] // all bullets
     [WithEither(typeof(IsEnemyBulletComponent), typeof(IsPlayerBulletComponent))]
-    public class BulletRemovalSystem : AEntitySetSystem<GameContext>
+    public class BulletCollisionRemovalSystem : AEntitySetSystem<GameContext>
     {
-        public BulletRemovalSystem(World world) : base(world, true)
+        public BulletCollisionRemovalSystem(World world) : base(world, true)
         {
         }
 

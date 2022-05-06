@@ -150,10 +150,10 @@
     <None Update="Content\Scripts\Movement\skeleton_downleft_hold.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Content\Scripts\Movement\test_movement - Copy.json">
+    <None Update="Content\Scripts\Movement\skeleton_downright_hold.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Content\Scripts\Movement\skeleton_downright_hold.json">
+    <None Update="Content\Scripts\Movement\test.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Content\Sprites\Banana.png">

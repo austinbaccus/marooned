@@ -16,7 +16,7 @@
   "script": [
     {
       "action": "script",
-      "script": "boss"
+      "script": "test"
     },
     {
       "time": 10,

@@ -100,7 +100,7 @@ namespace Marooned
             //    EnemyFactory.MakeGrunt(GameContext, _state.World, "skeleton", new Vector2(225, 100)),
             //};
 
-            EnemyFactory.MakeGrunt(GameContext, _state.World, "skeleton", new Vector2(0, 0));
+            EnemyFactory.MakeGrunt(GameContext, _state.World, "skeleton", new Vector2(0, 00));
 
             //Waves.Push(wave1);
         }
