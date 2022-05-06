@@ -9,8 +9,8 @@
     {
       "action": "move",
       "pattern": "linear",
-      "velocity": "0 10",
-      "duration": 5
+      "velocity": "0 50",
+      "duration": 1
     }
   ]
 }
