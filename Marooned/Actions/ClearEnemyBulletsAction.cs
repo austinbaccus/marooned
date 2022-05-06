@@ -14,7 +14,10 @@ namespace Marooned.Actions
 
         public void Execute(GameContext gameContext)
         {
-            _world.GetEntities().With<IsEnemyBulletComponent>().AsSet().Dispose();
+            foreach (Entity entity in _world.GetEntities().With<IsEnemyBulletComponent>().AsSet().GetEntities())
+            {
+                entity.Dispose();
+            }
         }
     }
 }
