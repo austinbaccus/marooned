@@ -2,7 +2,7 @@
   {
     "action": "spawn",
     "entity": "skeleton",
-    "position": "50 0",
+    "position": "50 100",
     "script": [
       {
         "action": "spawn",
@@ -24,14 +24,14 @@
       },
       {
         "action": "script",
-        "script": "skeleton_downright_hold"
+        "script": "mage_circle_right"
       }
     ]
   },
   {
     "action": "spawn",
     "entity": "skeleton",
-    "position": "70 0",
+    "position": "70 100",
     "script": [
       {
         "action": "spawn",
@@ -53,14 +53,14 @@
       },
       {
         "action": "script",
-        "script": "skeleton_downright_hold"
+        "script": "mage_circle_right"
       }
     ]
   },
   {
     "action": "spawn",
     "entity": "skeleton",
-    "position": "90 0",
+    "position": "90 100",
     "script": [
       {
         "action": "spawn",
@@ -82,14 +82,14 @@
       },
       {
         "action": "script",
-        "script": "skeleton_downright_hold"
+        "script": "mage_circle_right"
       }
     ]
   },
   {
     "action": "spawn",
     "entity": "skeleton",
-    "position": "110 0",
+    "position": "110 100",
     "script": [
       {
         "action": "spawn",
@@ -111,14 +111,14 @@
       },
       {
         "action": "script",
-        "script": "skeleton_downright_hold"
+        "script": "mage_circle_right"
       }
     ]
   },
   {
     "action": "spawn",
     "entity": "skeleton",
-    "position": "130 0",
+    "position": "130 100",
     "script": [
       {
         "action": "spawn",
@@ -140,14 +140,14 @@
       },
       {
         "action": "script",
-        "script": "skeleton_downright_hold"
+        "script": "mage_circle_right"
       }
     ]
   },
   {
     "action": "spawn",
     "entity": "skeleton",
-    "position": "150 0",
+    "position": "150 100",
     "script": [
       {
         "action": "spawn",
@@ -169,14 +169,14 @@
       },
       {
         "action": "script",
-        "script": "skeleton_downright_hold"
+        "script": "mage_circle_right"
       }
     ]
   },
   {
     "action": "spawn",
     "entity": "skeleton",
-    "position": "170 0",
+    "position": "170 100",
     "script": [
       {
         "action": "spawn",
@@ -198,7 +198,7 @@
       },
       {
         "action": "script",
-        "script": "skeleton_downright_hold"
+        "script": "mage_circle_right"
       }
     ]
   }

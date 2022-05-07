@@ -3,8 +3,34 @@
   "map": "Maps/tutorial",
   "script": [
     {
+      "time": 0,
       "action": "script",
       "script": "wave1"
+    },
+    {
+      "time": 5,
+      "action": "script",
+      "script": "wave2"
+    },
+    {
+      "time": 10,
+      "action": "script",
+      "script": "wave3"
+    },
+    {
+      "time": 15,
+      "action": "script",
+      "script": "wave4"
+    },
+    {
+      "time": 20,
+      "action": "script",
+      "script": "wave5"
+    },
+    {
+      "time": 25,
+      "action": "script",
+      "script": "wave6"
     }
   ]
 }

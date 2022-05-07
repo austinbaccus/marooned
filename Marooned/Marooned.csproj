@@ -17,7 +17,6 @@
     <None Remove="Content\Enemies\skeleton.json" />
     <None Remove="Content\Enemies\skeleton_dangerous.json" />
     <None Remove="Content\Enemies\skeleton_mage.json" />
-    <None Remove="Content\Levels\level01.json" />
     <None Remove="Content\Sounds\Music\ConcernedApe - Stardew Valley 1.5 Original Soundtrack - 01 Ginger Island.mp3" />
     <None Remove="Content\Sounds\Music\ConcernedApe - Stardew Valley 1.5 Original Soundtrack - 03 Volcano Mines %28Molten Jelly%29.mp3" />
     <None Remove="Content\spring_island_tilesheet_1.png" />
@@ -46,9 +45,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Enemies\skeleton_mage.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\Levels\level01.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Sounds\Music\ConcernedApe - Stardew Valley 1.5 Original Soundtrack - 01 Ginger Island.mp3">
@@ -161,6 +157,21 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Content\Scripts\Movement\test.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Scripts\Waves\wave6.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Scripts\Waves\wave5.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Scripts\Waves\wave4.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Scripts\Waves\wave3.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Scripts\Waves\wave2.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Content\Scripts\Waves\wave1.json">

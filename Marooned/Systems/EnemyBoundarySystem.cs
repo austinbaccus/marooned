@@ -17,7 +17,7 @@ namespace Marooned.Systems
 
             if (enemyPosition.Position.X > 500 || enemyPosition.Position.Y > 500 || enemyPosition.Position.X < 0 || enemyPosition.Position.Y < 0)
             {
-                entity.Get<HealthComponent>().Health = 0;
+                entity.Dispose();
             }
         }
     }
